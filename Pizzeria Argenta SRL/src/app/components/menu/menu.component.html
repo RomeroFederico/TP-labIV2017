@@ -1,0 +1,46 @@
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-9" style = "padding: 0px 5px 0px 0px">
+      <div class = "example2">
+        <nav class="navbar navbar-inverse">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <a class="navbar-brand" href="#"><img src="assets/images/logo.png"></a>
+            </div>
+            <ul class="nav navbar-nav">
+              <li><a routerLink="/home" routerLinkActive="active">Home</a></li>
+              <li><a routerLink="/pedidos" routerLinkActive="active">Pedidos</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </div>
+    <div class="col-sm-3" style = "padding: 0px 0px 0px 5px">
+      <div class = "example2">
+        <nav class="navbar navbar-inverse">
+          <div class="container-fluid" *ngIf = "Comprobar()">
+            <div class="navbar-header">
+              <a class="navbar-brand" href="#"><img src="https://avatars3.githubusercontent.com/u/17879446?v=3&s=460" class="img-circle"></a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a [routerLink]="[]" (click)="salir()" routerLinkActive="active">Logout</a></li>
+            </ul>
+          </div>
+          <div class="container-fluid" *ngIf = "!Comprobar()">
+            <div class="navbar-header">
+              <a class="navbar-brand"><img src="assets/images/default.png" class="img-circle"></a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a routerLink="/login" routerLinkActive="active">Iniciar Sesion</a></li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
