@@ -1,3 +1,101 @@
-<h1>
-  PAGINA PRINCIPAL
-</h1>
+<div class="container-fluid contenedorPrincipal">
+  <div class="contenedorObjetos">
+    <div class="row content principal">
+      <div class="col-sm-6 slider">
+
+<div id="myCarousel" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ol class="carousel-indicators">
+              <li data-target="myCarousel" data-slide-to="0" [class]="active1" (click)="cambiar(1)"></li>
+              <li data-target="myCarousel" data-slide-to="1" [class]="active2" (click)="cambiar(2)"></li>
+              <li data-target="myCarousel" data-slide-to="2" [class]="active3" (click)="cambiar(3)"></li>
+            </ol>
+
+            <!-- Wrapper for slides -->
+            <div class="carousel-inner">
+
+              <div [class]="item1">
+                <img src="assets/images/sliderUno.jpg" alt="Los Angeles" class = "img-responsive">
+              </div>
+
+              <div [class]="item2">
+                <img src="assets/images/sliderDos.jpg" alt="Chicago" class = "img-responsive">
+              </div>
+
+              <div [class]="item3">
+                <img src="assets/images/sliderTres.jpg" alt="New York" class = "img-responsive">
+              </div>
+
+            </div>
+
+            <!-- Left and right controls -->
+            <a class="left carousel-control" (click)="anterior()">
+              <span class="glyphicon glyphicon-chevron-left"></span>
+
+            </a>
+            <a class="right carousel-control" (click)="posterior()">
+              <span class="glyphicon glyphicon-chevron-right"></span>
+            </a>
+          </div>
+
+      </div>
+
+      <div class="col-sm-6 slider">
+        <div class = "row content" style= "padding : 20px">
+          <img src="assets/images/logo.png" class = "img-responsive">
+        </div>
+        <div class = "row content">
+          <div class="presentacion responsive">
+            <div class="jumbotron">
+              <h1>Pizzeria Argenta SRL</h1> 
+              <p>Visitanos para conocer una nueva experienca en pizzas!!!</p> 
+            </div>
+          </div>
+      </div>
+    </div>
+
+    <div class="row content opciones">
+      <div class="col-sm-4 opcion" (mouseenter) = "Mostrar(1)" (mouseleave) = "NoMostrar(1)">
+        <div class = "imagebox">
+          <img src="assets/images/locales.jpg" class = "category-banner img-responsive">
+          <span class="imagebox-desc">
+            <p>
+              Locales
+            </p>
+            <p *ngIf = "locales">
+              Ven a nuestros locales para disfrutar de nuestro servicio !!!
+            </p>
+          </span>
+        </div>
+      </div>
+
+      <div class="col-sm-4 opcion" (mouseenter) = "Mostrar(2)" (mouseleave) = "NoMostrar(2)">
+        <div class = "imagebox">
+          <img src="assets/images/delivery.jpg" class = "category-banner img-responsive">
+          <span class="imagebox-desc">
+            <p>
+              Delivery
+            </p>
+            <p *ngIf = "delivery">
+              Haz un pedido y recibelo en el menor tiempo posible !!!
+            </p>
+          </span>
+        </div>
+      </div>
+
+      <div class="col-sm-4 opcion"  (mouseover) = "Mostrar(3)" (mouseout) = "NoMostrar(3)">
+        <div class = "imagebox">
+          <img src="assets/images/productos.jpg" class = "category-banner img-responsive">
+          <span class="imagebox-desc">
+            <p>
+              Productos
+            </p>
+            <p *ngIf = "productos">
+              Conoce nuestros productos !!!
+            </p>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

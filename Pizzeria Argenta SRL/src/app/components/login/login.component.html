@@ -1,21 +1,22 @@
-<div class="alert alert-warning" role="alert" *ngIf = "mostrarMensaje">
-  No se ha encontrado un usuario con los datos ingresados.
-</div>
-
-<div class="alert alert-danger" role="alert" *ngIf = "mostrarError">
-  <strong>ERROR!</strong> Ocurrio un problema en el servidor, vuelva a intentarlo.
-</div>
-
-<div class="alert alert-info" *ngIf = "mostrarInfo">
-  <strong>INFORMACION: </strong>{{mensaje}}
-</div>
-
-<div class="alert alert-info" *ngIf = "cargando">
-  <strong>Cargando: </strong>Espere un momento...
-</div>
-
 <div class="container-fluid center_div">
-      <div class="panel panel-primary">
+
+      <div class="alert alert-warning" role="alert" *ngIf = "mostrarMensaje">
+        No se ha encontrado un usuario con los datos ingresados.
+      </div>
+
+      <div class="alert alert-danger" role="alert" *ngIf = "mostrarError">
+        <strong>ERROR!</strong> Ocurrio un problema en el servidor, vuelva a intentarlo.
+      </div>
+
+      <div class="alert alert-info" *ngIf = "mostrarInfo">
+        <strong>INFORMACION: </strong>{{mensaje}}
+      </div>
+
+      <div class="alert alert-info" *ngIf = "cargando">
+        <strong>Cargando: </strong>Espere un momento...
+      </div>
+
+      <div class="panel panel-primary centrar">
         <div class="panel-heading">Login</div>
         <div class="panel-body">
           <form  (ngSubmit)="enviar()" class="form-horizontal col-sm-8">

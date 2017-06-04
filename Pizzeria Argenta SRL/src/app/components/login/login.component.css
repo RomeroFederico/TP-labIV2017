@@ -1,4 +1,26 @@
-.center_div{
-    margin: 0 auto;
-    width:80% /* value of your choice which suits your alignment */
+@media screen and (max-width: 767px)
+{
+    .sidenav
+    {
+        height: auto;
+    }
+    .row.content {height: auto;}
+
+    .opciones {height: auto; margin-bottom: 20px}
+}
+
+@media screen and (min-width: 767px)
+{
+
+    .center_div{
+        margin: 0 auto;
+        width:80% /* value of your choice which suits your alignment */;
+        height: 800px;
+    }
+    .centrar {
+        position: relative;
+        top: 50%;
+        transform: translateY(-125%);
+    }
+      
 }

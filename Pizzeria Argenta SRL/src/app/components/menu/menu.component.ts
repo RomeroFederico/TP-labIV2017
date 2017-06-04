@@ -18,7 +18,7 @@ export class MenuComponent implements OnInit {
   {
     localStorage.setItem('token', null);
     window.alert('Chauuuuuu!!!');
-    this.router.navigate(['/home']);
+    this.router.navigate(['/login']);
   }
 
   Comprobar()

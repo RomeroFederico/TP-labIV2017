@@ -14,7 +14,6 @@ import { AutService } from './services/auth/aut.service';
 import { VerificarJWTService } from './services/verificar-jwt/verificar-jwt.service';
 import { JwtModule } from './jwt/jwt.module';
 
-
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'pedidos', component: PedidosComponent, canActivate: [VerificarJWTService], },
