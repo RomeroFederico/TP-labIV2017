@@ -13,9 +13,11 @@ import { WsService }  from './services/ws/ws.service';
 import { AutService } from './services/auth/aut.service';
 import { VerificarJWTService } from './services/verificar-jwt/verificar-jwt.service';
 import { JwtModule } from './jwt/jwt.module';
+import { ProductosComponent } from './components/productos/productos.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
+  { path: 'productos', component: ProductosComponent },
   { path: 'pedidos', component: PedidosComponent, canActivate: [VerificarJWTService], },
   { path: 'login', component: LoginComponent },
   { path: '',   redirectTo: '/home', pathMatch: 'full' },
@@ -29,7 +31,8 @@ const appRoutes: Routes = [
     MenuComponent,
     HomeComponent,
     PedidosComponent,
-    LoginComponent
+    LoginComponent,
+    ProductosComponent
   ],
   imports: [
     BrowserModule,

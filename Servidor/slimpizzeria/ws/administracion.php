@@ -2,6 +2,7 @@
 
 require_once "../Clases/AccesoDatos.php";
 require_once "../Clases/Usuario.php";
+require_once "../Clases/Producto.php";
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -60,6 +61,18 @@ $app->post('/login', function (Request $request, Response $response)
 
     $response = $response->withJson($resultado);
     return $response->withHeader('Content-type', 'application/json');
+});
+
+$app->get('/productos', function (Request $request, Response $response)
+{
+    $productos = Producto::TraerTodosLosProductos();
+
+    if (count($productos) < 1)
+        $productos = false;
+
+    $response = $response->withJson($productos);
+
+     return $response->withHeader('Content-type', 'application/json');
 });
 
 $app->run();

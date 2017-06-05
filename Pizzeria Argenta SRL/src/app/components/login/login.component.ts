@@ -76,7 +76,7 @@ export class LoginComponent implements OnInit {
 
     this.cargando = true;
 
-    this.ws.post(this.user).then( data => {
+    this.ws.Login(this.user).then( data => {
       console.log("Accediendo al servidor...");
       this.cargando = null;
       if (data.exito)

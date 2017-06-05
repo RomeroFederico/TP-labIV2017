@@ -17,15 +17,19 @@ export class WsService {
 
   }
 
-  /**
-  * Metodo HTTP nativo
-  * @param user 
-  */
-  post(user: Object)
+  Login(user: Object)
   {
     var body =  user;
 
     return this.http.post(this.url + 'login', body)
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  ObtenerProductos()
+  {
+    return this.http.get(this.url + 'productos')
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
