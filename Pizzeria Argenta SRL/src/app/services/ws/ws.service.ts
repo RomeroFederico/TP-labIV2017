@@ -26,10 +26,26 @@ export class WsService {
     .then( this.extractData )
     .catch( this.handleError );
   }
+  
+  getlatlng(address = 'Av Bartolomé Mitre 750,Avellaneda,Buenos Aires, Argentina'){
+
+    return this.http.get('https://maps.googleapis.com/maps/api/geocode/json?address=' + address)
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
 
   ObtenerProductos()
   {
     return this.http.get(this.url + 'productos')
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  ObtenerLocales()
+  {
+    return this.http.get(this.url + 'locales')
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );

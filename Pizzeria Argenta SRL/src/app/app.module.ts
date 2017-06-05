@@ -14,10 +14,12 @@ import { AutService } from './services/auth/aut.service';
 import { VerificarJWTService } from './services/verificar-jwt/verificar-jwt.service';
 import { JwtModule } from './jwt/jwt.module';
 import { ProductosComponent } from './components/productos/productos.component';
+import { LocalesComponent } from './components/locales/locales.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'productos', component: ProductosComponent },
+  { path: 'locales', component: LocalesComponent },
   { path: 'pedidos', component: PedidosComponent, canActivate: [VerificarJWTService], },
   { path: 'login', component: LoginComponent },
   { path: '',   redirectTo: '/home', pathMatch: 'full' },
@@ -32,7 +34,8 @@ const appRoutes: Routes = [
     HomeComponent,
     PedidosComponent,
     LoginComponent,
-    ProductosComponent
+    ProductosComponent,
+    LocalesComponent
   ],
   imports: [
     BrowserModule,

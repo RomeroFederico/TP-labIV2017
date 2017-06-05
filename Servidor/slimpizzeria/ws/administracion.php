@@ -3,6 +3,7 @@
 require_once "../Clases/AccesoDatos.php";
 require_once "../Clases/Usuario.php";
 require_once "../Clases/Producto.php";
+require_once "../Clases/Local.php";
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -71,6 +72,18 @@ $app->get('/productos', function (Request $request, Response $response)
         $productos = false;
 
     $response = $response->withJson($productos);
+
+     return $response->withHeader('Content-type', 'application/json');
+});
+
+$app->get('/locales', function (Request $request, Response $response)
+{
+    $locales = Local::TraerTodosLosLocales();
+
+    if (count($locales) < 1)
+        $locales = false;
+
+    $response = $response->withJson($locales);
 
      return $response->withHeader('Content-type', 'application/json');
 });

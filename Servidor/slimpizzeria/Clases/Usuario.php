@@ -13,6 +13,8 @@
         public $provincia;
         public $pais;
         public $img;
+        public $estado;
+        public $telefono;
 
         public function __construct($id = NULL)
         {
@@ -31,6 +33,8 @@
                 $this->provincia = $usuario->provincia;
                 $this->pais = $usuario->pais;
                 $this->img = $usuario->img;
+                $this->estado = $usuario->estado;
+                $this->telefono = $usuario->telefono;
             }
         }
 
