@@ -59,6 +59,9 @@ export class LocalesComponent implements OnInit {
   distancia : string = null;
   duracion : string = null;
 
+  directionsService;
+  directionsDisplay;
+
   @ViewChild('map') mapElement: ElementRef;
 
   map: any;
@@ -135,6 +138,9 @@ export class LocalesComponent implements OnInit {
         this.marcadorUsuario = new google.maps.Marker({position: latlng, animation: google.maps.Animation.DROP, icon : "assets/ico/pinUser.ico" , title: "Usuario"});
         this.marcadorUsuario.setMap(this.map);
         this.ObtenerDireccion();
+
+        if (this.local != null)
+          this.DibujarRuta(this.local.marcador.position, this.marcadorUsuario.position);
       }, 
       (error) => { console.log(error); }, 
       {
@@ -232,6 +238,16 @@ export class LocalesComponent implements OnInit {
     }
 
     this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+
+        var directionsService = new google.maps.DirectionsService;
+    var directionsDisplay = new google.maps.DirectionsRenderer({
+      map: this.map
+    })
+
+    this.directionsService = new google.maps.DirectionsService;
+    this.directionsDisplay = new google.maps.DirectionsRenderer({
+      map: this.map
+    })
   }
 
   MarcarLocal(local : Local)
@@ -246,7 +262,10 @@ export class LocalesComponent implements OnInit {
       this.local = local;
 
       if (this.locacionUsuario != null)
+      {
         this.ObtenerDistanciaYTiempo(this.local.direccionCompleta, this.locacionUsuario);
+        this.DibujarRuta(this.local.marcador.position, this.marcadorUsuario.position);
+      }
     }
 
     var infoWindow = new google.maps.InfoWindow({
@@ -276,7 +295,10 @@ export class LocalesComponent implements OnInit {
       this.local = local;
 
       if (this.locacionUsuario != null)
+      {
         this.ObtenerDistanciaYTiempo(this.local.direccionCompleta, this.locacionUsuario);
+        this.DibujarRuta(this.local.marcador.position, this.marcadorUsuario.position);
+      }
     });
   }
 
@@ -303,6 +325,23 @@ export class LocalesComponent implements OnInit {
       this.duracion = data.rows[0].elements[0].duration;
     })
     .catch((error) => { console.log(error); });
+  }
+
+  DibujarRuta(marcador1, marcador2)
+  {
+    console.log("Dibujo la ruta");
+    this.directionsService.route({
+      origin: marcador1,
+      destination: marcador2,
+      travelMode: google.maps.TravelMode.DRIVING
+    }, (response, status) => {
+      if (status == google.maps.DirectionsStatus.OK) {
+        console.log(response);
+        this.directionsDisplay.setDirections(response);
+      } else {
+        window.alert('Directions request failed due to ' + status);
+      }
+    });
   }
 
   cambiar(func)
