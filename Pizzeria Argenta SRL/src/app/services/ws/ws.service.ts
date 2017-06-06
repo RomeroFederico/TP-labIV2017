@@ -35,6 +35,24 @@ export class WsService {
     .catch( this.handleError );
   }
 
+  getDireccion(lat, lng)
+  {
+    return this.http.get('https://maps.googleapis.com/maps/api/geocode/json?latlng=' + lat + ',' + lng)
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  getDistancia(direccion1 : string, direccion2 : string){
+
+    var re = / /gi; 
+
+    return this.http.get('https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=' + direccion1.replace(re, '+') + '&destinations=' + direccion2.replace(re, '+'))
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
   ObtenerProductos()
   {
     return this.http.get(this.url + 'productos')

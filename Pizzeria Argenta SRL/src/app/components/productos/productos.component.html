@@ -27,7 +27,7 @@
           <div class="thumbnail">
             <div class='product-holder'>
               <img [src]="'assets/images/productos/' + producto.img" class="img-responsive" style="width:100%" alt="Image">
-              <img *ngIf = "ComprobarPromo(producto.promocion)" src="assets/images/promo.png" width="100px" height="100px" class = "plus-image pulse animated infinite">
+              <img *ngIf = "ComprobarPromo(producto.promocion)" title = "Dia de Promocion" src="assets/images/promo.png" width="100px" height="100px" class = "plus-image pulse animated infinite">
             </div>
             <div class="caption">
               <div style="height:75px;">
