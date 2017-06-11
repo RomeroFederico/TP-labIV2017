@@ -78,7 +78,32 @@ $app->get('/productos', function (Request $request, Response $response)
 
 $app->get('/locales', function (Request $request, Response $response)
 {
-    $locales = Local::TraerTodosLosLocales();
+    $locales = Local::TraerTodosLosLocalesConSuGerente();
+
+    if (count($locales) < 1)
+        $locales = false;
+
+    $response = $response->withJson($locales);
+
+     return $response->withHeader('Content-type', 'application/json');
+});
+
+$app->get('/productos/local/{idLocal}', function (Request $request, Response $response)
+{
+    $idLocal = $request->getAttribute('idLocal');
+    $productos = Producto::TraerTodosLosProductosLocal($idLocal);
+
+    if (count($productos) < 1)
+        $productos = false;
+
+    $response = $response->withJson($productos);
+
+     return $response->withHeader('Content-type', 'application/json');
+});
+
+$app->get('/productos/local', function (Request $request, Response $response)
+{
+    $locales = Local::TraerTodosLosLocalesPorProductos();
 
     if (count($locales) < 1)
         $locales = false;

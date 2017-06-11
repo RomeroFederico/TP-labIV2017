@@ -6,9 +6,23 @@
         </blockquote>
         <hr>
         <div class="row content principal">
+            <div class="alert alert-info" role="alert" *ngIf = "mostrarCargando">
+                <i class="fa fa-cog fa-spin fa-fw fa-lg"></i> Obteniendo posicion del usuario
+            </div>
+            <div class="alert alert-danger" role="alert" *ngIf = "mostrarErrorGeoposicon">
+                <i class="fa fa-street-view fa-fw fa-lg"></i>  Ocurrio un problema al cargar la posicion del usuario.
+                <button type="button" class="btn btn-danger btn-xs" (click) = "ReintentarMarcarUsuario()">Reintentar</button>
+            </div>
             <div class="col-sm-6 slider">
                 <div class="centrar">
                     <div #map id="map"></div>
+                </div>
+                <button type="button" class="btn btn-danger btn-lg btn-block" style = "margin-top: 20px;">Cambiar a direccion registrada</button>
+            </div>
+            <div class = "col-sm-6 cargando parent" *ngIf = "local == null">
+                <div class = "child">
+                    <i class="fa fa-cog fa-spin fa-5x fa-fw" style = "color: white"></i><br>
+                    <h2 style = "color: white">Cargando Locales</h2>
                 </div>
             </div>
             <div class="col-sm-6" *ngIf = "local != null">
@@ -101,9 +115,9 @@
                                         <img class="media-object" [src] = "'assets/images/' + 'default.png'" style = "  display: block; max-width:100px; max-height:100px; width: auto; height: auto;">
                                     </div>
                                     <div class="media-body">
-                                        <h4 class="media-heading">APELLIDO, NOMBRE</h4>
-                                        <p><span class="glyphicon glyphicon-phone-alt"></span> Mail : <small>EMAIL</small></p>
-                                        <p><span class="glyphicon glyphicon-envelope"></span> Tel. : <small>TELEFONO</small></p>
+                                        <h4 class="media-heading">{{local.gerente.apellido}}, {{local.gerente.nombre}}</h4>
+                                        <p><span class="glyphicon glyphicon-phone-alt"></span> Mail : <small>{{local.gerente.email}}</small></p>
+                                        <p><span class="glyphicon glyphicon-envelope"></span> Tel. : <small>{{local.gerente.telefonoUsuario}}</small></p>
                                     </div>
                                     </div>
                                 </div>
@@ -111,6 +125,37 @@
                     </div>
                 </div>
                 </div>
+            </div>
+        </div>
+        <div class="row content principal" *ngIf = "local != null && local.productos != null">
+            <blockquote style = "color: white">
+                <h3 style = "color : white">Productos</h3>
+            </blockquote>
+            <hr>
+            <div class="col-sm-2" *ngFor = "let producto of local.productos">
+            <div [ngClass] ="producto.tipo == 'Pizza'? 'panel panel-danger' : (producto.tipo == 'Empanadas'? 'panel panel-warning':'panel panel-info')">
+                <div class="panel-heading">{{producto.tipo}}</div>
+                <div class="panel-body">
+                <div class="thumbnail">
+                    <div class='product-holder'>
+                    <img [src]="'assets/images/productos/' + producto.img" class="img-responsive" style="width:100%" alt="Image">
+                    <img *ngIf = "ComprobarPromo(producto.promocion)" title = "Dia de Promocion" src="assets/images/promo.png" class = "plus-image pulse animated infinite">
+                    </div>
+                    <div class="caption">
+                    <div style="height:75px;">
+                    <h6>{{producto.descripcion}}</h6>
+                    </div>
+                    <p class="text-right">Precio: <small>{{producto.precio}}$</small></p>
+                    </div>
+                </div>
+                <button *ngIf = "Comprobar()" type="button" [ngClass] ="'btn btn-lg btn-block ' + (producto.tipo == 'Pizza'? 'btn-danger' : (producto.tipo == 'Empanadas'? 'btn-warning':'btn-info'))">
+                    <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Pedir
+                </button>
+                <button *ngIf = "!Comprobar()" type="button" [ngClass] ="'btn btn-lg btn-block responsive-width ' + (producto.tipo == 'Pizza'? 'btn-danger' : (producto.tipo == 'Empanadas'? 'btn-warning':'btn-info'))">
+                    <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span><small> Necesitas estar logueado para pedir</small>
+                </button>
+                </div>
+            </div>
             </div>
         </div>
     </div>

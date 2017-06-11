@@ -69,6 +69,22 @@ export class WsService {
     .catch( this.handleError );
   }
 
+  ObtenerProductosDelLocal(idLocal)
+  {
+    return this.http.get(this.url + 'productos/local/' + idLocal)
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  ObtenerLocalesDeProductos()
+  {
+    return this.http.get(this.url + 'productos/local')
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
   private extractData(res: Response) {
     let body = res.json();    
     

@@ -18,7 +18,13 @@
       <button type="button" class="btn btn-info" (click) = "Mostrar('Combo')">Combos</button>
     </div>
   </div>
-<div class="container">    
+<div class="container">
+  <div class = "col-sm-12 cargando parent" *ngIf = "productosBase == null">
+                <div class = "child">
+                    <i class="fa fa-cog fa-spin fa-5x fa-fw" style = "color: white"></i><br>
+                    <h2 style = "color: white">Cargando Productos</h2>
+                </div>
+  </div> 
   <div class="row">
     <div class="col-sm-3" *ngFor = "let producto of productos">
       <div [ngClass] ="producto.tipo == 'Pizza'? 'panel panel-danger' : (producto.tipo == 'Empanadas'? 'panel panel-warning':'panel panel-info')">
@@ -33,11 +39,13 @@
               <div style="height:75px;">
               <h4>{{producto.descripcion}}</h4>
               </div>
+              <div *ngIf = "producto.locales != null" >
               <p><span class="glyphicon glyphicon-home"></span> Locales :</p> 
               <div style="height:100px;">
               <p *ngFor = "let local of producto.locales" style = "padding: 0px; margin: 0px">
-                <small>{{local}}</small>
+                <small>{{local.direccion}}, {{local.localidad}}.</small>
               </p>
+              </div>
               </div>
               <p class="text-right">Precio: <small>{{producto.precio}}$</small></p>
             </div>

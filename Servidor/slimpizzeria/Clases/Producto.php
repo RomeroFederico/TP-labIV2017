@@ -55,6 +55,26 @@
 
             return $productos;
         }
+
+        public static function TraerTodosLosProductosLocal($idLocal)
+        {
+            $productos = array();
+
+            $objetoAccesoDatos = AccesoDatos::dameUnObjetoAcceso();
+
+            $consulta = $objetoAccesoDatos->RetornarConsulta("SELECT * FROM productos, productos_local WHERE productos.idProducto = productos_local.idProducto AND productos_local.idLocal = :IdLocal");
+
+            $consulta->bindValue(':IdLocal', $idLocal, PDO::PARAM_INT);
+
+            $consulta->execute();
+
+            $consulta->setFetchMode(PDO::FETCH_ASSOC|PDO::FETCH_PROPS_LATE);
+
+            foreach ($consulta as $producto)
+                array_push($productos, $producto);
+
+            return $productos;
+        }
     }
 
 ?>

@@ -4,7 +4,7 @@ import { AutService } from '../../services/auth/aut.service';
 
 export class Producto
 {
-  constructor(public descripcion: string = "Grande de Muzzarella", public promocion : string = "", public tipo : string = "Pizza", public precio : number = 0, public img : string = "default.jpg", public locales : Array<string> = ["Callao...", "Magliaccio..."])
+  constructor(public idProducto : number = 1, public descripcion: string = "Grande de Muzzarella", public promocion : string = "", public tipo : string = "Pizza", public precio : number = 0, public img : string = "default.jpg", public locales : Array<any> = new Array<any>())
   {
       
   }
@@ -40,14 +40,25 @@ export class ProductosComponent implements OnInit {
       this.Mostrar('Todos');
     }
     )
-    .catch((error) => { console.log(error)} )
+    .catch((error) => { console.log(error)} );
   }
 
   CargarLocalesPorProductos()
   {
-    this.productosBase.forEach(producto => {
-      producto.locales = ["Magliaccion 33XX, Glew.", "San Martin 78XX, Longchamps", "Mi Localidad 71XX, Adrogue"];
-    });
+    // this.productosBase.forEach(producto => {
+    //   producto.locales = ["Magliaccion 33XX, Glew.", "San Martin 78XX, Longchamps", "Mi Localidad 71XX, Adrogue"];
+    // });
+    this.ws.ObtenerLocalesDeProductos().then((data) => 
+    {
+      this.productosBase.forEach(producto => {
+        producto.locales = new Array<any>();
+        data.forEach(local => {
+          if (local.idProducto == producto.idProducto)
+            producto.locales.push(local);
+        });
+      });
+    })
+    .catch((error) => { console.log(error)} );
   }
 
   Mostrar(opcion)

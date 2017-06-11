@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { WsService } from '../../services/ws/ws.service';
+import { AutService } from '../../services/auth/aut.service';
 
 declare var google;
 
@@ -19,9 +20,41 @@ export class Local
                public telefono : string = "",
                public lat : number = 0,
                public lng : number = 0,
-               public marcador : any = null)
+               public marcador : any = null,
+               public gerente : Gerente = null,
+               public productos : Array<Producto> = null)
   {
 
+  }
+}
+
+export class Gerente
+{
+  constructor (public idUsuario : number = 0,
+               public nombre : string = "", 
+               public apellido : string = "",
+               public sexo : string = "", 
+               public email : string = "", 
+               public telefonoUsuario : string = "",
+               public direccionUsuario : string = "", 
+               public localidadUsuario : string = "", 
+               public provinciaUsuario : string = "", 
+               public paisUsuario : string = "", 
+               public usuarioImg : string = "")
+  {
+
+  }
+}
+
+export class Producto
+{
+  constructor(public descripcion: string = "Grande de Muzzarella",
+              public promocion : string = "",
+              public tipo : string = "Pizza",
+              public precio : number = 0,
+              public img : string = "default.jpg")
+  {
+      
   }
 }
 
@@ -32,6 +65,8 @@ export class Local
 })
 export class LocalesComponent implements OnInit {
 
+  dias: string[] = ["Domingo", "Lunes", "Martes", "Miercoles", "Juevez", "Viernes", "Sabado"];
+
   num = 1;
   num2 = 1;
   item1 = "item";
@@ -41,14 +76,6 @@ export class LocalesComponent implements OnInit {
   active1 = "";
   active2 = "";
   active3 = "";
-
-  // lat: number = 51.678418;
-  // lng: number = 7.809007;
-
-  // marcador : any;
-  // marcador2 : any;
-  // position : any;
-  // position2 : any;
 
   locales : Array<Local>;
   local : Local = null;
@@ -62,11 +89,14 @@ export class LocalesComponent implements OnInit {
   directionsService;
   directionsDisplay;
 
+  mostrarErrorGeoposicon : Boolean = null;
+  mostrarCargando : Boolean = true;
+
   @ViewChild('map') mapElement: ElementRef;
 
   map: any;
 
-  constructor(public ws : WsService)
+  constructor(public ws : WsService, public autService : AutService)
   {
     this.CargarLocales();
   }
@@ -79,59 +109,37 @@ export class LocalesComponent implements OnInit {
     this.MarcarUsuario();
   }
 
-  // loadMap()
-  // {
-  //   let latLng = new google.maps.LatLng(this.lat, this.lng);
+  /**
+  * Cargo el mapa y lo muestro. Tambien inicio los servicios para dibujar la ruta.
+  */
+  CargarMapa()
+  {
+    let latLng = new google.maps.LatLng(-34.6623101, -58.36470509999999);
  
-  //   let mapOptions = {
-  //     center: this.position,
-  //     zoom: 9,
-  //     minZoom: 9,
-  //     mapTypeId: google.maps.MapTypeId.ROADMAP
-  //   }
- 
-  //   this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
+    let mapOptions = {
+      center: latLng,
+      zoom: 11,
+      minZoom: 11,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    }
 
-  //   console.log(this.lat, this.lng);
+    this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
 
-  //   var options = {
-  //     enableHighAccuracy: true,
-  //     timeout: 5000,
-  //     maximumAge: 0
-  //   };
+    this.directionsService = new google.maps.DirectionsService;
+    this.directionsDisplay = new google.maps.DirectionsRenderer({
+      map: this.map
+    })
+  }
 
-  //   var map = this.map;
-
-  //   function MarcarUsuario(pos)
-  //   {
-  //       var lat = pos.coords.latitude;
-  //       var lng = pos.coords.longitude;
-  //       var position = new google.maps.LatLng(lat, lng);
-  //       var marcador = new google.maps.Marker({position: position, animation: google.maps.Animation.DROP, title: "Usuario"});
-  //       marcador.setMap(map);
-
-  //       var infoWindow = new google.maps.InfoWindow({
-  //         content: 'usuario',
-  //       });
-
-  //       var marcador = marcador
-
-  //       google.maps.event.addListener(marcador, 'mouseover', function () {
-
-  //         infoWindow.open(map, marcador);
-  //       });
-  //   }
-
-  //   if(navigator.geolocation){
-  //     navigator.geolocation.getCurrentPosition(MarcarUsuario, this.error, options);
-  //   };
-  // }
-
+  /**
+  * Marco la posicion del usuario. Si ya se cargo un local, muestro su ruta.
+  */
   MarcarUsuario()
   {
     if(navigator.geolocation){
       navigator.geolocation.getCurrentPosition((position) => 
       {
+        this.mostrarCargando = null;
         var lat = position.coords.latitude;
         var lng = position.coords.longitude;
         var latlng = new google.maps.LatLng(lat, lng);
@@ -142,68 +150,76 @@ export class LocalesComponent implements OnInit {
         if (this.local != null)
           this.DibujarRuta(this.local.marcador.position, this.marcadorUsuario.position);
       }, 
-      (error) => { console.log(error); }, 
+      (error) => { this.mostrarCargando = null; this.mostrarErrorGeoposicon = true; console.log(error); }, 
       {
         enableHighAccuracy: true,
-        timeout: 5000,
+        timeout: 3000,
         maximumAge: 0
       });
     };
   }
 
-  // Marcar()
-  // {
-  //     //this.position = new google.maps.LatLng(this.lat, this.lng);
-  //     this.marcador = new google.maps.Marker({position: this.position, animation: google.maps.Animation.DROP, icon : "assets/ico/pinLocal.ico", title: "Local"});
-  //     this.marcador.setMap(this.map);
+  /**
+  * Reintenta marcar al usuario.
+  */
+  ReintentarMarcarUsuario()
+  {
+    this.mostrarErrorGeoposicon = null;
+    this.mostrarCargando = true;
+    this.MarcarUsuario();
+  }
 
-  //     console.info(this.position);
+ /**
+ * Agrega un info windows al marcador del usuario con su direccion.
+ */
+  MostrarInformacionPosicionUsuario()
+  {
+    var infoWindow = new google.maps.InfoWindow({
+      content: `<div class="media">
+                  <div class="media-body">
+                    <h7 class="media-heading">` + this.locacionUsuario + `</h4>
+                  </div>
+                </div>
+              `,
+    });
 
-  //     var infoWindow = new google.maps.InfoWindow({
-  //     //content: "Here I am!"
-  //     content: 'asdsad',
-  //     });
+    var marcador = this.marcadorUsuario;
 
-  //     var marcador = this.marcador
+    google.maps.event.addListener(marcador, 'click', () => {
+      infoWindow.open(this.map, marcador);
+    });
+  }
 
-  //     google.maps.event.addListener(marcador, 'mouseover', function () {
-
-  //       infoWindow.open(this.map, marcador);
-  //     });
-  // }
-
-  // ObtenerCordenadas()
-  // {
-  //     this.ws.getlatlng().then( data => {
-  //       var cordenadas = data.results[0].geometry.location;
-  //       this.lat = cordenadas.lat;
-  //       this.lng = cordenadas.lng;
-
-  //       this.position = new google.maps.LatLng(this.lat, this.lng);
-  //       this.position2 = new google.maps.LatLng(51.678418, 7.809007);
-
-  //       this.loadMap();
-  //       this.Marcar();
-  //     })
-  //     .catch( e => {
-  //       console.log(e);
-  //     } );
-  // }
-
-  // error(err)
-  // {
-  //   console.warn('ERROR(' + err.code + '): ' + err.message);
-  // };
-
+  /**
+  * Cargo los locales del sistema y obtengo sus cordenadas.
+  */
   CargarLocales()
   {
     this.ws.ObtenerLocales().then( data => {
       this.locales = new Array<Local>();
       data.forEach(local => {
         this.locales.push(local);
+
+        var gerente = new Gerente();
+
+        gerente.idUsuario = local.idUsuario;
+        gerente.nombre = local.nombre;
+        gerente.apellido = local.apellido;
+        gerente.sexo = local.sexo;
+        gerente.email = local.email;
+        gerente.telefonoUsuario = local.telefonoUsuario;
+        gerente.direccionUsuario = local.direccionUsuario;
+        gerente.localidadUsuario = local.localidadUsuario;
+        gerente.provinciaUsuario = local.provinciaUsuario;
+        gerente.paisUsuario = local.paisUsuario;
+        gerente.usuarioImg = local.usuarioImg;
+
+        this.locales[this.locales.length - 1].gerente = gerente;
+
         var direccionCompleta = local.direccion + " " + local.localidad + ", " + local.provincia + ", " + local.pais;
         this.locales[this.locales.length - 1].direccionCompleta = direccionCompleta;
         this.ObtenerCordenadaLocal(this.locales.length - 1, direccionCompleta);
+        this.CargarProductosDelLocal(local);
       });
     })
     .catch( error => {
@@ -211,6 +227,22 @@ export class LocalesComponent implements OnInit {
     })
   }
 
+  CargarProductosDelLocal(local : Local)
+  {
+    this.ws.ObtenerProductosDelLocal(local.idLocal).then((data) =>
+    {
+      local.productos = data;
+    })
+    .catch( error => {
+      console.log(error);
+    })
+  }
+
+  /**
+  * Obtengo las cordenadas de un local y lo marco en el mapa.
+  * @param local posicion del array donde se encuentra el local.
+  * @param direccion direccion del local.
+  */
   ObtenerCordenadaLocal(local, direccion)
   {
       this.ws.getlatlng(direccion).then( data => {
@@ -226,30 +258,10 @@ export class LocalesComponent implements OnInit {
       } );
   }
 
-  CargarMapa()
-  {
-    let latLng = new google.maps.LatLng(-34.6623101, -58.36470509999999);
- 
-    let mapOptions = {
-      center: latLng,
-      zoom: 11,
-      minZoom: 11,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    }
-
-    this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-
-        var directionsService = new google.maps.DirectionsService;
-    var directionsDisplay = new google.maps.DirectionsRenderer({
-      map: this.map
-    })
-
-    this.directionsService = new google.maps.DirectionsService;
-    this.directionsDisplay = new google.maps.DirectionsRenderer({
-      map: this.map
-    })
-  }
-
+  /**
+  * Marco el local en el mapa. Si es el primero en ser cargado, se muestra su informacion. Si cargo la posicion del usuario, muestro su ruta.
+  * @param local local a marcar.
+  */
   MarcarLocal(local : Local)
   {
     let position = new google.maps.LatLng(local.lat, local.lng);
@@ -283,17 +295,22 @@ export class LocalesComponent implements OnInit {
 
     var marcador = local.marcador
 
+    // Funcion para, al clickear un punto, se muestre el local y su ruta.
     google.maps.event.addListener(marcador, 'click', () => {
 
+      // Abro la ventana de informacion.
       infoWindow.open(this.map, marcador);
 
+      // Pongo todos los iconos de los marcadores por default.
       this.locales.forEach(l => {
         l.marcador.setIcon("assets/ico/pinLocal.ico");
       });
 
+      // Al marcador del local seleccionado lo cambio por el pin de seleccionado y luego lo asigno al local a mostrar.
       local.marcador.setIcon("assets/ico/pinLocalSeleccionado.ico");
       this.local = local;
 
+      // Si el usuario se esta mostrando, obtengo la distancia y tiempo, junto con su ruta.
       if (this.locacionUsuario != null)
       {
         this.ObtenerDistanciaYTiempo(this.local.direccionCompleta, this.locacionUsuario);
@@ -302,11 +319,16 @@ export class LocalesComponent implements OnInit {
     });
   }
 
+  /**
+  * Obtengo la direccion del usuario.
+  */
   ObtenerDireccion()
   {
     this.ws.getDireccion(this.marcadorUsuario.position.lat(), this.marcadorUsuario.position.lng())
     .then((data) => { 
       this.locacionUsuario = data.results[0].formatted_address;
+
+      this.MostrarInformacionPosicionUsuario();
 
       if (this.local != null)
         this.ObtenerDistanciaYTiempo(this.local.direccionCompleta, this.locacionUsuario);
@@ -314,6 +336,11 @@ export class LocalesComponent implements OnInit {
     .catch((error) => { console.log(error); });
   }
 
+  /**
+  * Obtengo la distancia y tiempo entre la direccion del local y la del usuario.
+  * @param dirLocal direccion del local.
+  * @param dirUsuario direccion del usuario.
+  */
   ObtenerDistanciaYTiempo(dirLocal,dirUsuario)
   {
     console.log(dirLocal);
@@ -327,12 +354,17 @@ export class LocalesComponent implements OnInit {
     .catch((error) => { console.log(error); });
   }
 
-  DibujarRuta(marcador1, marcador2)
+  /**
+  * Dibujo la ruta entre dos marcadores.
+  * @param posicion1 posicion del marcador 1.
+  * @param posicion2 posicion del marcador 2.
+  */
+  DibujarRuta(posicion1, posicion2)
   {
     console.log("Dibujo la ruta");
     this.directionsService.route({
-      origin: marcador1,
-      destination: marcador2,
+      origin: posicion1,
+      destination: posicion2,
       travelMode: google.maps.TravelMode.DRIVING
     }, (response, status) => {
       if (status == google.maps.DirectionsStatus.OK) {
@@ -343,6 +375,19 @@ export class LocalesComponent implements OnInit {
       }
     });
   }
+
+  Comprobar()
+  {
+    return this.autService.isLogued();
+  }
+
+  ComprobarPromo(diaPromo)
+  {
+    var dia : any = this.dias[new Date().getDay()]
+    return dia == diaPromo || dia == "Domingo";
+  }
+
+  //Funciones del Slider
 
   cambiar(func)
   {
@@ -419,7 +464,7 @@ export class LocalesComponent implements OnInit {
       setTimeout(() => {
              this.slider();
       },
-      500);
+      1000);
   }
 
 
