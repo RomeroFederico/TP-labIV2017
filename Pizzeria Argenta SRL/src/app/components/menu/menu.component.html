@@ -22,10 +22,21 @@
         <nav class="navbar navbar-inverse">
           <div class="container-fluid" *ngIf = "Comprobar()">
             <div class="navbar-header">
-              <a class="navbar-brand" href="#"><img src="https://avatars3.githubusercontent.com/u/17879446?v=3&s=460" class="img-circle"></a>
+              <a class="navbar-brand" href="#"><img [src] = "'assets/images/' + ObtenerUsuario().img" class="img-circle"></a>
             </div>
             <ul class="nav navbar-nav">
-                <li><a [routerLink]="[]" (click)="salir()" routerLinkActive="active">Logout</a></li>
+              <li><p class="navbar-text"><small>{{ObtenerUsuario().apellido}}, {{ObtenerUsuario().nombre}}</small></p></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li class="nav-item" title = "Panel de Control">
+                <a routerLink="/panel" routerLinkActive="active" style = "padding-right: 10px;padding-left: 10px"><i class="fa fa-home fa-lg" aria-hidden="true"></i></a>
+              </li>
+              <li class="nav-item" title = "Historial">
+                <a routerLink="/historial" routerLinkActive="active" style = "padding-right: 10px;padding-left: 10px"><i class="fa fa-shopping-cart fa-lg" aria-hidden="true"></i></a>
+              </li>
+              <li class="nav-item" title = "Logout">
+                <a [routerLink]="[]" (click)="salir()" routerLinkActive="active" style = "padding-right: 10px;padding-left: 10px"><i class="fa fa-sign-out fa-lg" aria-hidden="true"></i></a>
+              </li>
             </ul>
           </div>
           <div class="container-fluid" *ngIf = "!Comprobar()">

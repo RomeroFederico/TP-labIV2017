@@ -27,7 +27,7 @@ export class AutService {
   public getToken ()
   {
     try {
-      console.log('getToekn', this.jwtHelper.decodeToken(this._token));
+      //console.log('getToekn', this.jwtHelper.decodeToken(this._token));
       return this.jwtHelper.decodeToken(this._token);
     } catch (error) {
       return undefined;

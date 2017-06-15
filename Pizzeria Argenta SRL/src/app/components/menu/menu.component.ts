@@ -25,4 +25,9 @@ export class MenuComponent implements OnInit {
   {
     return this.autService.isLogued();
   }
+
+  ObtenerUsuario()
+  {
+    return this.autService.getToken().usuario;
+  }
 }
