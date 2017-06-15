@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { WsService } from '../../services/ws/ws.service';
 import { AutService } from '../../services/auth/aut.service';
 
@@ -58,11 +59,14 @@ export class ProductosComponent implements OnInit {
 
   locales : Array<any> = null;
 
-  dias: string[] = ["Domingo", "Lunes", "Martes", "Miercoles", "Juevez", "Viernes", "Sabado"];
+  dias: string[] = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
 
   localesCargados : boolean = null;
 
-  constructor(public ws : WsService, public autService : AutService)
+  localSeleccionado = "Seleccione un local";
+
+  constructor(public ws : WsService, public autService : AutService,
+              private router: Router)
   {
     this.CargarLocales();
     this.CargarProductos();
@@ -177,4 +181,9 @@ export class ProductosComponent implements OnInit {
     return dia == diaPromo || dia == "Domingo";
   }
 
+  HacerPedido(local, producto) {
+    console.log(local);
+    console.log(producto);
+    this.router.navigate(["/locales"], { queryParams: { idProducto: producto.idProducto, idLocal : local.idLocal }});
+  }
 }

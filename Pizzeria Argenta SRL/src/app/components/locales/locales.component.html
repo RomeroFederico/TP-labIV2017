@@ -96,11 +96,17 @@
                                 <h3 class="panel-title">Opciones</h3>
                             </div>
                             <div class="panel-body">
-                                <button type="button" class = 'btn btn-lg btn-block btn-danger'>
+                                <button *ngIf = "Comprobar()" type="button" class = 'btn btn-lg btn-block btn-danger' (click) = "ProcesarPedido()">
                                     <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Pedir
                                 </button>
-                                <button type="button" class = 'btn btn-lg btn-block btn-danger'>
+                                <button *ngIf = "Comprobar()" type="button" class = 'btn btn-lg btn-block btn-danger'>
                                     <span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span> Reservar
+                                </button>
+                                <button *ngIf = "!Comprobar()" type="button" class = 'btn btn-lg btn-block btn-danger'>
+                                    <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> <small>Necesitas estar logueado para pedir</small>
+                                </button>
+                                <button *ngIf = "!Comprobar()" type="button" class = 'btn btn-lg btn-block btn-danger'>
+                                    <span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span> <small>Necesitas estar logueado para reservar</small>
                                 </button>
                             </div>
                         </div>
@@ -133,6 +139,7 @@
             </blockquote>
             <hr>
             <div class="col-sm-2" *ngFor = "let producto of local.productos">
+            <div [ngClass] = "ProductoSeleccionado(producto)? 'animation-examples one' : ''">
             <div [ngClass] ="producto.tipo == 'Pizza'? 'panel panel-danger' : (producto.tipo == 'Empanadas'? 'panel panel-warning':'panel panel-info')">
                 <div class="panel-heading">{{producto.tipo}}</div>
                 <div class="panel-body">
@@ -148,13 +155,17 @@
                     <p class="text-right">Precio: <small>{{producto.precio}}$</small></p>
                     </div>
                 </div>
-                <button *ngIf = "Comprobar()" type="button" [ngClass] ="'btn btn-lg btn-block ' + (producto.tipo == 'Pizza'? 'btn-danger' : (producto.tipo == 'Empanadas'? 'btn-warning':'btn-info'))">
+                <button *ngIf = "Comprobar() && !ProductoSeleccionado(producto)" (click) = "Pedir(producto.idProducto)"type="button" [ngClass] ="'btn btn-lg btn-block ' + (producto.tipo == 'Pizza'? 'btn-danger' : (producto.tipo == 'Empanadas'? 'btn-warning':'btn-info'))">
                     <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Pedir
+                </button>
+                <button *ngIf = "Comprobar() && ProductoSeleccionado(producto)" (click) = "CancelarPedir(producto.idProducto)" type="button" class ="btn btn-lg btn-block btn-success">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Cancelar
                 </button>
                 <button *ngIf = "!Comprobar()" type="button" [ngClass] ="'btn btn-lg btn-block responsive-width ' + (producto.tipo == 'Pizza'? 'btn-danger' : (producto.tipo == 'Empanadas'? 'btn-warning':'btn-info'))">
                     <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span><small> Necesitas estar logueado para pedir</small>
                 </button>
                 </div>
+            </div>
             </div>
             </div>
         </div>

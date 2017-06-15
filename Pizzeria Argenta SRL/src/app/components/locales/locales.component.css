@@ -2,6 +2,10 @@
   margin-bottom : 20px;
 }
 
+.btn {
+    white-space: normal;
+}
+
 .imgLocal {
   display: block;
   max-width:100px;
@@ -36,6 +40,20 @@
 
 .responsive-width {
   font-size: smaller;
+}
+
+.animation-examples.one {
+  color: #5cb85c;
+  outline: 5px dashed #5cb85c;
+  box-shadow: 0 0 0 5px white;
+  animation: 0.5s animateBorderOne ease infinite;
+}
+
+@keyframes animateBorderOne {
+  to {
+    outline-color: white;
+    box-shadow: 0 0 0 5px #5cb85c;
+  }
 }
 
 @media screen and (max-width: 767px)

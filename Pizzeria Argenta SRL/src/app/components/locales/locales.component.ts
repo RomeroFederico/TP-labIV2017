@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Router, ActivatedRoute} from '@angular/router';
 import { WsService } from '../../services/ws/ws.service';
 import { AutService } from '../../services/auth/aut.service';
 
@@ -48,7 +49,8 @@ export class Gerente
 
 export class Producto
 {
-  constructor(public descripcion: string = "Grande de Muzzarella",
+  constructor(public idProducto : number = 0,
+              public descripcion: string = "Grande de Muzzarella",
               public promocion : string = "",
               public tipo : string = "Pizza",
               public precio : number = 0,
@@ -65,7 +67,7 @@ export class Producto
 })
 export class LocalesComponent implements OnInit {
 
-  dias: string[] = ["Domingo", "Lunes", "Martes", "Miercoles", "Juevez", "Viernes", "Sabado"];
+  dias: string[] = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
 
   num = 1;
   num2 = 1;
@@ -92,11 +94,15 @@ export class LocalesComponent implements OnInit {
   mostrarErrorGeoposicon : Boolean = null;
   mostrarCargando : Boolean = true;
 
+  seleccionProducto : Array<number> = new Array<number>();
+  seleccionLocal : number = 0;
+
   @ViewChild('map') mapElement: ElementRef;
 
   map: any;
 
-  constructor(public ws : WsService, public autService : AutService)
+  constructor(public ws : WsService, public autService : AutService,
+              private router: Router, private actRoute: ActivatedRoute)
   {
     this.CargarLocales();
   }
@@ -107,6 +113,16 @@ export class LocalesComponent implements OnInit {
     this.slider();
     this.CargarMapa();
     this.MarcarUsuario();
+
+    this.actRoute.queryParams
+      .subscribe(params => {
+        console.log(params);
+        if (params["idLocal"] && params["idProducto"])
+        {
+          this.seleccionProducto[params["idProducto"]] = params["idProducto"];
+          this.seleccionLocal = params["idLocal"];
+        }
+      });
   }
 
   /**
@@ -267,8 +283,19 @@ export class LocalesComponent implements OnInit {
     let position = new google.maps.LatLng(local.lat, local.lng);
     local.marcador = new google.maps.Marker({position: position, animation: google.maps.Animation.DROP, icon : "assets/ico/pinLocal.ico", title : "Local"});
     local.marcador.setMap(this.map);
-
+    
     if (this.local == null)
+    {
+      local.marcador.setIcon("assets/ico/pinLocalSeleccionado.ico");
+      this.local = local;
+
+      if (this.locacionUsuario != null)
+      {
+        this.ObtenerDistanciaYTiempo(this.local.direccionCompleta, this.locacionUsuario);
+        this.DibujarRuta(this.local.marcador.position, this.marcadorUsuario.position);
+      }
+    }
+    else if (this.seleccionLocal != 0 && this.seleccionLocal == local.idLocal)
     {
       local.marcador.setIcon("assets/ico/pinLocalSeleccionado.ico");
       this.local = local;
@@ -385,6 +412,51 @@ export class LocalesComponent implements OnInit {
   {
     var dia : any = this.dias[new Date().getDay()]
     return dia == diaPromo || dia == "Domingo";
+  }
+
+  ProductoSeleccionado(producto : Producto)
+  {
+    return this.seleccionProducto[producto.idProducto] != undefined;
+  }
+
+  Pedir(idProducto : number)
+  {
+    this.seleccionProducto[idProducto] = idProducto;
+  }
+
+  CancelarPedir(idProducto : number)
+  {
+    this.seleccionProducto[idProducto] = undefined;
+  }
+
+  ProcesarPedido()
+  {
+    if (this.seleccionProducto.length == 0)
+      alert("Seleccione un producto primero!!!");
+    else
+    {
+      var productoAPedir = this.seleccionProducto.filter((idProducto) =>
+      {
+        var resultado = false;
+
+        for (let producto of this.local.productos)
+          if (producto.idProducto == idProducto)
+          {
+            resultado = true;
+            break;
+          }
+
+        return resultado;
+      })
+
+      if (productoAPedir.length == 0)
+        alert("Seleccione algun producto que este disponible en el local seleccionado!!!");
+      else
+      {
+        alert("Realizando pedido...");
+        console.log(productoAPedir);
+      }
+    }
   }
 
   //Funciones del Slider
