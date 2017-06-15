@@ -16,6 +16,9 @@ import { JwtModule } from './jwt/jwt.module';
 import { ProductosComponent } from './components/productos/productos.component';
 import { LocalesComponent } from './components/locales/locales.component';
 
+import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
+import {GooglePlaceModule} from "angular2-google-place"
+
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'productos', component: ProductosComponent },
@@ -38,6 +41,8 @@ const appRoutes: Routes = [
     LocalesComponent
   ],
   imports: [
+    GooglePlaceModule,
+    MultiselectDropdownModule,
     BrowserModule,
     FormsModule,
     HttpModule,

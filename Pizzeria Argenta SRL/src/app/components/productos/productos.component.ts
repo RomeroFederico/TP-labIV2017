@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { WsService } from '../../services/ws/ws.service';
 import { AutService } from '../../services/auth/aut.service';
 
+import { IMultiSelectOption } from 'angular-2-dropdown-multiselect';
+import { IMultiSelectSettings } from 'angular-2-dropdown-multiselect';
+import { IMultiSelectTexts } from 'angular-2-dropdown-multiselect';
+
 export class Producto
 {
   constructor(public idProducto : number = 1, public descripcion: string = "Grande de Muzzarella", public promocion : string = "", public tipo : string = "Pizza", public precio : number = 0, public img : string = "default.jpg", public locales : Array<any> = new Array<any>())
@@ -17,17 +21,60 @@ export class Producto
 })
 export class ProductosComponent implements OnInit {
 
+  // Default selection
+  optionsModel: number[] = [0];
+
+  // Settings configuration
+  mySettings: IMultiSelectSettings = {
+      enableSearch: false,
+      checkedStyle: 'fontawesome',
+      buttonClasses: 'btn btn-default btn-block',
+      dynamicTitleMaxItems: 3,
+      displayAllSelectedText: true,
+      selectionLimit: 1,
+      autoUnselect: true,
+      closeOnSelect: true,
+  };
+
+  // Text configuration
+  myTexts: IMultiSelectTexts = {
+      checkAll: 'Select all',
+      uncheckAll: 'Unselect all',
+      checked: 'item selected',
+      checkedPlural: 'items selected',
+      searchPlaceholder: 'Find',
+      defaultTitle: 'Select',
+      allSelected: 'All selected',
+  };
+
+  // Labels / Parents
+  myOptions: IMultiSelectOption[] = [
+      { id: -1, name: 'Seleccionar Local', isLabel: true },
+      { id: 0, name: 'Todos los locales', parentId: -1 },
+  ];
+
   productosBase : Array<Producto>;
   productos : Array<Producto>;
 
+  locales : Array<any> = null;
+
   dias: string[] = ["Domingo", "Lunes", "Martes", "Miercoles", "Juevez", "Viernes", "Sabado"];
+
+  localesCargados : boolean = null;
 
   constructor(public ws : WsService, public autService : AutService)
   {
+    this.CargarLocales();
     this.CargarProductos();
   }
 
   ngOnInit() {
+  }
+
+  SeleccionDeLocal()
+  {
+    console.log(this.optionsModel);
+    this.FiltrarPorLocal(this.optionsModel[0]);
   }
 
   CargarProductos()
@@ -43,6 +90,21 @@ export class ProductosComponent implements OnInit {
     .catch((error) => { console.log(error)} );
   }
 
+  CargarLocales()
+  {
+    this.ws.ObtenerLocales().then( data => {
+      this.locales = data;
+
+      this.locales.forEach(local => {
+      
+        this.myOptions.push({id: local.idLocal, name: local.direccion + ", " + local.localidad, parentId: -1});
+      });
+    })
+    .catch( error => {
+      console.log(error);
+    })
+  }
+
   CargarLocalesPorProductos()
   {
     // this.productosBase.forEach(producto => {
@@ -50,6 +112,10 @@ export class ProductosComponent implements OnInit {
     // });
     this.ws.ObtenerLocalesDeProductos().then((data) => 
     {
+      this.localesCargados = true;
+
+      console.log(data);
+
       this.productosBase.forEach(producto => {
         producto.locales = new Array<any>();
         data.forEach(local => {
@@ -64,6 +130,7 @@ export class ProductosComponent implements OnInit {
   Mostrar(opcion)
   {
     this.productos = this.productosBase;
+
     if (opcion == 'Pizza')
       this.productos = this.productos.filter((item)=>{
         return item.tipo == "Pizza";
@@ -73,9 +140,30 @@ export class ProductosComponent implements OnInit {
         return item.tipo == "Empanadas";
       })
     else if (opcion == 'Combo')
-      this. productos = this.productos.filter((item)=>{
+      this.productos = this.productos.filter((item)=>{
         return item.tipo == "Combo";
     })
+  }
+
+  FiltrarPorLocal(id)
+  {
+    this.productos = this.productosBase;
+
+    if (id != 0)
+    {
+      this.productos = this.productos.filter((producto) => {
+        var resultado = false;
+
+        producto.locales.forEach((local) => {
+          if (local.idLocal == id)
+            resultado = true;
+        })
+
+        return resultado;
+      })
+
+      console.log(this.productos);
+    }
   }
 
   Comprobar()

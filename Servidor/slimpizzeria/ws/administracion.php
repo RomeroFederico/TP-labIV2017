@@ -113,4 +113,78 @@ $app->get('/productos/local', function (Request $request, Response $response)
      return $response->withHeader('Content-type', 'application/json');
 });
 
+$app->get('/usuario/email/{email}', function (Request $request, Response $response)
+{
+    $email = $request->getAttribute('email');
+    $usuarioTraido = Usuario::ComprobarEmail($email);
+
+    $resultado = new stdClass();
+    $resultado->exito = false;
+
+    if ($usuarioTraido == false)
+        $resultado->exito = true;
+    else
+        $resultado->mensaje = "El email ya se ha ingresado!!!";
+
+    $response = $response->withJson($resultado);
+
+     return $response->withHeader('Content-type', 'application/json');
+});
+
+$app->post('/registrar', function (Request $request, Response $response)
+{
+    $email = $request->getParams()['email'];
+    $usuarioTraido = Usuario::ComprobarEmail($email);
+
+    $resultado = new stdclass();
+    $resultado->exito = false;
+
+    if ($usuarioTraido == false)
+    {
+        $usuarioAlta = new stdclass();
+        $usuarioAlta->nombre =  $request->getParams()["nombre"];
+        $usuarioAlta->apellido =  $request->getParams()["apellido"];
+        $usuarioAlta->email =  $request->getParams()["email"];
+        $usuarioAlta->password =  $request->getParams()["password"];
+        $usuarioAlta->sexo =  $request->getParams()["sexo"];
+        $usuarioAlta->telefono =  $request->getParams()["telefono"];
+        $usuarioAlta->direccion =  $request->getParams()["direccion"];
+        $usuarioAlta->localidad =  $request->getParams()["localidad"];
+        $usuarioAlta->provincia =  $request->getParams()["provincia"];
+        $usuarioAlta->pais =  $request->getParams()["pais"];
+        $usuarioAlta->img =  $request->getParams()["img"];
+        $usuarioAlta->estado =  $request->getParams()["estado"];
+        $usuarioAlta->tipo =  $request->getParams()["tipo"];
+    
+        $exitoAlRegistrar = Usuario::RegistrarUsuario($usuarioAlta);
+        
+        if ($exitoAlRegistrar === false)
+            $resultado->mensaje = "Error en el alta de usuario.";
+        else
+        {
+            $resultado->exito = true;
+            $resultado->mensaje = "Usuario registrado con exito";
+            $usuarioAlta->idUsuario = $exitoAlRegistrar;
+            // $resultado->usuario = $usuarioAlta;
+
+            //JWT
+            $key = "example_key";
+            $token = array(
+                "iss" => "http://example.org",
+                "aud" => "http://example.com",
+                "iat" => 1356999524,
+                "nbf" => 1357000000,
+                "usuario" => $usuarioAlta,
+            );
+
+            $resultado->token = JWT::encode($token, $key);
+        }
+    }
+    else
+        $resultado->mensaje = "Ya se ha ingresado un usuario con el email indicado.";
+
+    $response = $response->withJson($resultado);
+    return $response->withHeader('Content-type', 'application/json');
+});
+
 $app->run();

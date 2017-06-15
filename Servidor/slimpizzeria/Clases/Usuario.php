@@ -72,6 +72,57 @@
             return $consulta->fetchObject('Usuario');
         }
 
+        public static function ComprobarEmail($email)
+        {
+    		//IMPLEMENTAR...
+            $objetoAccesoDatos = AccesoDatos::dameUnObjetoAcceso();
+
+            $consulta = $objetoAccesoDatos->RetornarConsulta("SELECT * FROM usuarios WHERE (email = :email)");
+
+            $consulta->bindValue(':email', $email, PDO::PARAM_STR);
+
+            $consulta->execute();
+
+            if ($consulta->rowCount() != 1)
+                return false;
+
+            return $consulta->fetchObject('Usuario');
+        }
+
+        public static function RegistrarUsuario($obj)
+        {
+            try
+            {
+                $objetoAccesoDatos = AccesoDatos::dameUnObjetoAcceso();
+
+                $consulta = $objetoAccesoDatos->RetornarConsulta("INSERT INTO usuarios (nombre, apellido, email, password, sexo, telefono, direccion, localidad, provincia, pais, img, estado, tipo) 
+                                                 VALUES (:Nombre, :Apellido, :Email, :Password, :Sexo, :Telefono, :Direccion, :Localidad, :Provincia, :Pais, :Img, :Estado, :Tipo)");
+
+                //$consulta->bindValue(':Id', $obj->id, PDO::PARAM_INT);
+                $consulta->bindValue(':Nombre', $obj->nombre, PDO::PARAM_STR);
+                $consulta->bindValue(':Apellido', $obj->apellido, PDO::PARAM_STR);
+                $consulta->bindValue(':Email', $obj->email, PDO::PARAM_STR);
+                $consulta->bindValue(':Password', $obj->password, PDO::PARAM_STR);
+                $consulta->bindValue(':Sexo', $obj->sexo, PDO::PARAM_STR);
+                $consulta->bindValue(':Telefono', $obj->telefono, PDO::PARAM_STR);
+                $consulta->bindValue(':Direccion', $obj->direccion, PDO::PARAM_STR);
+                $consulta->bindValue(':Localidad', $obj->localidad, PDO::PARAM_STR);
+                $consulta->bindValue(':Provincia', $obj->provincia, PDO::PARAM_STR);
+                $consulta->bindValue(':Pais', $obj->pais, PDO::PARAM_STR);
+                $consulta->bindValue(':Img', $obj->img, PDO::PARAM_STR);
+                $consulta->bindValue(':Estado', $obj->estado, PDO::PARAM_INT);
+                $consulta->bindValue(':Tipo', $obj->tipo, PDO::PARAM_STR);            
+
+                $consulta->execute();
+            }
+            catch (Exception $e) 
+            {
+                return FALSE;
+            }
+
+            return $objetoAccesoDatos->RetornarUltimoIdInsertado();
+        }
+
         public static function TraerTodosLosUsuarios()
         {
             $usuarios = array();

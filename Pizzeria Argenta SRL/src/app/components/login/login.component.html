@@ -1,7 +1,7 @@
 <div class="container-fluid center_div">
 
       <div class="alert alert-warning" role="alert" *ngIf = "mostrarMensaje">
-        No se ha encontrado un usuario con los datos ingresados.
+        {{mensajeMostrar}}
       </div>
 
       <div class="alert alert-danger" role="alert" *ngIf = "mostrarError">
@@ -16,33 +16,171 @@
         <strong>Cargando: </strong>Espere un momento...
       </div>
 
-      <div class="panel panel-primary centrar">
-        <div class="panel-heading">Login</div>
-        <div class="panel-body">
-          <form  (ngSubmit)="enviar()" class="form-horizontal col-sm-8">
-            <div class="form-group row" >
-              <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+        <div class = "row">
+          <div class = "col-sm-8 col-sm-offset-2">
+            <div class="panel panel-primary centrar" *ngIf = "!registrar">
+              <div class="panel-heading">
+                Login
+              </div>
+              <div class="panel-body">
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Email</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+                        <input class="form-control" type="email" placeholder="Email" [(ngModel)]="user.email">
+                      </div>
+                      <!--<input type="email" [(ngModel)]="user.email" class="form-control" placeholder="Email">-->
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class = "col-sm-2  col-sm-offset-2">
+                      <label>Password</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                        <input class="form-control" type="password" placeholder="Password" [(ngModel)]="user.password">
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="form-group row">
+                    <div class = "col-sm-4  col-sm-offset-2">
+                      <button type="submit" class="btn btn-success btn-block" [disabled] = "cargando" (click) = "Login()">
+                        <i class="fa fa-sign-in fa-lg"></i> 
+                        Ingresar
+                      </button>
+                    </div>
+                    <div class="col-sm-4">
+                      <button type="submit" class="btn btn-info btn-block" [disabled] = "cargando" (click) = "IrARegistro()">
+                        <i class="fa fa-plus-circle fa-lg"></i> 
+                        Registrarse
+                      </button>
+                    </div>
+                  </div>
+              </div>
+            </div>
 
-              <div class="col-sm-10">
-                <input type="email" [(ngModel)]="user.email" name='email' required
-                class="form-control" id="inputEmail3" placeholder="Email">
+            <div class="panel panel-primary centrarRegistro" *ngIf = "registrar">
+              <div class="panel-heading">
+                Registro
+              </div>
+              <div class="panel-body">
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Email</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+                        <input class="form-control" type="email" placeholder="Email" [(ngModel)]="user.email">
+                        <span class="input-group-btn">
+                          <button *ngIf = "cargandoVerificacion == null"class="btn btn-default" type="button" title="Comprobar" (click) = "VerificarEmailUsuario(user.email)"><i class="fa fa-search fa-fw"></i></button>
+                          <button *ngIf = "cargandoVerificacion != null" class="btn btn-default" type="button" title="Revisando..."><i class="fa fa-cog fa-spin fa-fw"></i></button>
+                        </span> 
+                      </div>
+                    </div>
+                    <i class="fa fa-check-circle fa-2x" title = "Disponible" *ngIf = "verificado" style="color : #5cb85c"></i>
+                    <i class="fa fa-times-circle fa-2x" title = "No disponible" *ngIf = "verificadoF" style="color : #d9534f"></i>
+                    <i class="fa fa-exclamation-circle fa-2x" title = "Error de verificacion" *ngIf = "errorVerificado" style="color : orange"></i>
+                  </div>
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2  col-sm-offset-2">
+                      <label>Password</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                        <input class="form-control" type="password" placeholder="Password" [(ngModel)]="user.password">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Apellido</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-font fa-fw"></i></span>
+                        <input class="form-control" type="text" placeholder="Apellido" [(ngModel)]="user.apellido">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Nombre</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-font fa-fw"></i></span>
+                        <input class="form-control" type="text" placeholder="Nombre" [(ngModel)]="user.nombre">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Sexo</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class = "col-sm-6">
+                      <label class="radio-inline">
+                        <input type="radio" value = "Masculino" [(ngModel)]="user.sexo" [checked] = "user.sexo == 'Masculino'"><i class="fa fa-mars fa-fw" style = "color:lightblue"></i> Masculino
+                      </label>
+                      </div>
+                      <div class = "col-sm-6">
+                      <label class="radio-inline">
+                        <input type="radio" value = "Femenino" [(ngModel)]="user.sexo" [checked] = "user.sexo == 'Femenino'"><i class="fa fa-venus fa-fw" style = "color:pink"></i> Femenino
+                      </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Direccion</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-map-marker fa-fw"></i></span>
+                        <input type="text" class = "form-control" [(ngModel)]="direccion" googleplace/>
+                        <span class="input-group-btn">
+                          <button *ngIf = "cargandoPosicion == null && errorCargandoPosicion == null" class="btn btn-default" type="button" title="Obten tu ubicacion" (click) = "ObtenerDireccionUsuario()"><i class="fa fa-street-view fa-fw"></i></button>
+                          <button *ngIf = "cargandoPosicion" class="btn btn-default" type="button" title="Cargando posicion..."><i class="fa fa-cog fa-spin fa-fw"></i></button>
+                          <button *ngIf = "errorCargandoPosicion" class="btn btn-danger" type="button" title="Error, vuelva a intentarlo" (click) = "ReintentarObtenerDireccionUsuario()"><i class="fa fa-exclamation-triangle fa-fw"></i></button>
+                        </span> 
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Telefono</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-phone fa-fw"></i></span>
+                        <input class="form-control" type="number" placeholder="Telefono" [(ngModel)]="user.telefono">
+                      </div>
+                    </div>
+                  </div>
+                  <br>
+                  <div class="form-group row">
+                    <div class = "col-sm-4  col-sm-offset-2">
+                      <button type="submit" class="btn btn-success btn-block" [disabled] = "cargando" (click) = "Registrarse()">
+                        <i class="fa fa-user-plus fa-lg"></i> 
+                        Registrarse
+                      </button>
+                    </div>
+                    <div class="col-sm-4">
+                      <button type="submit" class="btn btn-danger btn-block" [disabled] = "cargando" (click) = "CancelarRegistro()">
+                        <i class="fa fa-arrow-left fa-lg"></i> 
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
               </div>
             </div>
-            <div class="form-group row">
-              <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
-
-              <div class="col-sm-10">
-                <input type="password" [(ngModel)]="user.password" name="password" required
-                class="form-control" id="inputPassword3" placeholder="Password">
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-sm-10">
-                <button type="submit" class="btn btn-default btn-auth" [disabled] = "cargando">Ingresar</button>
-                <!--<a routerLink="/login" class="forgot-pass">Olvido el password?</a>-->
-              </div>
-            </div>
-          </form>
+          </div>
         </div>
-      </div>
 </div>

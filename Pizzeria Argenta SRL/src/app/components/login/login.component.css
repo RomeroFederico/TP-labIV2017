@@ -20,7 +20,7 @@
     .centrar {
         position: relative;
         top: 50%;
-        transform: translateY(-125%);
+        transform: translateY(50%);
     }
       
 }

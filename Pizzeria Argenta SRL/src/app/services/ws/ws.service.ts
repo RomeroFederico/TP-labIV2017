@@ -26,6 +26,24 @@ export class WsService {
     .then( this.extractData )
     .catch( this.handleError );
   }
+
+  VerificarEmail(email: string)
+  {
+    return this.http.get(this.url + 'usuario/email/' + email)
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  Registrar(user: Object)
+  {
+    var body =  user;
+
+    return this.http.post(this.url + 'registrar', body)
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
   
   getlatlng(address = 'Av Bartolomé Mitre 750,Avellaneda,Buenos Aires, Argentina'){
 

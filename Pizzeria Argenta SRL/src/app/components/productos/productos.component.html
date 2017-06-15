@@ -17,7 +17,11 @@
     <div class="btn-group" role="group">
       <button type="button" class="btn btn-info" (click) = "Mostrar('Combo')">Combos</button>
     </div>
+    <div class = "btn-group" role = "group">
+      <ss-multiselect-dropdown *ngIf = "localesCargados != null && locales != null" [options]="myOptions" [texts]="myTexts" [settings]="mySettings" [(ngModel)]="optionsModel" (ngModelChange) = "SeleccionDeLocal()"></ss-multiselect-dropdown>
+    </div>
   </div>
+
 <div class="container">
   <div class = "col-sm-12 cargando parent" *ngIf = "productosBase == null">
                 <div class = "child">
