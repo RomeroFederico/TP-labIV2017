@@ -72,8 +72,8 @@
                                 <blockquote style = "color: #d9534f">
                                     <h2>{{local.direccion}}</h2>
                                     <footer><span class="glyphicon glyphicon-flag"></span> {{local.localidad}}</footer>
-                                    <footer *ngIf = "distancia != null"><span class="glyphicon glyphicon-road"></span> Distancia {{distancia.text}}</footer>
-                                    <footer *ngIf = "duracion != null"><span class="glyphicon glyphicon-time"></span> Tiempo {{duracion.text}}</footer>
+                                    <footer *ngIf = "distancia != null"><span class="glyphicon glyphicon-road"></span> Distancia {{distancia}}</footer>
+                                    <footer *ngIf = "duracion != null"><span class="glyphicon glyphicon-time"></span> Tiempo {{duracion}}</footer>
                                 </blockquote>
                             </div>
                             <div class  = "panelInfoLocal">
@@ -152,7 +152,8 @@
                     <div style="height:75px;">
                     <h6>{{producto.descripcion}}</h6>
                     </div>
-                    <p class="text-right">Precio: <small>{{producto.precio}}$</small></p>
+                    <p class="text-right" *ngIf = "!ComprobarPromo(producto.promocion)">Precio: <small>{{producto.precio}}$</small></p>
+                    <p class="text-right" *ngIf = "ComprobarPromo(producto.promocion)">Precio: <small><s>{{producto.precio}}$</s> {{producto.precio * 0.75}}$</small></p>
                     </div>
                 </div>
                 <button *ngIf = "Comprobar() && !ProductoSeleccionado(producto)" (click) = "Pedir(producto.idProducto)"type="button" [ngClass] ="'btn btn-lg btn-block ' + (producto.tipo == 'Pizza'? 'btn-danger' : (producto.tipo == 'Empanadas'? 'btn-warning':'btn-info'))">

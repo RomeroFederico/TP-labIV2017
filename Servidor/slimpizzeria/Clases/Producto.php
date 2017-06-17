@@ -75,6 +75,32 @@
 
             return $productos;
         }
+
+        public static function TraerListadoProductos($productos)
+        {
+            $productosTraidos = array();
+
+            $consulta = "";
+
+            for ($i = 0; $i < count($productos); $i++)
+            {
+                if ($i > 0)
+                    $consulta = $consulta . " OR ";
+                $consulta = $consulta .  "productos.idProducto = " .  $productos[$i];
+            }
+
+            $objetoAccesoDatos = AccesoDatos::dameUnObjetoAcceso();
+
+            $consulta = $objetoAccesoDatos->RetornarConsulta("SELECT * FROM productos WHERE (" . $consulta . ")");
+            $consulta->execute();
+
+            $consulta->setFetchMode(PDO::FETCH_ASSOC|PDO::FETCH_PROPS_LATE);
+
+            foreach ($consulta as $producto)
+                array_push($productosTraidos, $producto);
+
+            return $productosTraidos;
+        }
     }
 
 ?>

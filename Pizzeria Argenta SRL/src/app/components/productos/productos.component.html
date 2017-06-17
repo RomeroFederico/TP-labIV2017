@@ -51,7 +51,8 @@
               </p>
               </div>
               </div>
-              <p class="text-right">Precio: <small>{{producto.precio}}$</small></p>
+              <p class="text-right" *ngIf = "!ComprobarPromo(producto.promocion)">Precio: <small>{{producto.precio}}$</small></p>
+              <p class="text-right" *ngIf = "ComprobarPromo(producto.promocion)">Precio: <small><s>{{producto.precio}}$</s> {{producto.precio * 0.75}}$</small></p>
             </div>
           </div>
           <select *ngIf = "Comprobar()" class="form-control" [(ngModel)]="localSeleccionado" (ngModelChange)="HacerPedido($event, producto)" >

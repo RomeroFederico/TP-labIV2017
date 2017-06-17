@@ -375,8 +375,8 @@ export class LocalesComponent implements OnInit {
     this.ws.getDistancia(dirLocal, dirUsuario)
     .then((data) => { 
       console.log(data);
-      this.distancia = data.rows[0].elements[0].distance;
-      this.duracion = data.rows[0].elements[0].duration;
+      this.distancia = data.rows[0].elements[0].distance.text;
+      this.duracion = data.rows[0].elements[0].duration.text;
     })
     .catch((error) => { console.log(error); });
   }
@@ -453,8 +453,7 @@ export class LocalesComponent implements OnInit {
         alert("Seleccione algun producto que este disponible en el local seleccionado!!!");
       else
       {
-        alert("Realizando pedido...");
-        console.log(productoAPedir);
+        this.router.navigate(['/pedidos'], { queryParams: { Local : this.local.idLocal, Productos : productoAPedir, Distancia : this.distancia, Tiempo : this.duracion }});
       }
     }
   }

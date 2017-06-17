@@ -187,4 +187,35 @@ $app->post('/registrar', function (Request $request, Response $response)
     return $response->withHeader('Content-type', 'application/json');
 });
 
+$app->post('/pedidos/detalle', function (Request $request, Response $response)
+{
+    $productos = $request->getParams()['productos'];
+    $idLocal = $request->getParams()['idLocal'];
+
+    //$productos = [1, 2];
+    $resultado = new stdclass();
+    $resultado->exito = false;
+
+    $localTraido = Local::TraerUnLocalPorId($idLocal);
+
+    if ($localTraido)
+    {
+        $productosTraidos = Producto::TraerListadoProductos($productos);
+
+        if ($productosTraidos)
+        {
+            $resultado->exito = true;
+            $resultado->local = $localTraido;
+            $resultado->productos = $productosTraidos;
+        }
+        else
+            $resultado->mensaje = "Ocurrio un problema al traer los datos de los productos.";
+    }
+    else
+        $resultado->mensaje = "Ocurrio un problema al traer los datos del local.";
+
+    $response = $response->withJson($resultado);
+    return $response->withHeader('Content-type', 'application/json');
+});
+
 $app->run();

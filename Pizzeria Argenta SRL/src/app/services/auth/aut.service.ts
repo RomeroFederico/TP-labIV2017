@@ -48,7 +48,9 @@ export class AutService {
   public logOut()
   {
     try {
-      localStorage.setItem('token', null);
+      //localStorage.setItem('token', null);
+      // localStorage.removeItem('token');
+      localStorage.clear();
       this.router.navigate(['/login']);
     } catch (error) {
       return false;

@@ -73,6 +73,30 @@ export class LoginComponent implements OnInit {
       this.router.navigateByUrl("/home");
   }
 
+  Rellenar(tipo : string)
+  {
+    if (tipo == "Cliente")
+    {
+      this.user.email = "a@a.com";
+      this.user.password = "123456";
+    }
+    else if (tipo == "Empleado")
+    {
+      this.user.email = "ignacio@gmail.com";
+      this.user.password = "ignacio";
+    }
+    else if (tipo == "Encargado")
+    {
+      this.user.email = "juan@juan.com";
+      this.user.password = "juan";
+    }
+    else
+    {
+      this.user.email = "admin@admin.com";
+      this.user.password = "789456123";
+    }
+  }
+
   Login()
   {
     this.mostrarError = null;
@@ -107,6 +131,7 @@ export class LoginComponent implements OnInit {
       {
         if ( data.token )
         {
+          location.reload();
           localStorage.setItem('token', data.token);
           console.log(this.aut.getToken());
           this.router.navigateByUrl("/home");
@@ -229,6 +254,7 @@ export class LoginComponent implements OnInit {
       {
         if ( data.token )
         {
+          location.reload();
           localStorage.setItem('token', data.token);
           alert("Usuario registrado con exito!!!");
           this.router.navigateByUrl("/home");
