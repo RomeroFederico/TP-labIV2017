@@ -4,6 +4,7 @@ require_once "../Clases/AccesoDatos.php";
 require_once "../Clases/Usuario.php";
 require_once "../Clases/Producto.php";
 require_once "../Clases/Local.php";
+require_once "../Clases/Pedido.php";
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -213,6 +214,45 @@ $app->post('/pedidos/detalle', function (Request $request, Response $response)
     }
     else
         $resultado->mensaje = "Ocurrio un problema al traer los datos del local.";
+
+    $response = $response->withJson($resultado);
+    return $response->withHeader('Content-type', 'application/json');
+});
+
+$app->post('/pedidos/nuevo', function (Request $request, Response $response)
+{
+    date_default_timezone_set('America/Argentina/Buenos_Aires');
+
+    $miPedido = new stdclass();
+    $miPedido->idCliente = $request->getParams()['idCliente'];
+    $miPedido->idLocal = $request->getParams()['idLocal'];
+    $miPedido->cantidad = $request->getParams()['cantidad'];
+    $miPedido->precioTotal = $request->getParams()['precioTotal'];
+    $miPedido->estado = $request->getParams()['estado'];
+    $miPedido->fechaPedido = strftime("%Y-%m-%d %H:%M:%S", time() );
+    $miPedido->productos = $request->getParams()['productos'];
+
+    $resultado = new stdclass();
+    $resultado->exito = false;
+
+    $resultadoPedido = Pedido::RegistrarPedido($miPedido);
+
+    if ($resultadoPedido)
+    {
+        $resultado->id = $resultadoPedido;
+
+        $resultadoDetallePedido = Pedido::RegistrarDetallePedido($resultado->id, $miPedido->productos);
+
+        if ($resultadoDetallePedido)
+        {
+            $resultado->exito = true;
+            $resultado->mensaje = "Pedido registrado con exito.";
+        }
+        else
+            $resultado->mensaje = "Ocurrio un problema al querer registrar los detalled del pedido.";
+    }
+    else
+        $resultado->mensaje = "Ocurrio un problema al querer registrar el pedido.";
 
     $response = $response->withJson($resultado);
     return $response->withHeader('Content-type', 'application/json');

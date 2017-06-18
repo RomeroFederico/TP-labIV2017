@@ -10,7 +10,7 @@
         </div>
         <div class= "col-sm-9">
             <div class = "container-fluid contenedorPrincipal">
-                <div class = "contenedorObjetos" style = "height: 500px;" *ngIf = "pedidoActual == null">
+                <div class = "contenedorObjetos" style = "height: 500px;" *ngIf = "pedidoActual == null && pedidoExitoso == null">
                     <div class = "col-sm-12 cargando parent" style = "height: 500px;">
                         <div class = "child">
                             <i class="fa fa-cart-arrow-down fa-5x fa-fw" style = "color: white"></i><br>
@@ -19,7 +19,7 @@
                         </div>
                     </div>
                 </div>
-                <div class = "contenedorObjetos" style = "height: 500px;" *ngIf = "pedidoActual != null && pedido == null">
+                <div class = "contenedorObjetos" style = "height: 500px;" *ngIf = "pedidoActual != null && pedido == null && pedidoExitoso == null">
                     <div class = "col-sm-12 cargando parent" style = "height: 500px;">
                         <div class = "child">
                             <i class="fa fa-cog fa-spin fa-5x fa-fw" style = "color: white"></i><br>
@@ -27,7 +27,17 @@
                         </div>
                     </div>
                 </div>
-                <div class = "contenedorObjetos" *ngIf = "pedidoActual != null && pedido != null">
+                <div class = "contenedorObjetos" style = "height: 500px;" *ngIf = "pedidoActual == null && pedido == null && pedidoExitoso != null">
+                    <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <img src = "assets/images/pizza.gif" width = "200px">
+                            <h2 style = "color: white">Su pedido esta siendo procesado...</h2>
+                            <h3 style = "color: white" *ngIf = "pedidoExitosoTiempo != null">Tiempo aprox. {{pedidoExitosoTiempo}}</h3>
+                            <h3 style = "color: white">Vea sus pedidos en proceso <a>aqui</a>, o <a>pida otro.</a></h3>
+                        </div>
+                    </div>
+                </div>
+                <div class = "contenedorObjetos" *ngIf = "pedidoActual != null && pedido != null && pedidoExitoso == null">
                     <div *ngIf = "pedidoActual != null" style = "color: white">
                         <ul class="media-list">
                             <li class="media">
@@ -77,19 +87,19 @@
                             <br>
                             <div class = "row">
                                 <div class = "col-sm-4">
-                                    <button class="btn btn-success btn-block">
+                                    <button class="btn btn-success btn-block" (click) = "ConfirmarPedido()">
                                         <i class="fa fa-credit-card-alt fa-lg"></i> 
                                         Pedir
                                     </button>
                                 </div>
                                 <div class = "col-sm-4">
-                                    <button class="btn btn-warning btn-block">
+                                    <button class="btn btn-warning btn-block" (click) = "ModificarPedido()">
                                         <i class="fa fa-pencil-square-o fa-lg"></i> 
                                         Modificar
                                     </button>
                                 </div>
                                 <div class = "col-sm-4">
-                                    <button class="btn btn-danger btn-block">
+                                    <button class="btn btn-danger btn-block" (click) = "CancelarPedido()">
                                         <i class="fa fa-times fa-lg"></i> 
                                         Cancelar
                                     </button>

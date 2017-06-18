@@ -117,7 +117,14 @@ export class LocalesComponent implements OnInit {
     this.actRoute.queryParams
       .subscribe(params => {
         console.log(params);
-        if (params["idLocal"] && params["idProducto"])
+        if (params["idLocal"] && params["Productos"])
+        {
+          this.seleccionLocal = params["idLocal"];
+          params["Productos"].forEach(producto => {
+            this.seleccionProducto[producto] = producto;
+          });
+        }
+        else if (params["idLocal"] && params["idProducto"])
         {
           this.seleccionProducto[params["idProducto"]] = params["idProducto"];
           this.seleccionLocal = params["idLocal"];

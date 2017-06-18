@@ -16,6 +16,10 @@ export class PedidosComponent implements OnInit {
 
   pedido : {local : any, productos : Array<any>, precio : number} = null;
 
+  pedidoExitoso : boolean = null;
+
+  pedidoExitosoTiempo : any = null;
+
   constructor(public ws : WsService, public autService : AutService,
               private router: Router, private actRoute: ActivatedRoute)
   {
@@ -73,6 +77,77 @@ export class PedidosComponent implements OnInit {
     });
 
     return total;
+  }
+
+  CancelarPedido()
+  {
+    if (confirm("Estas seguro de cancelar el pedido actual?"))
+    {
+      this.pedido = null;
+      this.pedidoActual = null;
+    }
+  }
+
+  ModificarPedido()
+  {
+    if (confirm("Estas seguro de querer modificar el pedido actual?"))
+    {
+      this.router.navigate(["/locales"], { queryParams: { Productos: this.ObtenerIdProductos(), idLocal : this.pedido.local.idLocal }});
+    }
+  }
+
+  ConfirmarPedido()
+  {
+    var resultado = confirm("Confirma el pedido actual\n(Precio total: "  + this.pedido.precio + "$)?");
+    if (resultado)
+      this.RegistrarPedido();
+    else
+      console.log("Volver");
+  }
+
+  RegistrarPedido()
+  {
+    this.ws.RegistrarPedido({idCliente : this.ObtenerUsuario().idUsuario,
+                             idLocal : this.pedido.local.idLocal,
+                             estado : "En Proceso",
+                             precioTotal : this.pedido.precio,
+                             cantidad : this.pedido.productos.length,
+                             productos : this.ObtenerIdProductos()}).then((data) => {
+        console.log(data);
+
+        if (data.exito)
+        {
+          this.pedidoExitosoTiempo = this.pedidoActual.tiempo;
+          this.pedidoExitoso = true;
+          this.pedidoActual = null;
+          this.pedido = null;
+          window.history.pushState('', '', '/pedidos');
+        }
+        else
+        {
+          if (confirm(data.mensaje + "\nDesea volver a pedirlo?\n(Precio total: "  + this.pedido.precio + "$)?"))
+            this.RegistrarPedido();
+        }
+    })
+    .catch((error) => { 
+      console.log(error); 
+
+      alert("Ocurrio un error inesperado en el servidor, vuelva a intentarlo mas tarde.");
+    });
+  }
+
+  ObtenerUsuario()
+  {
+    return this.autService.getToken().usuario;
+  }
+
+  ObtenerIdProductos()
+  {
+    let ids : Array<number> = new Array<number>();
+
+    this.pedido.productos.forEach((producto) => { ids.push(producto.idProducto); });
+
+    return ids;
   }
 
 }
