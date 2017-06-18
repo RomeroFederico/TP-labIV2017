@@ -28,6 +28,7 @@ a:hover {
 
 a {
     color: grey;
+    cursor: pointer;
 }
 
 .parent {
@@ -36,3 +37,10 @@ a {
   align-items: center;
   text-align: center;
 }
+
+.row-eq-height {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display:         flex;
+  }

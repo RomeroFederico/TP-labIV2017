@@ -10,6 +10,8 @@ import { AutService } from '../../services/auth/aut.service';
 })
 export class PedidosComponent implements OnInit {
 
+  seleccion : string = "Actual";
+
   dias: string[] = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
 
   pedidoActual : {productos : Array<any>, idLocal : any, distancia : any, tiempo : any} = null;
@@ -20,10 +22,13 @@ export class PedidosComponent implements OnInit {
 
   pedidoExitosoTiempo : any = null;
 
+  cargandoPedidosEnProceso : boolean= null;
+  errorPedidosEnProceso : boolean = null;
+  pedidoEnProceso : Array<any> = new Array<any>();
+
   constructor(public ws : WsService, public autService : AutService,
               private router: Router, private actRoute: ActivatedRoute)
   {
-    
   }
 
   ngOnInit()
@@ -48,9 +53,28 @@ export class PedidosComponent implements OnInit {
     });
   }
 
+  Mostrar(seleccion : string)
+  {
+    if (seleccion != this.seleccion)
+    {
+      this.seleccion = seleccion;
+
+      if (this.seleccion == 'En Proceso')
+        this.CargarPedidos(seleccion);
+    }
+  }
+
   ComprobarPromo(diaPromo)
   {
     var dia : any = this.dias[new Date().getDay()]
+    return dia == diaPromo || dia == "Domingo";
+  }
+
+  ComprobarPromoPasada(diaPromo, fechaPedido)
+  {
+    var fecha = new Date(fechaPedido);
+
+    var dia : any = this.dias[fecha.getDay()]
     return dia == diaPromo || dia == "Domingo";
   }
 
@@ -134,6 +158,61 @@ export class PedidosComponent implements OnInit {
 
       alert("Ocurrio un error inesperado en el servidor, vuelva a intentarlo mas tarde.");
     });
+  }
+
+  CargarPedidos(tipo)
+  {
+    this.cargandoPedidosEnProceso = true;
+    this.ws.TraerPedidos({idCliente : this.ObtenerUsuario().idUsuario, tipo : tipo}).then((data) => {
+
+      console.log(data);
+      this.cargandoPedidosEnProceso = null;
+      this.pedidoEnProceso = new Array<any>();
+
+      if (data.exito)
+      {
+        this.pedidoEnProceso = data.pedidos;
+
+        this.pedidoEnProceso.forEach(pedido => {
+          
+          data.detalles.forEach(producto => {
+            if (pedido.idPedido == producto.idPedido)
+            {
+              if (pedido.productos == undefined)
+                pedido.productos = new Array<any>();
+              pedido.productos.push(producto);
+            }
+          });
+
+        });
+
+        console.log(this.pedidoEnProceso);
+      }
+    })
+    .catch((error) => { this.cargandoPedidosEnProceso = null; this.errorPedidosEnProceso = true; console.log(error); });
+  }
+
+  ReintentarCargarPedidosEnProceso()
+  {
+    this.errorPedidosEnProceso = null;
+    this.CargarPedidos(this.seleccion);
+  }
+
+  TerminarPedido(pedido)
+  {
+    if (confirm("Desea marcar como recibido el pedido?"))
+      this.ws.TerminarPedido({idPedido : pedido.idPedido}).then((data) => {
+        console.log(data);
+
+        if (data.exito)
+        {
+          this.pedidoEnProceso = this.pedidoEnProceso.filter((pedidoEnProceso) => { return pedidoEnProceso.idPedido != pedido.idPedido; })
+          alert("Pedido entregado!!!");
+        }
+        else
+          alert(data.mensaje);
+      })
+      .catch((error) => { alert("Ocurrio un problema en el servidor"); console.log(error);});
   }
 
   ObtenerUsuario()

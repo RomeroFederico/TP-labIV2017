@@ -123,6 +123,26 @@ export class WsService {
     .catch( this.handleError );
   }
 
+  TerminarPedido(obj)
+  {
+    var body =  obj;
+
+    return this.http.post(this.url + 'pedidos/terminar', body)
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  TraerPedidos(obj)
+  {
+    var body =  obj;
+
+    return this.http.post(this.url + 'pedidos', body)
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
   private extractData(res: Response) {
     let body = res.json();    
     

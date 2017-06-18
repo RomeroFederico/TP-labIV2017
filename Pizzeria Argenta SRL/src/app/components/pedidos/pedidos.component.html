@@ -3,12 +3,12 @@
         <div class="col-sm-3 sidenav">
             <h4 style = "color: white">Mis Pedidos</h4>
             <ul class="nav nav-pills nav-stacked opciones">
-                <li class="active"><a>Actual</a></li>
-                <li><a>En espera</a></li>
-                <li><a>Recibidos</a></li>
+                <li (click) = "Mostrar('Actual')" [ngClass] = "seleccion == 'Actual'? 'active' : ''"><a>Actual</a></li>
+                <li (click) = "Mostrar('En Proceso')" [ngClass] = "seleccion == 'En Proceso'? 'active' : ''"><a>En Proceso</a></li>
+                <li (click) = "Mostrar('Recibidos')" [ngClass] = "seleccion == 'Recibidos'? 'active' : ''"><a>Recibidos</a></li>
             </ul>
         </div>
-        <div class= "col-sm-9">
+        <div class= "col-sm-9" *ngIf = "seleccion == 'Actual'">
             <div class = "container-fluid contenedorPrincipal">
                 <div class = "contenedorObjetos" style = "height: 500px;" *ngIf = "pedidoActual == null && pedidoExitoso == null">
                     <div class = "col-sm-12 cargando parent" style = "height: 500px;">
@@ -106,6 +106,89 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class= "col-sm-9" *ngIf = "seleccion == 'En Proceso'">
+            <div class = "container-fluid contenedorPrincipal">
+                <div class = "contenedorObjetos" style = "height: 500px;" *ngIf = "cargandoPedidosEnProceso == null && pedidoEnProceso.length == 0 && errorPedidosEnProceso == null">
+                    <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <i class="fa fa-cart-arrow-down fa-5x fa-fw" style = "color: white"></i><br>
+                            <h2 style = "color: white">No hay ningun pedido en proceso.</h2>
+                            <h3 style = "color: white">Haga un pedido en nuestro listado de <a>Productos</a> o en el listado de <a>Locales</a></h3>
+                        </div>
+                    </div>
+                </div>
+                <div class = "contenedorObjetos" style = "height: 500px;" *ngIf = "cargandoPedidosEnProceso != null">
+                    <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <i class="fa fa-cog fa-spin fa-5x fa-fw" style = "color: white"></i><br>
+                            <h2 style = "color: white">Cargando pedidos</h2>
+                        </div>
+                    </div>
+                </div>
+                <div class = "contenedorObjetos" style = "height: 500px;" *ngIf = "errorPedidosEnProceso != null">
+                    <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <i class="fa fa-exclamation-triangle fa-5x fa-fw" style = "color: white"></i><br>
+                            <h2 style = "color: white">Ocurrio un problema al cargar los pedidos...</h2>
+                            <h3 style = "color: white" (click) = "ReintentarCargarPedidosEnProceso()"><a>Reintentar</a></h3>
+                        </div>
+                    </div>
+                </div>
+                <div class = "container-fluid contenedorObjetos" *ngIf = "cargandoPedidosEnProceso == null && pedidoEnProceso.length != 0 && errorPedidosEnProceso == null">
+                    <div *ngFor = "let pedido of pedidoEnProceso" style = "border: 2px; border-color : white; border-style: solid; margin: 5px; padding: 10px; border-radius: 5px">
+                    <div class = "row" style = "color: white;">
+                    <div class = "col-sm-4">
+                        <h5><i><strong>Fecha del pedido:</strong> {{pedido.fechaPedido}}</i></h5>
+                    </div>
+                    <div class = "col-sm-4">
+                        <h5><i><strong>Cantidad:</strong> {{pedido.cantidad}}</i></h5>
+                    </div>
+                    <div class = "col-sm-4">
+                        <h5><i><strong>Precio total:</strong> {{pedido.precioTotal}}$</i></h5>
+                    </div>
+                    </div>
+                    <ul class="media-list" style = "color: white">
+                            <li class="media">
+                                <div class="media-left">
+                                    <img class="media-object" [src]="'assets/images/locales/' + pedido.img1" style = " display: block; max-width:50px; max-height:50px; width: auto; height: auto;">
+                                </div>
+                                <div class="media-body">
+                                    <blockquote>
+                                    <div style = "height : 50px; color: white">
+                                        <h6 class="media-heading">{{pedido.direccion}}</h6>
+                                        <h6>{{pedido.localidad}}</h6>
+                                        <h6><span class="glyphicon glyphicon-phone-alt"></span> Tel : {{pedido.telefono}}</h6>
+                                    </div>
+                                    </blockquote>
+                                    <div class="col-sm-4 media" *ngFor = "let producto of pedido.productos">
+                                        <div class = "media">
+                                            <div class="media-left">
+                                                <img class="media-object" [src]="'assets/images/productos/' + producto.img" style = " display: block; max-width:50px; max-height:50px; width: auto; height: auto;">
+                                            </div>
+                                            <div class="media-body">
+                                                <h6 class="media-heading"><span [ngClass] ="producto.tipo == 'Pizza'? 'label label-danger' : (producto.tipo == 'Empanadas'? 'label label-warning':'label label-info')">{{producto.tipo}}</span></h6>
+                                                <h6><i>{{producto.descripcion}}</i></h6>
+                                                <h6 *ngIf = "!ComprobarPromoPasada(producto.promocion, pedido.fechaPedido)"><strong>Precio: {{producto.precio}}$</strong></h6>
+                                                <h6 *ngIf = "ComprobarPromoPasada(producto.promocion, pedido.fechaPedido)"><strong>Precio: <s>{{producto.precio}}$</s> {{producto.precio * 0.75}}$</strong></h6>
+                                            </div>
+                                            <div class = "media-right">
+                                                <img *ngIf = "ComprobarPromoPasada(producto.promocion, pedido.fechaPedido)" title = "Dia de Promocion" src="assets/images/promo.png" width="35px" height="35px" class = "pulse animated infinite">
+                                            </div>
+                                            <hr>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                    </ul>
+                    <button class="btn btn-danger btn-block" (click) = "TerminarPedido(pedido)">
+                        <i class="fa fa-thumbs-up fa-lg fa-fw" style = "color: white"></i>
+                        Marcar como Recibido
+                    </button>
                     </div>
                 </div>
             </div>

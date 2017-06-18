@@ -98,6 +98,26 @@
             return TRUE;
         }
 
+        public static function FinalizarPedido($idPedido)
+        {
+            try
+            {
+                $objetoAccesoDatos = AccesoDatos::dameUnObjetoAcceso();
+
+                $consulta = $objetoAccesoDatos->RetornarConsulta("UPDATE pedidos SET estado = 'Recibido' WHERE (idPedido = :idPedido)");
+
+                $consulta->bindValue(':idPedido', $idPedido, PDO::PARAM_INT); 
+
+                $consulta->execute();
+            }
+            catch (Exception $e) 
+            {
+                return FALSE;
+            }
+
+            return TRUE;
+        }
+
         public static function TraerTodosLosPedidos()
         {
             $pedidos = array();
@@ -114,6 +134,55 @@
                 array_push($pedidos, $pedido);
 
             return $pedidos;
+        }
+
+        public static function TraerTodosLosPedidosConSuLocal($idUsuario, $tipo)
+        {
+            $pedidos = array();
+
+            $objetoAccesoDatos = AccesoDatos::dameUnObjetoAcceso();
+
+            $consulta = $objetoAccesoDatos->RetornarConsulta("SELECT * FROM pedidos, locales WHERE (pedidos.idCliente = :idUsuario AND pedidos.idLocal = locales.idLocal AND pedidos.estado = :tipo) ORDER BY pedidos.fechaPedido");
+
+            $consulta->bindValue(':idUsuario', $idUsuario, PDO::PARAM_INT);
+            $consulta->bindValue(':tipo', $tipo, PDO::PARAM_STR);
+
+            $consulta->execute();
+
+            $consulta->setFetchMode(PDO::FETCH_ASSOC|PDO::FETCH_PROPS_LATE);
+
+            foreach ($consulta as $pedido)
+                array_push($pedidos, $pedido);
+
+            return $pedidos;
+        }
+
+        public static function TraerTodosLosDetallesConSusProductos($ids)
+        {
+            $detalles = array();
+
+            $objetoAccesoDatos = AccesoDatos::dameUnObjetoAcceso();
+
+            $consulta = "";
+
+            for ($i = 0; $i < count($ids); $i++)
+            {
+                if ($i > 0)
+                    $consulta = $consulta . " OR ";
+                $consulta = $consulta .  "detalles_pedidos.idPedido = " .  $ids[$i];
+            }
+
+            $objetoAccesoDatos = AccesoDatos::dameUnObjetoAcceso();
+
+            $consulta = $objetoAccesoDatos->RetornarConsulta("SELECT * FROM detalles_pedidos, productos WHERE (detalles_pedidos.idProducto = productos.idProducto AND (" . $consulta . "))");
+            $consulta->execute();
+
+            $consulta->setFetchMode(PDO::FETCH_ASSOC|PDO::FETCH_PROPS_LATE);
+
+            foreach ($consulta as $detalle)
+                array_push($detalles, $detalle);
+
+            return $detalles;
         }
     }
 

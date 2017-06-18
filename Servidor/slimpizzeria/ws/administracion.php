@@ -258,4 +258,60 @@ $app->post('/pedidos/nuevo', function (Request $request, Response $response)
     return $response->withHeader('Content-type', 'application/json');
 });
 
+$app->post('/pedidos', function (Request $request, Response $response)
+{
+    $idCliente = $request->getParams()['idCliente'];
+    $tipo = $request->getParams()['tipo'];
+
+    $idCliente = 1;
+    $tipo = "En Proceso";
+
+    $pedidos = Pedido::TraerTodosLosPedidosConSuLocal($idCliente, $tipo);
+
+    $resultado = new stdclass();
+    $resultado->exito = false;
+
+    if (count($pedidos) < 1)
+        $resultado->mensaje = "No hay pedidos realizados " . $tipo . ".";
+    else
+    {
+        $pedidosId = array();
+        for ($i=0; $i < count($pedidos); $i++) { 
+            array_push($pedidosId, $pedidos[$i]["idPedido"]);
+        }
+
+        $productosTraidos = Pedido::TraerTodosLosDetallesConSusProductos($pedidosId);
+
+        if ($productosTraidos)
+        {
+            $resultado->exito = true;
+            $resultado->pedidos = $pedidos;
+            $resultado->detalles = $productosTraidos;
+        }
+        else
+            $resultado->mensaje = "Ocurrio un problema al cargar los detalles de los pedidos " . $tipo . ".";
+    }
+
+    $response = $response->withJson($resultado);
+    return $response->withHeader('Content-type', 'application/json');
+});
+
+$app->post('/pedidos/terminar', function (Request $request, Response $response)
+{
+    $idPedido = $request->getParams()['idPedido'];
+
+    $resultadoTerminar = Pedido::FinalizarPedido($idPedido);
+
+    $resultado = new stdclass();
+    $resultado->exito = false;
+
+    if (!$resultadoTerminar)
+        $resultado->mensaje = "Ocurrrio un problema al querer finalizar el pedido.";
+    else
+        $resultado->exito = true;
+
+    $response = $response->withJson($resultado);
+    return $response->withHeader('Content-type', 'application/json');
+});
+
 $app->run();
