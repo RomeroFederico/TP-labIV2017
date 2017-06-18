@@ -98,15 +98,16 @@
             return TRUE;
         }
 
-        public static function FinalizarPedido($idPedido)
+        public static function FinalizarPedido($idPedido, $fechaEntrega)
         {
             try
             {
                 $objetoAccesoDatos = AccesoDatos::dameUnObjetoAcceso();
 
-                $consulta = $objetoAccesoDatos->RetornarConsulta("UPDATE pedidos SET estado = 'Recibido' WHERE (idPedido = :idPedido)");
+                $consulta = $objetoAccesoDatos->RetornarConsulta("UPDATE pedidos SET estado = 'Recibido', fechaEntrega = :fechaEntrega WHERE (idPedido = :idPedido)");
 
                 $consulta->bindValue(':idPedido', $idPedido, PDO::PARAM_INT); 
+                $consulta->bindValue(':fechaEntrega', $fechaEntrega, PDO::PARAM_STR);
 
                 $consulta->execute();
             }

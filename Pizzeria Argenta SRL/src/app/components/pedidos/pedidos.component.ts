@@ -26,6 +26,10 @@ export class PedidosComponent implements OnInit {
   errorPedidosEnProceso : boolean = null;
   pedidoEnProceso : Array<any> = new Array<any>();
 
+  cargandoPedidosRecibidos : boolean = null;
+  errorPedidosRecibidos : boolean = null;
+  pedidosRecibidos : Array<any> = new Array<any>();
+
   constructor(public ws : WsService, public autService : AutService,
               private router: Router, private actRoute: ActivatedRoute)
   {
@@ -59,7 +63,7 @@ export class PedidosComponent implements OnInit {
     {
       this.seleccion = seleccion;
 
-      if (this.seleccion == 'En Proceso')
+      if (this.seleccion == 'En Proceso' || this.seleccion == 'Recibidos')
         this.CargarPedidos(seleccion);
     }
   }
@@ -162,34 +166,76 @@ export class PedidosComponent implements OnInit {
 
   CargarPedidos(tipo)
   {
-    this.cargandoPedidosEnProceso = true;
+    if (tipo == "En Proceso")
+      this.cargandoPedidosEnProceso = true;
+    else if (tipo == "Recibidos")
+      this.cargandoPedidosRecibidos = true;
     this.ws.TraerPedidos({idCliente : this.ObtenerUsuario().idUsuario, tipo : tipo}).then((data) => {
 
       console.log(data);
-      this.cargandoPedidosEnProceso = null;
-      this.pedidoEnProceso = new Array<any>();
 
-      if (data.exito)
+      if (tipo == "En Proceso")
       {
-        this.pedidoEnProceso = data.pedidos;
+        this.cargandoPedidosEnProceso = null;
+        this.pedidoEnProceso = new Array<any>();
 
-        this.pedidoEnProceso.forEach(pedido => {
-          
-          data.detalles.forEach(producto => {
-            if (pedido.idPedido == producto.idPedido)
-            {
-              if (pedido.productos == undefined)
-                pedido.productos = new Array<any>();
-              pedido.productos.push(producto);
-            }
+        if (data.exito)
+        {
+          this.pedidoEnProceso = data.pedidos;
+
+          this.pedidoEnProceso.forEach(pedido => {
+            
+            data.detalles.forEach(producto => {
+              if (pedido.idPedido == producto.idPedido)
+              {
+                if (pedido.productos == undefined)
+                  pedido.productos = new Array<any>();
+                pedido.productos.push(producto);
+              }
+            });
+
           });
 
-        });
+        }
+      }
+      else if (tipo == "Recibidos")
+      {
+        this.cargandoPedidosRecibidos = null;
+        this.pedidosRecibidos = new Array<any>();
 
-        console.log(this.pedidoEnProceso);
+        if (data.exito)
+        {
+          this.pedidosRecibidos = data.pedidos;
+
+          this.pedidosRecibidos.forEach(pedido => {
+            
+            data.detalles.forEach(producto => {
+              if (pedido.idPedido == producto.idPedido)
+              {
+                if (pedido.productos == undefined)
+                  pedido.productos = new Array<any>();
+                pedido.productos.push(producto);
+              }
+            });
+
+          });
+
+        }
       }
     })
-    .catch((error) => { this.cargandoPedidosEnProceso = null; this.errorPedidosEnProceso = true; console.log(error); });
+    .catch((error) => {
+      if (tipo == "En Proceso")
+      {
+        this.cargandoPedidosEnProceso = null;
+        this.errorPedidosEnProceso = true;
+      }
+      else if (tipo == "Recibidos")
+      {
+        this.cargandoPedidosRecibidos = null;
+        this.errorPedidosRecibidos = true;
+      }
+      console.log(error); 
+    });
   }
 
   ReintentarCargarPedidosEnProceso()

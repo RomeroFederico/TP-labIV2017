@@ -263,8 +263,8 @@ $app->post('/pedidos', function (Request $request, Response $response)
     $idCliente = $request->getParams()['idCliente'];
     $tipo = $request->getParams()['tipo'];
 
-    $idCliente = 1;
-    $tipo = "En Proceso";
+    if ($tipo == "Recibidos")
+        $tipo = "Recibido";
 
     $pedidos = Pedido::TraerTodosLosPedidosConSuLocal($idCliente, $tipo);
 
@@ -298,9 +298,13 @@ $app->post('/pedidos', function (Request $request, Response $response)
 
 $app->post('/pedidos/terminar', function (Request $request, Response $response)
 {
+    date_default_timezone_set('America/Argentina/Buenos_Aires');
+
     $idPedido = $request->getParams()['idPedido'];
 
-    $resultadoTerminar = Pedido::FinalizarPedido($idPedido);
+    $fechaEntrega = strftime("%Y-%m-%d %H:%M:%S", time() );
+
+    $resultadoTerminar = Pedido::FinalizarPedido($idPedido, $fechaEntrega);
 
     $resultado = new stdclass();
     $resultado->exito = false;
