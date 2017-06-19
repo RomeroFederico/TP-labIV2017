@@ -1,0 +1,313 @@
+<div class="container-fluid">
+  <div class = "container-fluid contenedorPrincipal">
+      <div class = "contenedorObjetos col-sm-8 col-sm-offset-2">
+
+        <div class = "row">
+          <div class = "col-sm-9">
+            <blockquote style = "color: white">
+              <h2>Encuesta de satisfaccion</h2>
+              <footer>Tomese un momento para completarla, se lo agradeceremos...</footer>
+            </blockquote>
+          </div>
+          <div class = "col-sm-3" style = "height: 100px;">
+            <div class = "parent" style = "height: 100px;">
+              <div>
+                <i class="fa fa-question-circle fa-5x fa-lw animated tada infinite" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <div class = "row">
+  
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 1- ¿Que le parecio nuestra pagina web? </h5>
+            <select class="form-control" [(ngModel)]="pregunta[0]">
+              <option value = "Excelente">Excelente</option>
+              <option value = "Muy Buena">Muy Buena</option>
+              <option value = "Buena">Buena</option>
+              <option value = "Regular">Regular</option>
+              <option value = "Mala">Mala</option>
+              <option value = "Horrible">Horrible</option>
+            </select>
+          </div>
+
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 2- ¿Que le parecio nuestra personal? </h5>
+            <select class="form-control" [(ngModel)]="pregunta[1]">
+              <option value = "Excelente">Excelente</option>
+              <option value = "Muy Bueno">Muy Bueno</option>
+              <option value = "Bueno">Bueno</option>
+              <option value = "Regular">Regular</option>
+              <option value = "Malo">Malo</option>
+              <option value = "Horrible">Horrible</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class = "row">
+  
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 3- ¿Que mejora desearias en nuestra pagina web? </h5>
+            <textarea class="form-control" rows="3" [(ngModel)]="pregunta[2]"></textarea>
+          </div>
+
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 4- ¿Que mejora desearias en nuestro personal? </h5>
+            <textarea class="form-control" rows="3" [(ngModel)]="pregunta[3]"></textarea> 
+          </div>
+
+        </div>
+
+        <div class = "row">
+
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 5- ¿Su pedido llego a tiempo? </h5>
+              <div class = "row" style = "margin-bottom: 0px">
+                <form>
+                <div class = "col-sm-4">
+                <label class="radio-inline"><input type="radio" value="Temprano" [(ngModel)]="pregunta[4]" [checked] = "pregunta[4] == 'Temprano'" [ngModelOptions]="{standalone: true}">Temprano</label>
+                </div>
+                <div class = "col-sm-4">
+                <label class="radio-inline"><input type="radio" value="A tiempo" [(ngModel)]="pregunta[4]" [checked] = "pregunta[4] == 'A Tiempo'" [ngModelOptions]="{standalone: true}">A Tiempo</label>
+                </div>
+                <div class = "col-sm-4">
+                <label class="radio-inline"><input type="radio" value="Tarde" [(ngModel)]="pregunta[4]" [checked] = "pregunta[4] == 'Tarde'" [ngModelOptions]="{standalone: true}">Tarde</label>
+                </div>
+                </form>
+              </div>
+          </div>
+
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 6- ¿Que productos a pedido? </h5>
+            <div class = "row" style = "margin-bottom: 0px">
+                <div class = "col-sm-4">
+                <label class="checkbox-inline"><input type="checkbox" [(ngModel)]="pizza">Pizzas</label>
+                </div>
+                <div class = "col-sm-4">
+                <label class="checkbox-inline"><input type="checkbox" [(ngModel)]="empanada">Empanadas</label>
+                </div>
+                <div class = "col-sm-4">
+                <label class="checkbox-inline"><input type="checkbox" [(ngModel)]="combo">Combos</label>
+                </div>
+              </div>
+          </div>
+
+        </div>
+
+        <div class = "row">
+
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 7- ¿Como calificaria la calidad de los productos? </h5>
+              <div class="rating">
+                <span [ngClass] = "calidad >= 5? 'estrellaMarcada' : ''" (click) = "MarcarCalidad(5)" (mouseover) = "CambiarEstrella(1)" (mouseout) = "CambiarEstrella(2)">{{star}}</span>
+                <span [ngClass] = "calidad >= 4? 'estrellaMarcada' : ''" (click) = "MarcarCalidad(4)" (mouseover) = "CambiarEstrella(1)" (mouseout) = "CambiarEstrella(2)">{{star}}</span>
+                <span [ngClass] = "calidad >= 3? 'estrellaMarcada' : ''" (click) = "MarcarCalidad(3)" (mouseover) = "CambiarEstrella(1)" (mouseout) = "CambiarEstrella(2)">{{star}}</span>
+                <span [ngClass] = "calidad >= 2? 'estrellaMarcada' : ''" (click) = "MarcarCalidad(2)" (mouseover) = "CambiarEstrella(1)" (mouseout) = "CambiarEstrella(2)">{{star}}</span>
+                <span [ngClass] = "calidad >= 1? 'estrellaMarcada' : ''" (click) = "MarcarCalidad(1)" (mouseover) = "CambiarEstrella(1)" (mouseout) = "CambiarEstrella(2)">{{star}}</span>
+              </div>
+          </div>
+
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 8- ¿Haz estado en alguno de nuestros locales? </h5>
+            <div class = "row" style = "margin-bottom: 0px">
+                <form>
+                <div class = "col-sm-4">
+                <label class="radio-inline"><input type="radio" value="Si" [(ngModel)]="pregunta[7]" [checked] = "pregunta[7] == 'Si'" [ngModelOptions]="{standalone: true}">Si</label>
+                </div>
+                <div class = "col-sm-4">
+                <label class="radio-inline"><input type="radio" value="No" [(ngModel)]="pregunta[7]" [checked] = "pregunta[7] == 'No'" [ngModelOptions]="{standalone: true}">No</label>
+                </div>
+                </form>
+            </div>
+          </div>
+
+        </div>
+
+        <div class = "row">
+  
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 9- ¿Que mejora desearias en nuestros locales? </h5>
+            <textarea class="form-control" rows="3" [(ngModel)]="pregunta[8]"></textarea>
+          </div>
+
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 10- ¿Que productos agregarias? </h5>
+            <textarea class="form-control" rows="3" [(ngModel)]="pregunta[9]"></textarea> 
+          </div>
+
+        </div>
+
+        <div class = "row">
+  
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 11- ¿Que le parecieron nuestras pizzas en general? </h5>
+            <select class="form-control" [(ngModel)]="pregunta[10]">
+              <option value = "Excelentes">Excelentes</option>
+              <option value = "Muy Buenas">Muy Buenas</option>
+              <option value = "Buenas">Buenas</option>
+              <option value = "Regulares">Regulares</option>
+              <option value = "Malas">Malas</option>
+              <option value = "Horribles">Horribles</option>
+              <option value = "No las he probado">No las he probado</option>
+            </select>
+          </div>
+
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 12- ¿Que le parecieron nuestras empanadas? </h5>
+            <select class="form-control" [(ngModel)]="pregunta[11]">
+              <option value = "Excelentes">Excelentes</option>
+              <option value = "Muy Buenas">Muy Buenas</option>
+              <option value = "Buenas">Buenas</option>
+              <option value = "Regulares">Regulares</option>
+              <option value = "Malas">Malas</option>
+              <option value = "Horrible">Horribles</option>
+              <option value = "no las he probado">No las he probado</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class = "row">
+  
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 13- ¿Que le parecieron nuestros combos en general? </h5>
+            <select class="form-control" [(ngModel)]="pregunta[12]">
+              <option value = "Excelentes">Excelentes</option>
+              <option value = "Muy Buenos">Muy Buenos</option>
+              <option value = "Buenos">Buenos</option>
+              <option value = "Regulares">Regulares</option>
+              <option value = "Malos">Malos</option>
+              <option value = "Horribles">Horribles</option>
+              <option value = "No los he probado">No los he probado</option>
+            </select>
+          </div>
+
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 14- ¿Que le parece nuestra variedad? </h5>
+            <select class="form-control" [(ngModel)]="pregunta[13]">
+              <option value = "Excelente">Excelente</option>
+              <option value = "Muy Buena">Muy Buena</option>
+              <option value = "Buena">Buena</option>
+              <option value = "Regular">Regular</option>
+              <option value = "Malas">Mala</option>
+              <option value = "Horrible">Horrible</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class = "row">
+
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 15- ¿Como conocio la pagina web? </h5>
+              <div class = "row" style = "margin-bottom: 0px">
+                <form>
+                <div class = "col-sm-4">
+                <label class="radio-inline"><input type="radio" value="De casualidad" [(ngModel)]="pregunta[14]" [checked] = "pregunta[14] == 'De casualidad'" [ngModelOptions]="{standalone: true}">De casualidad</label>
+                </div>
+                <div class = "col-sm-4">
+                <label class="radio-inline"><input type="radio" value="Publicidad" [(ngModel)]="pregunta[14]" [checked] = "pregunta[14] == 'Publicidad'" [ngModelOptions]="{standalone: true}">Publicidad</label>
+                </div>
+                <div class = "col-sm-4">
+                <label class="radio-inline"><input type="radio" value="Recomendacion" [(ngModel)]="pregunta[14]" [checked] = "pregunta[14] == 'Recomendacion'" [ngModelOptions]="{standalone: true}">Recomendacion</label>
+                </div>
+                </form>
+              </div>
+          </div>
+
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 16- ¿Cree que la publicidad esta bien? </h5>
+            <div class = "row" style = "margin-bottom: 0px">
+                <form>
+                <div class = "col-sm-4">
+                <label class="radio-inline"><input type="radio" value="Si" [(ngModel)]="pregunta[15]" [checked] = "pregunta[15] == 'Si'" [ngModelOptions]="{standalone: true}">Si</label>
+                </div>
+                <div class = "col-sm-4">
+                <label class="radio-inline"><input type="radio" value="No" [(ngModel)]="pregunta[15]" [checked] = "pregunta[15] == 'No'" [ngModelOptions]="{standalone: true}">No</label>
+                </div>
+                </form>
+            </div>
+          </div>
+
+        </div>
+
+        <div class = "row">
+
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 17- ¿Tienes un local cercano? </h5>
+            <div class = "row" style = "margin-bottom: 0px">
+                <form>
+                <div class = "col-sm-4">
+                <label class="radio-inline"><input type="radio" value="Si" [(ngModel)]="pregunta[16]" [checked] = "pregunta[16] == 'Si'" [ngModelOptions]="{standalone: true}">Si</label>
+                </div>
+                <div class = "col-sm-4">
+                <label class="radio-inline"><input type="radio" value="No" [(ngModel)]="pregunta[16]" [checked] = "pregunta[16] == 'No'" [ngModelOptions]="{standalone: true}">No</label>
+                </div>
+                </form>
+            </div>
+          </div>
+
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 28- ¿Volverias a pedir? </h5>
+            <div class = "row" style = "margin-bottom: 0px">
+                <form>
+                <div class = "col-sm-4">
+                <label class="radio-inline"><input type="radio" value="Si" [(ngModel)]="pregunta[17]" [checked] = "pregunta[17] == 'Si'" [ngModelOptions]="{standalone: true}">Si</label>
+                </div>
+                <div class = "col-sm-4">
+                <label class="radio-inline"><input type="radio" value="No" [(ngModel)]="pregunta[17]" [checked] = "pregunta[17] == 'No'" [ngModelOptions]="{standalone: true}">No</label>
+                </div>
+                </form>
+            </div>
+          </div>
+
+        </div>
+
+        <div class = "row">
+
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 19- ¿Cuantas veces has realizado un pedido? </h5>
+            <input class="form-control" type = "number" [(ngModel)]="pregunta[18]">
+          </div>
+
+          <div class = "col-sm-6">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> 20- ¿Que te parecio la encuesta? </h5>
+            <textarea class="form-control" rows="1" [(ngModel)]="pregunta[19]"></textarea>
+          </div>
+
+        </div>
+
+        <hr>
+
+        <div class = "row">
+
+          <div class = "col-sm-4">
+            <button class="btn btn-success btn-block" (click) = "TerminarPedido(pedido)">
+              <i class="fa fa-paper-plane fa-lg fa-fw" style = "color: white"></i>
+              Enviar
+            </button>
+          </div>
+
+          <div class = "col-sm-4">
+            <button class="btn btn-warning btn-block" (click) = "TerminarPedido(pedido)">
+              <i class="fa fa-eraser fa-lg fa-fw" style = "color: white"></i>
+              Resetear
+            </button>
+          </div>
+
+          <div class = "col-sm-4">
+            <button class="btn btn-danger btn-block" (click) = "TerminarPedido(pedido)">
+              <i class="fa fa-trash fa-lg fa-fw" style = "color: white"></i>
+              Cancelar
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+  </div>
+</div>

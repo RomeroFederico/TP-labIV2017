@@ -17,13 +17,15 @@ import { ProductosComponent } from './components/productos/productos.component';
 import { LocalesComponent } from './components/locales/locales.component';
 
 import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
-import {GooglePlaceModule} from "angular2-google-place"
+import {GooglePlaceModule} from "angular2-google-place";
+import { EncuestaComponent } from './components/encuesta/encuesta.component'
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'productos', component: ProductosComponent },
   { path: 'locales', component: LocalesComponent },
   { path: 'pedidos', component: PedidosComponent, canActivate: [VerificarJWTService], },
+  { path: 'encuesta', component: EncuestaComponent, canActivate: [VerificarJWTService], },
   { path: 'login', component: LoginComponent },
   { path: '',   redirectTo: '/home', pathMatch: 'full' },
   { path: '**', component: HomeComponent }
@@ -38,7 +40,8 @@ const appRoutes: Routes = [
     PedidosComponent,
     LoginComponent,
     ProductosComponent,
-    LocalesComponent
+    LocalesComponent,
+    EncuestaComponent
   ],
   imports: [
     GooglePlaceModule,
