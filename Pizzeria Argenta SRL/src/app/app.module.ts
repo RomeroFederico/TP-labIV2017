@@ -17,8 +17,9 @@ import { ProductosComponent } from './components/productos/productos.component';
 import { LocalesComponent } from './components/locales/locales.component';
 
 import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
-import {GooglePlaceModule} from "angular2-google-place";
-import { EncuestaComponent } from './components/encuesta/encuesta.component'
+import { GooglePlaceModule } from "angular2-google-place";
+import { EncuestaComponent } from './components/encuesta/encuesta.component';
+import { FileUploadModule } from 'ng2-file-upload';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -44,6 +45,7 @@ const appRoutes: Routes = [
     EncuestaComponent
   ],
   imports: [
+    FileUploadModule,
     GooglePlaceModule,
     MultiselectDropdownModule,
     BrowserModule,

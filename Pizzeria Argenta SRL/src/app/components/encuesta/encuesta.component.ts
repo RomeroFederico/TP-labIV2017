@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { CsvService } from "angular2-json2csv";
 import { WsService } from '../../services/ws/ws.service';
 
+import { FileUploader } from 'ng2-file-upload';
+
 //import jsPDF from 'jspdf';
 
 export class Encuesta
@@ -27,6 +29,9 @@ export class Encuesta
               public pregunta18 : string = "",
               public pregunta19 : string = "",
               public pregunta20 : string = "",
+              public img1 : string = "",
+              public img2 : string = "",
+              public img3 : string = ""
               )
   {
 
@@ -55,6 +60,16 @@ export class EncuestaComponent implements OnInit {
   mensajeEnviar : string = "Enviar";
   encuestaCompleta : boolean = null;
 
+  public uploader1:FileUploader = new FileUploader({url: this.ws.url + "/subir/encuesta/tmp"});
+  public uploader2:FileUploader = new FileUploader({url: this.ws.url + "/subir/encuesta/tmp"});
+  public uploader3:FileUploader = new FileUploader({url: this.ws.url + "/subir/encuesta/tmp"});
+
+  public hasBaseDropZoneOver:boolean = false;
+  public hasAnotherDropZoneOver:boolean = false;
+  img1 : string = null;
+  img2 : string = null;
+  img3 : string = null;
+
   constructor(public csv : CsvService, public ws : WsService,
               private router: Router)
   {
@@ -66,7 +81,63 @@ export class EncuestaComponent implements OnInit {
     console.log(this.pregunta);
   }
 
-  ngOnInit() {
+  ngOnInit() 
+  {
+    this.uploader1.onBeforeUploadItem = (item) =>
+    {
+      console.info("item",item);
+      item.withCredentials=false;
+    }
+    this.uploader1.onSuccessItem = (item, response) =>
+    {
+      var data = JSON.parse(response);
+
+      if (data.exito)
+      {
+        this.img1 = data.imagenSubida;
+        this.uploader1.queue.pop();
+        console.log(this.img1);
+      }
+      else
+        alert(data.mensaje);
+    }
+
+    this.uploader2.onBeforeUploadItem = (item) =>
+    {
+      console.info("item",item);
+      item.withCredentials=false;
+    }
+    this.uploader2.onSuccessItem = (item, response) =>
+    {
+      var data = JSON.parse(response);
+
+      if (data.exito)
+      {
+        this.img2 = data.imagenSubida;
+        this.uploader2.queue.pop();
+        console.log(this.img2);
+      }
+      else
+        alert(data.mensaje);
+    }
+
+    this.uploader3.onBeforeUploadItem = (item) =>
+    {
+      console.info("item",item);
+      item.withCredentials=false;
+    }
+    this.uploader3.onSuccessItem = (item, response) =>
+    {
+      var data = JSON.parse(response);
+
+      if (data.exito)
+      {
+        this.img3 = data.imagenSubida;
+        this.uploader3.queue.pop();
+      }
+      else
+        alert(data.mensaje);
+    }
   }
 
   MarcarCalidad(calidad)
@@ -157,6 +228,13 @@ export class EncuestaComponent implements OnInit {
     miEncuesta.pregunta19 = preguntas[18];
     miEncuesta.pregunta20 = preguntas[19];
 
+    if (this.img1 != null)
+      miEncuesta.img1 = this.img1;
+    if (this.img2 != null)
+      miEncuesta.img2 = this.img2;
+    if (this.img3 != null)
+      miEncuesta.img3 = this.img3;
+
     this.cargandoEncuesta = true;
     this.mensajeEnviar = "Enviando..."
 
@@ -209,6 +287,19 @@ export class EncuestaComponent implements OnInit {
     // pdf.addHTML(elementToPrint, () => {
     //     pdf.save('web.pdf');
     // });
+  }
+ 
+  public fileOverBase(e:any):void {
+    this.hasBaseDropZoneOver = e;
+  }
+ 
+  public fileOverAnother(e:any):void {
+    this.hasAnotherDropZoneOver = e;
+  }
+
+  MostrarConsola(mensaje)
+  {
+    console.log(mensaje);
   }
 
 }

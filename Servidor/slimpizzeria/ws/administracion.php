@@ -6,6 +6,7 @@ require_once "../Clases/Producto.php";
 require_once "../Clases/Local.php";
 require_once "../Clases/Pedido.php";
 require_once "../Clases/Encuesta.php";
+require_once "../Clases/ManejoDeArchivo.php";
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -347,9 +348,24 @@ $app->post('/encuesta/registrar', function (Request $request, Response $response
 
     $encuesta->fecha = strftime("%Y-%m-%d %H:%M:%S", time());
 
-    $encuesta->img1 = null;
-    $encuesta->img2 = null;
-    $encuesta->img3 = null;
+    $encuesta->img1 = $request->getParams()['img1'];
+    $encuesta->img2 = $request->getParams()['img2'];
+    $encuesta->img3 = $request->getParams()['img3'];
+
+    if ($encuesta->img1 != "")
+        Archivo::Mover("tmp/encuesta/" . $encuesta->img1, "img/encuesta/" . $encuesta->img1);
+    else
+        $encuesta->img1 = null;
+
+    if ($encuesta->img2 != "")
+        Archivo::Mover("tmp/encuesta/" . $encuesta->img2, "img/encuesta/" . $encuesta->img2);
+    else
+        $encuesta->img2 = null;
+
+    if ($encuesta->img3 != "")
+        Archivo::Mover("tmp/encuesta/" . $encuesta->img3, "img/encuesta/" . $encuesta->img3);
+    else
+        $encuesta->img3 = null;
 
     $resultadoEncuesta = Encuesta::RegistrarEncuesta($encuesta);
 
@@ -362,6 +378,22 @@ $app->post('/encuesta/registrar', function (Request $request, Response $response
         $resultado->exito = true;
 
     $response = $response->withJson($resultado);
+    return $response->withHeader('Content-type', 'application/json');
+});
+
+$app->post('/subir/encuesta/tmp', function (Request $request, Response $response)
+{
+    $archivoSubir = $_FILES["file"];
+
+    $archivo = new Archivo();
+
+    $archivo->nombreTmp = $archivoSubir["tmp_name"];
+    $archivo->nombreArchivo = $archivoSubir["name"];
+    $archivo->idUsuario = "encuesta";
+    $archivo->tipo = "encuesta";
+    $archivo->size = $archivoSubir["size"];
+
+    $response = $response->withJson(Archivo::Subir($archivo));
     return $response->withHeader('Content-type', 'application/json');
 });
 

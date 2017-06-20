@@ -281,6 +281,117 @@
 
         </div>
 
+        <div class = "row">
+
+          <div class = "col-sm-7">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> Imagen opcional 1</h5>
+            <input type="file" ng2FileSelect [uploader]="uploader1" (change) = "uploader1.queue.length != 0? uploader1.queue[0].upload() : MostrarConsola('Nada')" style = "color : white"/>
+            <!--<div *ngIf = "uploader.queue.length != 0">
+              <button type="button" class="btn btn-success btn-xs" (click)="uploader.queue[0].upload()" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
+                <span class="glyphicon glyphicon-upload"></span> Subir
+              </button>
+            </div>-->
+            <div class="progress" style="margin-bottom: 0;" *ngIf = "uploader1.queue.length != 0 || img1 != null">
+              <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" [ngStyle]="{ 'width': (uploader1.queue.length != 0? uploader1.queue[0].progress : '100') + '%' }"></div>
+            </div>
+          </div>
+
+          <div class = "col-sm-5">
+
+            <div style = "width: 150px; height: 150px; border-radius: 10px; border-style : solid; border-color: white">
+
+              <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img1 == null">
+                <div class = "child">
+                  <i class="fa fa-times fa-3x fa-fw" style = "color: #d9534f" title = "No se selecciono ningun archivo"></i><br>
+                </div>
+              </div>
+
+              <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img1 != null">
+                <div class = "child">
+                  <img [src] = "'http://localhost/slimpizzeria/ws/tmp/encuesta/' + img1" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
+                </div>
+              </div>
+
+            </div>
+          
+          </div>
+        
+        </div>
+        
+        <div class = "row">
+
+          <div class = "col-sm-7">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> Imagen opcional 2</h5>
+            <input type="file" ng2FileSelect [uploader]="uploader2" (change) = "uploader2.queue.length != 0? uploader2.queue[0].upload() : MostrarConsola('Nada')" style = "color : white"/>
+            <!--<div *ngIf = "uploader.queue.length != 0">
+              <button type="button" class="btn btn-success btn-xs" (click)="uploader.queue[0].upload()" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
+                <span class="glyphicon glyphicon-upload"></span> Subir
+              </button>
+            </div>-->
+            <div class="progress" style="margin-bottom: 0;" *ngIf = "uploader2.queue.length != 0 || img2 != null">
+              <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" [ngStyle]="{ 'width': (uploader2.queue.length != 0? uploader2.queue[0].progress : '100') + '%' }"></div>
+            </div>
+          </div>
+
+          <div class = "col-sm-5">
+
+            <div style = "width: 150px; height: 150px; border-radius: 10px; border-style : solid; border-color: white">
+
+              <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img2 == null">
+                <div class = "child">
+                  <i class="fa fa-times fa-3x fa-fw" style = "color: #d9534f" title = "No se selecciono ningun archivo"></i><br>
+                </div>
+              </div>
+
+              <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img2 != null">
+                <div class = "child">
+                  <img [src] = "'http://localhost/slimpizzeria/ws/tmp/encuesta/' + img2" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
+                </div>
+              </div>
+
+            </div>
+          
+          </div>
+        
+        </div>
+
+        <div class = "row">
+
+          <div class = "col-sm-7">
+            <h5><i class="fa fa-cube" aria-hidden="true"></i> Imagen opcional 3</h5>
+            <input type="file" ng2FileSelect [uploader]="uploader3" (change) = "uploader3.queue.length != 0? uploader3.queue[0].upload() : MostrarConsola('Nada')" style = "color : white"/>
+            <!--<div *ngIf = "uploader.queue.length != 0">
+              <button type="button" class="btn btn-success btn-xs" (click)="uploader.queue[0].upload()" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
+                <span class="glyphicon glyphicon-upload"></span> Subir
+              </button>
+            </div>-->
+            <div class="progress" style="margin-bottom: 0;" *ngIf = "uploader3.queue.length != 0 || img3 != null">
+              <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" [ngStyle]="{ 'width': (uploader3.queue.length != 0? uploader3.queue[0].progress : '100') + '%' }"></div>
+            </div>
+          </div>
+
+          <div class = "col-sm-5">
+
+            <div style = "width: 150px; height: 150px; border-radius: 10px; border-style : solid; border-color: white">
+
+              <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img3 == null">
+                <div class = "child">
+                  <i class="fa fa-times fa-3x fa-fw" style = "color: #d9534f" title = "No se selecciono ningun archivo"></i><br>
+                </div>
+              </div>
+
+              <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img3 != null">
+                <div class = "child">
+                  <img [src] = "'http://localhost/slimpizzeria/ws/tmp/encuesta/' + img3" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
+                </div>
+              </div>
+
+            </div>
+          
+          </div>
+        
+        </div>
+
         <hr>
 
         <div class = "row">
