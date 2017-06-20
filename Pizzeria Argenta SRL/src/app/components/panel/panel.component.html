@@ -1,0 +1,162 @@
+<div class="container-fluid">
+    <div class="row content">
+        <div class="col-sm-2 col-sm-offset-2 sidenav" style = "padding-top: 15px;">
+            <div class = "parent">
+            <div>
+                <img class = "img-responsive img-thumbnail" src = "assets/images/kotori.png">
+            </div>
+            </div>
+            <h4 style = "color: white">Panel de Control</h4>
+            <ul class="nav nav-pills nav-stacked opciones">
+                <li (click) = "Mostrar('Mi informacion')" [ngClass] = "seleccion == 'Mi informacion'? 'active' : ''"><a>Mi informacion</a></li>
+                <li (click) = "Mostrar('Cambiar imagen')" [ngClass] = "seleccion == 'Cambiar imagen'? 'active' : ''"><a>Cambiar imagen</a></li>
+            </ul>
+        </div>
+        <div class= "col-sm-6">
+            <div class = "container-fluid contenedorPrincipal">
+                <div class = "contenedorObjetos" style = "min-height: 500px;">
+                  
+                    <div class="panel panel-danger centrarRegistro">
+                    <div class="panel-heading">
+                        Sus Datos
+                    </div>
+                    <div class="panel-body">
+                        <div class="row" style = "margin-bottom : 20px;">
+                            <div class = "col-sm-2 col-sm-offset-2">
+                            <label>Email</label>
+                            </div>
+                            <div class="col-sm-6">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+                                <input class="form-control" type="email" placeholder="Email" [(ngModel)]="user.email" readonly> 
+                            </div>
+                            </div>
+                        </div>
+                        <div class="row" style = "margin-bottom : 20px;">
+                            <div class = "col-sm-2  col-sm-offset-2">
+                            <label>Password</label>
+                            </div>
+                            <div class="col-sm-6">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                                <input class="form-control" type="password" placeholder="Password" [(ngModel)]="user.password" readonly>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="row" style = "margin-bottom : 20px;">
+                            <div class = "col-sm-2 col-sm-offset-2">
+                            <label>Apellido</label>
+                            </div>
+                            <div class="col-sm-6">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-font fa-fw"></i></span>
+                                <input class="form-control" type="text" placeholder="Apellido" [(ngModel)]="user.apellido" [readonly] = "editar == null">
+                            </div>
+                            </div>
+                        </div>
+                        <div class="row" style = "margin-bottom : 20px;">
+                            <div class = "col-sm-2 col-sm-offset-2">
+                            <label>Nombre</label>
+                            </div>
+                            <div class="col-sm-6">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-font fa-fw"></i></span>
+                                <input class="form-control" type="text" placeholder="Nombre" [(ngModel)]="user.nombre" [readonly] = "editar == null">
+                            </div>
+                            </div>
+                        </div>
+                        <div class="row" style = "margin-bottom : 20px;" *ngIf = "editar != null">
+                            <div class = "col-sm-2 col-sm-offset-2">
+                            <label>Sexo</label>
+                            </div>
+                            <div class="col-sm-6">
+                            <div class = "col-sm-6">
+                            <label class="radio-inline">
+                                <input type="radio" value = "Masculino" [(ngModel)]="user.sexo" [checked] = "user.sexo == 'Masculino'"><i class="fa fa-mars fa-fw" style = "color:lightblue"></i> Masculino
+                            </label>
+                            </div>
+                            <div class = "col-sm-6">
+                            <label class="radio-inline">
+                                <input type="radio" value = "Femenino" [(ngModel)]="user.sexo" [checked] = "user.sexo == 'Femenino'"><i class="fa fa-venus fa-fw" style = "color:pink"></i> Femenino
+                            </label>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="row" style = "margin-bottom : 20px;" *ngIf = "editar == null">
+                            <div class = "col-sm-2 col-sm-offset-2">
+                                <label>Sexo</label>
+                            </div>
+                            <div class="col-sm-6">
+                                <label>
+                                    <i [ngClass]="user.sexo == 'Masculino'? 'fa fa-mars fa-fw' : 'fa fa-venus fa-fw'" [ngStyle] = "user.sexo == 'Masculino'? {color:'lightblue'} : {color:'pink'}"></i> {{user.sexo}}
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row" style = "margin-bottom : 20px;" *ngIf = "editar != null">
+                            <div class = "col-sm-2 col-sm-offset-2">
+                            <label>Direccion</label>
+                            </div>
+                            <div class="col-sm-6">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-map-marker fa-fw"></i></span>
+                                <input type="text" class = "form-control" [(ngModel)]="direccion" googleplace/>
+                                <span class="input-group-btn">
+                                <button *ngIf = "cargandoPosicion == null && errorCargandoPosicion == null" class="btn btn-default" type="button" title="Obten tu ubicacion" (click) = "ObtenerDireccionUsuario()"><i class="fa fa-street-view fa-fw"></i></button>
+                                <button *ngIf = "cargandoPosicion" class="btn btn-default" type="button" title="Cargando posicion..."><i class="fa fa-cog fa-spin fa-fw"></i></button>
+                                <button *ngIf = "errorCargandoPosicion" class="btn btn-danger" type="button" title="Error, vuelva a intentarlo" (click) = "ReintentarObtenerDireccionUsuario()"><i class="fa fa-exclamation-triangle fa-fw"></i></button>
+                                </span> 
+                            </div>
+                            </div>
+                        </div>
+                        <div class="row" style = "margin-bottom : 20px;" *ngIf = "editar == null">
+                            <div class = "col-sm-2 col-sm-offset-2">
+                            <label>Direccion</label>
+                            </div>
+                            <div class="col-sm-6">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-map-marker fa-fw"></i></span>
+                                <textarea class="form-control" rows="3" [(ngModel)]="user.direccionCompleta" readonly></textarea> 
+                            </div>
+                            </div>
+                        </div>
+                        <div class="row" style = "margin-bottom : 20px;">
+                            <div class = "col-sm-2 col-sm-offset-2">
+                            <label>Telefono</label>
+                            </div>
+                            <div class="col-sm-6">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-phone fa-fw"></i></span>
+                                <input class="form-control" type="text-area" placeholder="Telefono" [(ngModel)]="user.telefono" [readonly] = "editar == null">
+                            </div>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group row">
+                            <div class = "col-sm-4  col-sm-offset-2" *ngIf = "editar != null">
+                            <button type="submit" class="btn btn-success btn-block" [disabled] = "cargando" (click) = "Modificar()">
+                                <i class="fa fa-pencil-square-o fa-lg"></i> 
+                                Modificar
+                            </button>
+                            </div>
+                            <div class="col-sm-4" *ngIf = "editar != null">
+                            <button type="submit" class="btn btn-danger btn-block" [disabled] = "cargando" (click) = "CancelarModificacion()">
+                                <i class="fa fa-arrow-left fa-lg"></i> 
+                                Cancelar
+                            </button>
+                            </div>
+                            <div class="col-sm-4 col-sm-offset-6" *ngIf = "editar == null">
+                            <button type="submit" class="btn btn-warning btn-block" (click) = "HabilitarModificacion()">
+                                <i class="fa fa-pencil-square-o fa-lg"></i> 
+                                Modificar
+                            </button>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>

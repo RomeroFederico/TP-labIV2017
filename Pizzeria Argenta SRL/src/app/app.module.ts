@@ -20,6 +20,7 @@ import { MultiselectDropdownModule } from 'angular-2-dropdown-multiselect';
 import { GooglePlaceModule } from "angular2-google-place";
 import { EncuestaComponent } from './components/encuesta/encuesta.component';
 import { FileUploadModule } from 'ng2-file-upload';
+import { PanelComponent } from './components/panel/panel.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -27,6 +28,7 @@ const appRoutes: Routes = [
   { path: 'locales', component: LocalesComponent },
   { path: 'pedidos', component: PedidosComponent, canActivate: [VerificarJWTService], },
   { path: 'encuesta', component: EncuestaComponent, canActivate: [VerificarJWTService], },
+  { path: 'panel', component: PanelComponent, canActivate: [VerificarJWTService], },
   { path: 'login', component: LoginComponent },
   { path: '',   redirectTo: '/home', pathMatch: 'full' },
   { path: '**', component: HomeComponent }
@@ -42,7 +44,8 @@ const appRoutes: Routes = [
     LoginComponent,
     ProductosComponent,
     LocalesComponent,
-    EncuestaComponent
+    EncuestaComponent,
+    PanelComponent
   ],
   imports: [
     FileUploadModule,

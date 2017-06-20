@@ -95,11 +95,18 @@ export class EncuestaComponent implements OnInit {
       if (data.exito)
       {
         this.img1 = data.imagenSubida;
-        this.uploader1.queue.pop();
         console.log(this.img1);
       }
       else
         alert(data.mensaje);
+      this.uploader1.queue.pop();
+    }
+
+    this.uploader1.onErrorItem = (item, Response) =>
+    {
+      this.uploader1.queue.pop();
+      alert("Error en imagen opcional 1, vuelva a intentar");
+      console.log("Error");
     }
 
     this.uploader2.onBeforeUploadItem = (item) =>
@@ -114,11 +121,18 @@ export class EncuestaComponent implements OnInit {
       if (data.exito)
       {
         this.img2 = data.imagenSubida;
-        this.uploader2.queue.pop();
         console.log(this.img2);
       }
       else
         alert(data.mensaje);
+      this.uploader2.queue.pop();
+    }
+
+    this.uploader2.onErrorItem = (item, Response) =>
+    {
+      this.uploader2.queue.pop();
+      alert("Error en imagen opcional 2, vuelva a intentar");
+      console.log("Error");
     }
 
     this.uploader3.onBeforeUploadItem = (item) =>
@@ -133,10 +147,17 @@ export class EncuestaComponent implements OnInit {
       if (data.exito)
       {
         this.img3 = data.imagenSubida;
-        this.uploader3.queue.pop();
       }
       else
         alert(data.mensaje);
+      this.uploader3.queue.pop();
+    }
+
+    this.uploader3.onErrorItem = (item, Response) =>
+    {
+      this.uploader3.queue.pop();
+      alert("Error en imagen opcional 3, vuelva a intentar");
+      console.log("Error");
     }
   }
 

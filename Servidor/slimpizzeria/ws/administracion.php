@@ -67,6 +67,51 @@ $app->post('/login', function (Request $request, Response $response)
     return $response->withHeader('Content-type', 'application/json');
 });
 
+$app->post('/usuarios/modificar', function (Request $request, Response $response)
+{
+    $modificar = new stdclass();
+    $modificar->idUsuario =  $request->getParams()["idUsuario"];
+    $modificar->nombre =  $request->getParams()["nombre"];
+    $modificar->apellido =  $request->getParams()["apellido"];
+    $modificar->email =  $request->getParams()["email"];
+    $modificar->password =  $request->getParams()["password"];
+    $modificar->sexo =  $request->getParams()["sexo"];
+    $modificar->telefono =  $request->getParams()["telefono"];
+    $modificar->direccion =  $request->getParams()["direccion"];
+    $modificar->localidad =  $request->getParams()["localidad"];
+    $modificar->provincia =  $request->getParams()["provincia"];
+    $modificar->pais =  $request->getParams()["pais"];
+    $modificar->img =  $request->getParams()["img"];
+    $modificar->estado =  $request->getParams()["estado"];
+    $modificar->tipo =  $request->getParams()["tipo"];
+
+    $resultadoModificar = Usuario::ModificarUsuario($modificar);
+
+    $resultado = new stdClass();
+    $resultado->exito = false;
+
+    if ($resultadoModificar == false)
+        $resultado->mensaje = "Ocurrio un error al querer modificar el usuario. ";
+    else
+    {
+        $resultado->exito = true;
+        
+        $key = "example_key";
+        $token = array(
+            "iss" => "http://example.org",
+            "aud" => "http://example.com",
+            "iat" => 1356999524,
+            "nbf" => 1357000000,
+            "usuario" => $modificar
+        );
+
+        $resultado->token = JWT::encode($token, $key);
+    }
+
+    $response = $response->withJson($resultado);
+    return $response->withHeader('Content-type', 'application/json');
+});
+
 $app->get('/productos', function (Request $request, Response $response)
 {
     $productos = Producto::TraerTodosLosProductos();

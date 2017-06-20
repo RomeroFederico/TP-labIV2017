@@ -16,9 +16,12 @@ export class MenuComponent implements OnInit {
 
   salir()
   {
-    localStorage.setItem('token', null);
-    window.alert('Chauuuuuu!!!');
-    this.router.navigate(['/login']);
+    if (confirm("¿Desea cerrar la sesion actual?"))
+    {
+      localStorage.setItem('token', null);
+      window.alert('Sesion cerrada!!!');
+      this.router.navigate(['/login']);
+    }
   }
 
   Comprobar()

@@ -123,6 +123,40 @@
             return $objetoAccesoDatos->RetornarUltimoIdInsertado();
         }
 
+        public static function ModificarUsuario($obj)
+        {
+            try
+            {
+                $objetoAccesoDatos = AccesoDatos::dameUnObjetoAcceso();
+
+                $consulta = $objetoAccesoDatos->RetornarConsulta("UPDATE usuarios SET nombre = :Nombre, apellido = :Apellido, email = :Email, password = :Password, sexo = :Sexo, telefono = :Telefono, direccion = :Direccion, localidad = :Localidad, provincia = :Provincia, pais = :Pais, img = :Img, estado = :Estado, tipo = :Tipo 
+                                                                  WHERE (idUsuario = :Id)");
+
+                $consulta->bindValue(':Id', $obj->idUsuario, PDO::PARAM_INT);
+                $consulta->bindValue(':Nombre', $obj->nombre, PDO::PARAM_STR);
+                $consulta->bindValue(':Apellido', $obj->apellido, PDO::PARAM_STR);
+                $consulta->bindValue(':Email', $obj->email, PDO::PARAM_STR);
+                $consulta->bindValue(':Password', $obj->password, PDO::PARAM_STR);
+                $consulta->bindValue(':Sexo', $obj->sexo, PDO::PARAM_STR);
+                $consulta->bindValue(':Telefono', $obj->telefono, PDO::PARAM_STR);
+                $consulta->bindValue(':Direccion', $obj->direccion, PDO::PARAM_STR);
+                $consulta->bindValue(':Localidad', $obj->localidad, PDO::PARAM_STR);
+                $consulta->bindValue(':Provincia', $obj->provincia, PDO::PARAM_STR);
+                $consulta->bindValue(':Pais', $obj->pais, PDO::PARAM_STR);
+                $consulta->bindValue(':Img', $obj->img, PDO::PARAM_STR);
+                $consulta->bindValue(':Estado', $obj->estado, PDO::PARAM_INT);
+                $consulta->bindValue(':Tipo', $obj->tipo, PDO::PARAM_STR);            
+
+                $consulta->execute();
+            }
+            catch (Exception $e) 
+            {
+                return FALSE;
+            }
+
+            return TRUE;
+        }
+
         public static function TraerTodosLosUsuarios()
         {
             $usuarios = array();
