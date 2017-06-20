@@ -143,6 +143,16 @@ export class WsService {
     .catch( this.handleError );
   }
 
+  GuardarEncuesta(obj)
+  {
+    var body =  obj;
+
+    return this.http.post(this.url + 'encuesta/registrar', body)
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
   private extractData(res: Response) {
     let body = res.json();    
     

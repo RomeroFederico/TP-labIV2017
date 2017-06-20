@@ -5,6 +5,7 @@ require_once "../Clases/Usuario.php";
 require_once "../Clases/Producto.php";
 require_once "../Clases/Local.php";
 require_once "../Clases/Pedido.php";
+require_once "../Clases/Encuesta.php";
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -311,6 +312,52 @@ $app->post('/pedidos/terminar', function (Request $request, Response $response)
 
     if (!$resultadoTerminar)
         $resultado->mensaje = "Ocurrrio un problema al querer finalizar el pedido.";
+    else
+        $resultado->exito = true;
+
+    $response = $response->withJson($resultado);
+    return $response->withHeader('Content-type', 'application/json');
+});
+
+$app->post('/encuesta/registrar', function (Request $request, Response $response)
+{
+    date_default_timezone_set('America/Argentina/Buenos_Aires');
+
+    $encuesta = new stdclass();
+    $encuesta->pregunta1 = $request->getParams()['pregunta1'];
+    $encuesta->pregunta2 = $request->getParams()['pregunta2'];
+    $encuesta->pregunta3 = $request->getParams()['pregunta3'];
+    $encuesta->pregunta4 = $request->getParams()['pregunta4'];
+    $encuesta->pregunta5 = $request->getParams()['pregunta5'];
+    $encuesta->pregunta6 = $request->getParams()['pregunta6'];
+    $encuesta->pregunta7 = $request->getParams()['pregunta7'];
+    $encuesta->pregunta8 = $request->getParams()['pregunta8'];
+    $encuesta->pregunta9 = $request->getParams()['pregunta9'];
+    $encuesta->pregunta10 = $request->getParams()['pregunta10'];
+    $encuesta->pregunta11 = $request->getParams()['pregunta11'];
+    $encuesta->pregunta12 = $request->getParams()['pregunta12'];
+    $encuesta->pregunta13 = $request->getParams()['pregunta13'];
+    $encuesta->pregunta14 = $request->getParams()['pregunta14'];
+    $encuesta->pregunta15 = $request->getParams()['pregunta15'];
+    $encuesta->pregunta16 = $request->getParams()['pregunta16'];
+    $encuesta->pregunta17 = $request->getParams()['pregunta17'];
+    $encuesta->pregunta18 = $request->getParams()['pregunta18'];
+    $encuesta->pregunta19 = $request->getParams()['pregunta19'];
+    $encuesta->pregunta20 = $request->getParams()['pregunta20'];
+
+    $encuesta->fecha = strftime("%Y-%m-%d %H:%M:%S", time());
+
+    $encuesta->img1 = null;
+    $encuesta->img2 = null;
+    $encuesta->img3 = null;
+
+    $resultadoEncuesta = Encuesta::RegistrarEncuesta($encuesta);
+
+    $resultado = new stdclass();
+    $resultado->exito = false;
+
+    if (!$resultadoEncuesta)
+        $resultado->mensaje = "Ocurrrio un problema al querer registrar la encuesta.";
     else
         $resultado->exito = true;
 

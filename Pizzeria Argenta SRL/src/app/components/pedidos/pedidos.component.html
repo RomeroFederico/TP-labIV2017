@@ -185,7 +185,7 @@
                                 </div>
                             </li>
                     </ul>
-                    <button class="btn btn-danger btn-block" (click) = "TerminarPedido(pedido)">
+                    <button class="btn btn-danger btn-block" (click) = "TerminarPedido(pedido)" [disabled] = "cargandoEnvioRecibido != null">
                         <i class="fa fa-thumbs-up fa-lg fa-fw" style = "color: white"></i>
                         Marcar como Recibido
                     </button>

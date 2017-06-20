@@ -26,6 +26,8 @@ export class PedidosComponent implements OnInit {
   errorPedidosEnProceso : boolean = null;
   pedidoEnProceso : Array<any> = new Array<any>();
 
+  cargandoEnvioRecibido : boolean = null;
+
   cargandoPedidosRecibidos : boolean = null;
   errorPedidosRecibidos : boolean = null;
   pedidosRecibidos : Array<any> = new Array<any>();
@@ -247,18 +249,25 @@ export class PedidosComponent implements OnInit {
   TerminarPedido(pedido)
   {
     if (confirm("Desea marcar como recibido el pedido?"))
+    {
+      this.cargandoEnvioRecibido = true;
+
       this.ws.TerminarPedido({idPedido : pedido.idPedido}).then((data) => {
+
+        this.cargandoEnvioRecibido = null;
         console.log(data);
 
         if (data.exito)
         {
           this.pedidoEnProceso = this.pedidoEnProceso.filter((pedidoEnProceso) => { return pedidoEnProceso.idPedido != pedido.idPedido; })
-          alert("Pedido entregado!!!");
+          if (confirm("Pedido entregado!!!\n¿Desea realizar la encuesta de satisfaccion (anonima)?"))
+            this.router.navigateByUrl("encuesta");
         }
         else
           alert(data.mensaje);
       })
-      .catch((error) => { alert("Ocurrio un problema en el servidor"); console.log(error);});
+      .catch((error) => { this.cargandoEnvioRecibido = null; alert("Ocurrio un problema en el servidor"); console.log(error);});
+    }
   }
 
   ObtenerUsuario()

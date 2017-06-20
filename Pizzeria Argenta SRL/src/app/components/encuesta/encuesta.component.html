@@ -1,7 +1,7 @@
-<div class="container-fluid">
+<div class="container-fluid" id = "imprimir">
   <div class = "container-fluid contenedorPrincipal">
       <div class = "contenedorObjetos col-sm-8 col-sm-offset-2">
-
+        <div *ngIf = "encuestaCompleta == null">
         <div class = "row">
           <div class = "col-sm-9">
             <blockquote style = "color: white">
@@ -286,21 +286,21 @@
         <div class = "row">
 
           <div class = "col-sm-4">
-            <button class="btn btn-success btn-block" (click) = "TerminarPedido(pedido)">
+            <button class="btn btn-success btn-block" (click) = "GenerarEncuesta()" [disabled] = "cargandoEncuesta != null">
               <i class="fa fa-paper-plane fa-lg fa-fw" style = "color: white"></i>
-              Enviar
+              {{mensajeEnviar}}
             </button>
           </div>
 
           <div class = "col-sm-4">
-            <button class="btn btn-warning btn-block" (click) = "TerminarPedido(pedido)">
+            <button class="btn btn-warning btn-block" (click) = "LimpiarEncuesta()" [disabled] = "cargandoEncuesta != null">
               <i class="fa fa-eraser fa-lg fa-fw" style = "color: white"></i>
               Resetear
             </button>
           </div>
 
           <div class = "col-sm-4">
-            <button class="btn btn-danger btn-block" (click) = "TerminarPedido(pedido)">
+            <button class="btn btn-danger btn-block" (click) = "CancelarEncuesta()" [disabled] = "cargandoEncuesta != null">
               <i class="fa fa-trash fa-lg fa-fw" style = "color: white"></i>
               Cancelar
             </button>
@@ -309,5 +309,20 @@
         </div>
 
       </div>
+
+      <div class = "contenedorObjetos col-sm-8 col-sm-offset-2" *ngIf = "encuestaCompleta != null">
+
+        <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <i class="fa fa-handshake-o fa-5x fa-fw" style = "color: white"></i><br>
+                            <h2 style = "color: white">Encuesta enviada!!!</h2>
+                            <h2 style = "color: white">Gracias por su colaboracion!!!</h2>
+                            <h3 style = "color: white"><a (click) = "Volver()">Volver</a></h3>
+                        </div>
+        </div>
+
+      </div>
+
+    </div>
   </div>
 </div>
