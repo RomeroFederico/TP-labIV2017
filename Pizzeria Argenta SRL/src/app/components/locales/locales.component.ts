@@ -173,13 +173,33 @@ export class LocalesComponent implements OnInit {
         if (this.local != null)
           this.DibujarRuta(this.local.marcador.position, this.marcadorUsuario.position);
       }, 
-      (error) => { this.mostrarCargando = null; this.mostrarErrorGeoposicon = true; console.log(error); }, 
+      (error) => { this.AlternativaMarcarUsuario(); console.log(error + ". Reintentando en alernativa... "); }, 
       {
         enableHighAccuracy: true,
         timeout: 3000,
         maximumAge: 0
       });
     };
+  }
+
+  // Error de Google
+  AlternativaMarcarUsuario()
+  {
+    this.ws.ObtenerPosicion().then((data) => {
+
+      this.mostrarCargando = null;
+      var lat = data.lat;
+      var lng = data.lon;
+      var latlng = new google.maps.LatLng(lat, lng);
+      this.marcadorUsuario = new google.maps.Marker({position: latlng, animation: google.maps.Animation.DROP, icon : "assets/ico/pinUser.ico" , title: "Usuario"});
+      this.marcadorUsuario.setMap(this.map);
+      this.ObtenerDireccion();
+
+      if (this.local != null)
+        this.DibujarRuta(this.local.marcador.position, this.marcadorUsuario.position);
+
+    })
+    .catch ((error) => { this.mostrarCargando = null; this.mostrarErrorGeoposicon = true; console.log(error); } )
   }
 
   /**
@@ -298,7 +318,7 @@ export class LocalesComponent implements OnInit {
 
       if (this.locacionUsuario != null)
       {
-        this.ObtenerDistanciaYTiempo(this.local.direccionCompleta, this.locacionUsuario);
+        //this.ObtenerDistanciaYTiempo(this.local.direccionCompleta, this.locacionUsuario);
         this.DibujarRuta(this.local.marcador.position, this.marcadorUsuario.position);
       }
     }
@@ -309,14 +329,14 @@ export class LocalesComponent implements OnInit {
 
       if (this.locacionUsuario != null)
       {
-        this.ObtenerDistanciaYTiempo(this.local.direccionCompleta, this.locacionUsuario);
+        //this.ObtenerDistanciaYTiempo(this.local.direccionCompleta, this.locacionUsuario);
         this.DibujarRuta(this.local.marcador.position, this.marcadorUsuario.position);
       }
     }
 
     var infoWindow = new google.maps.InfoWindow({
       content: `<div class="media"><div class="media-left media-top">
-                      <img class="media-object" src = "assets/images/locales/` + local.img1 + `" style = "  display: block; max-width:150px; max-height:150px; width: auto; height: auto;">
+                      <img class="media-object" src = "http://www.romerofederico.hol.es/pizza/ws/img/locales/` + local.img1 + `" style = "  display: block; max-width:150px; max-height:150px; width: auto; height: auto;">
                   </div>
                   <div class="media-body">
                     <h4 class="media-heading">` + local.direccion + `</h4>
@@ -347,7 +367,7 @@ export class LocalesComponent implements OnInit {
       // Si el usuario se esta mostrando, obtengo la distancia y tiempo, junto con su ruta.
       if (this.locacionUsuario != null)
       {
-        this.ObtenerDistanciaYTiempo(this.local.direccionCompleta, this.locacionUsuario);
+        //this.ObtenerDistanciaYTiempo(this.local.direccionCompleta, this.locacionUsuario);
         this.DibujarRuta(this.local.marcador.position, this.marcadorUsuario.position);
       }
     });
@@ -365,7 +385,10 @@ export class LocalesComponent implements OnInit {
       this.MostrarInformacionPosicionUsuario();
 
       if (this.local != null)
-        this.ObtenerDistanciaYTiempo(this.local.direccionCompleta, this.locacionUsuario);
+      {
+        //this.ObtenerDistanciaYTiempo(this.local.direccionCompleta, this.locacionUsuario);
+        this.DibujarRuta(this.local.marcador.position, this.marcadorUsuario.position);
+      }
     })
     .catch((error) => { console.log(error); });
   }
@@ -403,6 +426,10 @@ export class LocalesComponent implements OnInit {
     }, (response, status) => {
       if (status == google.maps.DirectionsStatus.OK) {
         console.log(response);
+        // Hago la distancia y tiempo aqui...
+        this.distancia = response.routes[0].legs[0].distance.text;
+        this.duracion = response.routes[0].legs[0].duration.text;
+        //
         this.directionsDisplay.setDirections(response);
       } else {
         window.alert('Directions request failed due to ' + status);

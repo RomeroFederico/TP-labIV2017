@@ -44,15 +44,15 @@
                                 <div class="carousel-inner">
 
                                 <div [class]="item1">
-                                    <img [src]="'assets/images/locales/' + local.img1" alt="Los Angeles" class = "img-responsive">
+                                    <img [src]="'http://www.romerofederico.hol.es/pizza/ws/img/locales/' + local.img1" alt="Los Angeles" class = "img-responsive">
                                 </div>
 
                                 <div [class]="item2">
-                                    <img [src]="'assets/images/locales/' + local.img2" alt="Chicago" class = "img-responsive">
+                                    <img [src]="'http://www.romerofederico.hol.es/pizza/ws/img/locales/' + local.img2" alt="Chicago" class = "img-responsive">
                                 </div>
 
                                 <div [class]="item3">
-                                    <img [src]="'assets/images/locales/' + local.img3" alt="New York" class = "img-responsive">
+                                    <img [src]="'http://www.romerofederico.hol.es/pizza/ws/img/locales/' + local.img3" alt="New York" class = "img-responsive">
                                 </div>
 
                                 </div>
@@ -118,7 +118,7 @@
                                 </div>
                                 <div class="panel-body">
                                     <div class="media"><div class="media-left media-top">
-                                        <img class="media-object" [src] = "'assets/images/' + 'default.png'" style = "  display: block; max-width:100px; max-height:100px; width: auto; height: auto;">
+                                        <img class="media-object" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/usuarios/' + 'default.png'" style = "  display: block; max-width:100px; max-height:100px; width: auto; height: auto;">
                                     </div>
                                     <div class="media-body">
                                         <h4 class="media-heading">{{local.gerente.apellido}}, {{local.gerente.nombre}}</h4>
@@ -145,7 +145,7 @@
                 <div class="panel-body">
                 <div class="thumbnail">
                     <div class='product-holder'>
-                    <img [src]="'assets/images/productos/' + producto.img" class="img-responsive" style="width:100%" alt="Image">
+                    <img [src]="'http://www.romerofederico.hol.es/pizza/ws/img/productos/' + producto.img" class="img-responsive" style="width:100%" alt="Image">
                     <img *ngIf = "ComprobarPromo(producto.promocion)" title = "Dia de Promocion" src="assets/images/promo.png" class = "plus-image pulse animated infinite">
                     </div>
                     <div class="caption">

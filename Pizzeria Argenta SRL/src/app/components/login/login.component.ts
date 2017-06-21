@@ -164,13 +164,28 @@ export class LoginComponent implements OnInit {
         var latlng = new google.maps.LatLng(lat, lng);
         this.ObtenerDireccion(lat, lng);
       }, 
-      (error) => { this.cargandoPosicion = null; this.errorCargandoPosicion = true; console.log(error); }, 
+      (error) => { /*this.cargandoPosicion = null; this.errorCargandoPosicion = true;*/ this.AlternativaMarcarUsuario(); console.log(error + ". Reintentando en alernativa... "); }, 
       {
         enableHighAccuracy: true,
         timeout: 3000,
         maximumAge: 0
       });
     };
+  }
+
+  // Error de Google
+  AlternativaMarcarUsuario()
+  {
+    this.ws.ObtenerPosicion().then((data) => {
+
+      this.cargandoPosicion = null;
+      var lat = data.lat;
+      var lng = data.lon;
+      var latlng = new google.maps.LatLng(lat, lng);
+      this.ObtenerDireccion(lat, lng);
+
+    })
+    .catch ((error) => { this.cargandoPosicion = null; this.errorCargandoPosicion = true; console.log(error); } )
   }
 
   VerificarEmailUsuario(email : string)

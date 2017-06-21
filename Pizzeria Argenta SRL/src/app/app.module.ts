@@ -22,6 +22,8 @@ import { EncuestaComponent } from './components/encuesta/encuesta.component';
 import { FileUploadModule } from 'ng2-file-upload';
 import { PanelComponent } from './components/panel/panel.component';
 
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'productos', component: ProductosComponent },
@@ -60,7 +62,8 @@ const appRoutes: Routes = [
   providers: [
     WsService,
     AutService,
-    VerificarJWTService
+    VerificarJWTService,
+    {provide: LocationStrategy, useClass: HashLocationStrategy}
   ],
   bootstrap: [AppComponent]
 })

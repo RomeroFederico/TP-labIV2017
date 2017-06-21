@@ -3,6 +3,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { WsService } from '../../services/ws/ws.service';
 import { AutService } from '../../services/auth/aut.service';
 
+import { FileUploader } from 'ng2-file-upload';
+
 declare var google;
 
 export class User {
@@ -20,7 +22,8 @@ export class User {
                public estado : number = 1,
                public tipo : string = "Cliente",
                public img : string = "default.png",
-               public direccionCompleta : string = "")
+               public direccionCompleta : string = "",
+               public imgAnterior : string = "")
   {}
 }
 
@@ -45,16 +48,67 @@ export class PanelComponent implements OnInit {
 
   cargando : boolean = null;
 
+  imagenAnterior : string;
+  public uploader1:FileUploader = new FileUploader({url: this.ws.url + "subir/usuarios/tmp/"});
+
   constructor(private router: Router, private route: ActivatedRoute, 
               private ws: WsService, private aut : AutService)
   {
+  }
+
+  ngOnInit() {
+
     this.user = this.ObtenerUsuario();
     this.user.direccionCompleta = this.user.direccion + ", " + this.user.localidad + ", " + this.user.provincia + ", " + this.user.pais;
     console.log(this.user);
     this.usuarioSinModificar = new User();
+
+    this.uploader1.setOptions({url: this.ws.url + "subir/usuarios/tmp/" + this.user.idUsuario});
+
+    this.uploader1.onBeforeUploadItem = (item) =>
+    {
+      console.info("item",item);
+      item.withCredentials = false;
+    }
+    this.uploader1.onSuccessItem = (item, response) =>
+    {
+      var data = JSON.parse(response);
+
+      if (data.exito)
+      {
+        this.imagenAnterior = data.imagenSubida;
+        console.log(this.imagenAnterior);
+      }
+      else
+        alert(data.mensaje);
+      this.uploader1.queue.pop();
+    }
+
+    this.uploader1.onErrorItem = (item, Response) =>
+    {
+      this.uploader1.queue.pop();
+      alert("Error en subir la imagen, vuelva a intentar");
+      console.log("Error");
+    }
   }
 
-  ngOnInit() {
+  MostrarConsola(mensaje)
+  {
+    console.log(mensaje);
+  }
+
+  Mostrar(seleccion : string)
+  {
+    if (seleccion != this.seleccion)
+    {
+      this.seleccion = seleccion;
+
+      if (this.seleccion == "Cambiar imagen")
+      {
+        this.imagenAnterior = this.user.img;
+        this.CopiarDatos(this.user, this.usuarioSinModificar);
+      }
+    }
   }
 
   ObtenerUsuario()
@@ -141,6 +195,47 @@ export class PanelComponent implements OnInit {
     } );
   }
 
+  ModificarImagen()
+  {
+    this.user.img = this.imagenAnterior;
+    this.user.imgAnterior = this.usuarioSinModificar.img;
+
+    console.log(this.user);
+
+    if (this.user.img == this.user.imgAnterior)
+    {
+      alert("No se ha cargado una imagen!!!");
+      return;
+    }
+
+    if (!(confirm("¿Desea modificar su imagen?")))
+      return;
+
+    this.ws.ModificarUsuario(this.user).then( data => {
+      console.log(data);
+      if (data.exito)
+      {
+        this.editar = null;
+        alert("Usuario Modificado con exito!!!");
+        if ( data.token )
+        {
+          localStorage.setItem('token', data.token);
+          location.reload();
+        }
+      }
+      else
+      {
+        this.user.img = this.usuarioSinModificar.img;
+        alert(data.mensaje);
+      }
+    })
+    .catch( e => {
+      this.user.img = this.usuarioSinModificar.img;
+      alert("Ocurrio un error, vuelva a intentarlo. ");
+      console.log(e);
+    } );
+  }
+
   ObtenerDireccionUsuario()
   {
     this.cargandoPosicion = true;
@@ -154,13 +249,28 @@ export class PanelComponent implements OnInit {
         var latlng = new google.maps.LatLng(lat, lng);
         this.ObtenerDireccion(lat, lng);
       }, 
-      (error) => { this.cargandoPosicion = null; this.errorCargandoPosicion = true; console.log(error); }, 
+      (error) => { /*this.cargandoPosicion = null; this.errorCargandoPosicion = true;*/ this.AlternativaMarcarUsuario(); console.log(error + ". Reintentando en alernativa... "); }, 
       {
         enableHighAccuracy: true,
         timeout: 3000,
         maximumAge: 0
       });
     };
+  }
+
+  // Error de Google
+  AlternativaMarcarUsuario()
+  {
+    this.ws.ObtenerPosicion().then((data) => {
+
+      this.cargandoPosicion = null;
+      var lat = data.lat;
+      var lng = data.lon;
+      var latlng = new google.maps.LatLng(lat, lng);
+      this.ObtenerDireccion(lat, lng);
+
+    })
+    .catch ((error) => { this.cargandoPosicion = null; this.errorCargandoPosicion = true; console.log(error); } )
   }
 
   /**

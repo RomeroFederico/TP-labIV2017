@@ -10,7 +10,7 @@ import { AuthHttp } from 'angular2-jwt';
 @Injectable()
 export class WsService {
 
-  url: string = 'http://localhost/slimpizzeria/ws/administracion.php/';
+  url: string = 'http://www.romerofederico.hol.es/pizza/ws/administracion.php/';
 
   constructor(public http: Http, private authHttp: AuthHttp)
   {
@@ -76,6 +76,15 @@ export class WsService {
     var re = / /gi; 
 
     return this.http.get('https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins=' + direccion1.replace(re, '+') + '&destinations=' + direccion2.replace(re, '+'))
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  // Error de geolocation. 
+  ObtenerPosicion()
+  {
+    return this.http.get("http://ip-api.com/json")
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );

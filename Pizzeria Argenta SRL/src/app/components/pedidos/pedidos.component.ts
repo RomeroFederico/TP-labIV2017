@@ -101,9 +101,9 @@ export class PedidosComponent implements OnInit {
 
     productos.forEach(producto => {
       if (this.ComprobarPromo(producto.promocion))
-        total = total + producto.precio * 0.75;
+        total = total + Number(producto.precio) * 0.75;
       else
-        total = total + producto.precio;
+        total = total + Number(producto.precio);
     });
 
     return total;

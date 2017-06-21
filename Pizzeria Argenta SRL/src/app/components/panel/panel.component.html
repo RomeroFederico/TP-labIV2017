@@ -3,7 +3,7 @@
         <div class="col-sm-2 col-sm-offset-2 sidenav" style = "padding-top: 15px;">
             <div class = "parent">
             <div>
-                <img class = "img-responsive img-thumbnail" src = "assets/images/kotori.png">
+                <img class = "img-responsive img-thumbnail" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/usuarios/' + user.img">
             </div>
             </div>
             <h4 style = "color: white">Panel de Control</h4>
@@ -12,7 +12,7 @@
                 <li (click) = "Mostrar('Cambiar imagen')" [ngClass] = "seleccion == 'Cambiar imagen'? 'active' : ''"><a>Cambiar imagen</a></li>
             </ul>
         </div>
-        <div class= "col-sm-6">
+        <div class= "col-sm-6" *ngIf = "seleccion == 'Mi informacion'">
             <div class = "container-fluid contenedorPrincipal">
                 <div class = "contenedorObjetos" style = "min-height: 500px;">
                   
@@ -156,6 +156,67 @@
 
                 </div>
             </div>
+        </div>
+
+        <div class= "col-sm-6" *ngIf = "seleccion == 'Cambiar imagen'">
+            <div class = "container-fluid contenedorPrincipal">
+                <div class = "contenedorObjetos" style = "min-height: 500px;">
+                  
+                    <div class="panel panel-danger centrarRegistro" style = "min-height: 450px;">
+                    <div class="panel-heading">
+                        Cambiar imagen de perfil
+                    </div>
+                    <div class="panel-body">
+                        
+                        <div class = "row" style = "min-height: 350px;">
+
+                            <div class = "col-sm-7">
+                                <h5><i class="fa fa-cube" aria-hidden="true"></i>Seleccione una imagen:</h5>
+                                <input type="file" ng2FileSelect [uploader]="uploader1" (change) = "uploader1.queue.length != 0? uploader1.queue[0].upload() : MostrarConsola('Nada')" style = "color : black"/>
+                                <div class="progress" style="margin-bottom: 0;" *ngIf = "uploader1.queue.length != 0 || imagenAnterior != user.img">
+                                    <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" [ngStyle]="{ 'width': (uploader1.queue.length != 0? uploader1.queue[0].progress : '100') + '%' }"></div>
+                                </div>
+                                <p *ngIf = "uploader1.queue.length != 0">{{uploader1.queue[0].progress}}</p>
+                            </div>
+
+                            <div class = "col-sm-5">
+
+                                <div style = "width: 150px; height: 150px; border-radius: 10px; border-style : solid; border-color: black">
+
+                                    <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "imagenAnterior == user.img">
+                                        <div class = "child">
+                                        <img [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/usuarios/' + imagenAnterior" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
+                                        </div>
+                                    </div>
+
+                                    <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "imagenAnterior != user.img">
+                                        <div class = "child">
+                                        <img [src] = "'http://www.romerofederico.hol.es/pizza/ws/tmp/usuarios/' + imagenAnterior" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
+                                        </div>
+                                    </div>
+
+                                </div>
+                            
+                            </div>
+                            
+                        </div>
+
+                        <div class="panel-footer">
+
+                        <div class="col-sm-4 col-sm-offset-7" *ngIf = "editar == null">
+                            <button type="submit" class="btn btn-success btn-block" (click) = "ModificarImagen()">
+                                <i class="fa fa-pencil-square-o fa-lg"></i> 
+                                Modificar
+                            </button>
+                        </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
         </div>
         
     </div>

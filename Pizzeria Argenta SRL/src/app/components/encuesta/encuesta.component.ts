@@ -60,9 +60,9 @@ export class EncuestaComponent implements OnInit {
   mensajeEnviar : string = "Enviar";
   encuestaCompleta : boolean = null;
 
-  public uploader1:FileUploader = new FileUploader({url: this.ws.url + "/subir/encuesta/tmp"});
-  public uploader2:FileUploader = new FileUploader({url: this.ws.url + "/subir/encuesta/tmp"});
-  public uploader3:FileUploader = new FileUploader({url: this.ws.url + "/subir/encuesta/tmp"});
+  public uploader1:FileUploader = new FileUploader({url: this.ws.url + "subir/encuesta/tmp"});
+  public uploader2:FileUploader = new FileUploader({url: this.ws.url + "subir/encuesta/tmp"});
+  public uploader3:FileUploader = new FileUploader({url: this.ws.url + "subir/encuesta/tmp"});
 
   public hasBaseDropZoneOver:boolean = false;
   public hasAnotherDropZoneOver:boolean = false;

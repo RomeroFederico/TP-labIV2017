@@ -42,7 +42,7 @@
                         <ul class="media-list">
                             <li class="media">
                                 <div class="media-left">
-                                    <img class="media-object img-thumbnail" [src]="'assets/images/locales/' + pedido.local.img1" style = " display: block; max-width:150px; max-height:150px; width: auto; height: auto;">
+                                    <img class="media-object img-thumbnail" [src]="'http://www.romerofederico.hol.es/pizza/ws/img/locales/' + pedido.local.img1" style = " display: block; max-width:150px; max-height:150px; width: auto; height: auto;">
                                 </div>
                                 <div class="media-body">
                                     <blockquote>
@@ -57,7 +57,7 @@
                                     <div class="media" *ngFor = "let producto of pedido.productos">
                                         <div class = "media">
                                             <div class="media-left">
-                                                <img class="media-object img-thumbnail" [src]="'assets/images/productos/' + producto.img" style = " display: block; max-width:100px; max-height:100px; width: auto; height: auto;">
+                                                <img class="media-object img-thumbnail" [src]="'http://www.romerofederico.hol.es/pizza/ws/img/productos/' + producto.img" style = " display: block; max-width:100px; max-height:100px; width: auto; height: auto;">
                                             </div>
                                             <div class="media-body">
                                                 <h4 class="media-heading"><span [ngClass] ="producto.tipo == 'Pizza'? 'label label-danger' : (producto.tipo == 'Empanadas'? 'label label-warning':'label label-info')">{{producto.tipo}}</span></h4>
@@ -155,7 +155,7 @@
                     <ul class="media-list" style = "color: white">
                             <li class="media">
                                 <div class="media-left">
-                                    <img class="media-object" [src]="'assets/images/locales/' + pedido.img1" style = " display: block; max-width:50px; max-height:50px; width: auto; height: auto;">
+                                    <img class="media-object" [src]="'http://www.romerofederico.hol.es/pizza/ws/img/locales/' + pedido.img1" style = " display: block; max-width:50px; max-height:50px; width: auto; height: auto;">
                                 </div>
                                 <div class="media-body">
                                     <blockquote>
@@ -168,7 +168,7 @@
                                     <div class="col-sm-4 media" *ngFor = "let producto of pedido.productos">
                                         <div class = "media">
                                             <div class="media-left">
-                                                <img class="media-object" [src]="'assets/images/productos/' + producto.img" style = " display: block; max-width:50px; max-height:50px; width: auto; height: auto;">
+                                                <img class="media-object" [src]="'http://www.romerofederico.hol.es/pizza/ws/img/productos/' + producto.img" style = " display: block; max-width:50px; max-height:50px; width: auto; height: auto;">
                                             </div>
                                             <div class="media-body">
                                                 <h6 class="media-heading"><span [ngClass] ="producto.tipo == 'Pizza'? 'label label-danger' : (producto.tipo == 'Empanadas'? 'label label-warning':'label label-info')">{{producto.tipo}}</span></h6>
@@ -241,7 +241,7 @@
                     <ul class="media-list" style = "color: white">
                             <li class="media">
                                 <div class="media-left">
-                                    <img class="media-object" [src]="'assets/images/locales/' + pedido.img1" style = " display: block; max-width:50px; max-height:50px; width: auto; height: auto;">
+                                    <img class="media-object" [src]="'http://www.romerofederico.hol.es/pizza/ws/img/locales/' + pedido.img1" style = " display: block; max-width:50px; max-height:50px; width: auto; height: auto;">
                                 </div>
                                 <div class="media-body">
                                     <blockquote>
@@ -254,7 +254,7 @@
                                     <div class="col-sm-4 media" *ngFor = "let producto of pedido.productos">
                                         <div class = "media">
                                             <div class="media-left">
-                                                <img class="media-object" [src]="'assets/images/productos/' + producto.img" style = " display: block; max-width:50px; max-height:50px; width: auto; height: auto;">
+                                                <img class="media-object" [src]="'http://www.romerofederico.hol.es/pizza/ws/img/productos/' + producto.img" style = " display: block; max-width:50px; max-height:50px; width: auto; height: auto;">
                                             </div>
                                             <div class="media-body">
                                                 <h6 class="media-heading"><span [ngClass] ="producto.tipo == 'Pizza'? 'label label-danger' : (producto.tipo == 'Empanadas'? 'label label-warning':'label label-info')">{{producto.tipo}}</span></h6>
