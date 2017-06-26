@@ -285,7 +285,7 @@
 
           <div class = "col-sm-7">
             <h5><i class="fa fa-cube" aria-hidden="true"></i> Imagen opcional 1</h5>
-            <input type="file" ng2FileSelect [uploader]="uploader1" (change) = "uploader1.queue.length != 0? uploader1.queue[0].upload() : MostrarConsola('Nada')" style = "color : white"/>
+            <input #myInput1 type="file" ng2FileSelect [uploader]="uploader1" (change) = "uploader1.queue.length != 0? Subir(0) : MostrarConsola('Nada')" style = "color : white" [disabled] = "subiendo != null"/>
             <!--<div *ngIf = "uploader.queue.length != 0">
               <button type="button" class="btn btn-success btn-xs" (click)="uploader.queue[0].upload()" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
                 <span class="glyphicon glyphicon-upload"></span> Subir
@@ -322,7 +322,7 @@
 
           <div class = "col-sm-7">
             <h5><i class="fa fa-cube" aria-hidden="true"></i> Imagen opcional 2</h5>
-            <input type="file" ng2FileSelect [uploader]="uploader2" (change) = "uploader2.queue.length != 0? uploader2.queue[0].upload() : MostrarConsola('Nada')" style = "color : white"/>
+            <input #myInput2 type="file" ng2FileSelect [uploader]="uploader2" (change) = "uploader2.queue.length != 0? Subir(1) : MostrarConsola('Nada')" style = "color : white" [disabled] = "subiendo != null"/>
             <!--<div *ngIf = "uploader.queue.length != 0">
               <button type="button" class="btn btn-success btn-xs" (click)="uploader.queue[0].upload()" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
                 <span class="glyphicon glyphicon-upload"></span> Subir
@@ -359,7 +359,7 @@
 
           <div class = "col-sm-7">
             <h5><i class="fa fa-cube" aria-hidden="true"></i> Imagen opcional 3</h5>
-            <input type="file" ng2FileSelect [uploader]="uploader3" (change) = "uploader3.queue.length != 0? uploader3.queue[0].upload() : MostrarConsola('Nada')" style = "color : white"/>
+            <input #myInput3 type="file" ng2FileSelect [uploader]="uploader3" (change) = "uploader3.queue.length != 0? Subir(2) : MostrarConsola('Nada')" style = "color : white" [disabled] = "subiendo != null"/>
             <!--<div *ngIf = "uploader.queue.length != 0">
               <button type="button" class="btn btn-success btn-xs" (click)="uploader.queue[0].upload()" [disabled]="uploader.queue[0].isReady || uploader.queue[0].isUploading || uploader.queue[0].isSuccess">
                 <span class="glyphicon glyphicon-upload"></span> Subir
@@ -397,14 +397,14 @@
         <div class = "row">
 
           <div class = "col-sm-4">
-            <button class="btn btn-success btn-block" (click) = "GenerarEncuesta()" [disabled] = "cargandoEncuesta != null">
+            <button class="btn btn-success btn-block" (click) = "GenerarEncuesta()" [disabled] = "cargandoEncuesta != null || subiendo != null">
               <i class="fa fa-paper-plane fa-lg fa-fw" style = "color: white"></i>
               {{mensajeEnviar}}
             </button>
           </div>
 
           <div class = "col-sm-4">
-            <button class="btn btn-warning btn-block" (click) = "LimpiarEncuesta()" [disabled] = "cargandoEncuesta != null">
+            <button class="btn btn-warning btn-block" (click) = "LimpiarEncuesta()" [disabled] = "cargandoEncuesta != null || subiendo != null">
               <i class="fa fa-eraser fa-lg fa-fw" style = "color: white"></i>
               Resetear
             </button>

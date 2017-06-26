@@ -1,0 +1,80 @@
+<div class = "container-fluid contenedorPrincipal">
+<div class = "contenedorObjetos">
+  <div class="btn-group btn-group-justified" role="group" aria-label="..." style = "margin-bottom: 20px">
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-success" (click) = "Mostrar('Todos')">Todos</button>
+    </div>
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-danger" (click) = "Mostrar('Cliente')">Clientes</button>
+    </div>
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-warning" (click) = "Mostrar('Encargado')">Encargados</button>
+    </div>
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-info" (click) = "Mostrar('Empleado')">Empleados</button>
+    </div>
+  </div>
+
+<div class="container">
+  <div class = "col-sm-12 cargando parent" *ngIf = "usuariosBase == null">
+                <div class = "child">
+                    <i class="fa fa-cog fa-spin fa-5x fa-fw" style = "color: white"></i><br>
+                    <h2 style = "color: white">Cargando Usuarios</h2>
+                </div>
+  </div> 
+  <div class="row" *ngIf = "usuariosBase != null" style = "min-height: 500px;">
+
+  <div class="table-responsive vertical-align">
+    <table class="table text-center">
+      <thead style = "color: white">
+        <th class = "text-center">Imagen</th>
+        <th class = "text-center">Apellido</th>
+        <th class = "text-center">Nombre</th>
+        <th class = "text-center">Email</th>
+        <th class = "text-center">Sexo</th>
+        <th class = "text-center">Telefono</th>
+        <th class = "text-center">Direccion</th>
+        <th class = "text-center">Localidad</th>
+        <th class = "text-center">Estado</th>
+        <th class = "text-center">Tipo</th>
+      </thead>
+      <tr *ngFor = "let usuario of usuarios" style = "color:white" >
+        <td class="col-sm-1">
+          <img class = "img-responsive img-thumbnail" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/usuarios/' + usuario.img">
+        </td>
+        <td class="col-sm-1">
+          {{usuario.apellido}}
+        </td>
+        <td class="col-sm-1">
+          {{usuario.nombre}}
+        </td>
+        <td class="col-sm-1">
+          {{usuario.email}}
+        </td>
+        <td class="col-sm-1">
+          {{usuario.sexo}}
+        </td>
+        <td class="col-sm-1">
+          {{usuario.telefono}}
+        </td>
+        <td class="col-sm-1">
+          {{usuario.direccion}}
+        </td>
+        <td class="col-sm-1">
+          {{usuario.localidad}}
+        </td>
+        <td class="col-sm-1">
+          {{usuario.estado == 1? 'Activo' : 'Inactivo'}}
+        </td>
+        <td class="col-sm-1">
+          {{usuario.tipo}}
+        </td>
+      </tr>
+    </table>
+  </div>
+    
+  </div>
+</div>
+</div>
+</div>
+

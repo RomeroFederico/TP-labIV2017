@@ -54,6 +54,14 @@ export class WsService {
     .then( this.extractData )
     .catch( this.handleError );
   }
+
+  ObtenerUsuarios()
+  {
+    return this.http.get(this.url + 'usuarios')
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
   
   getlatlng(address = 'Av Bartolomé Mitre 750,Avellaneda,Buenos Aires, Argentina'){
 

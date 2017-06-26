@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { CsvService } from "angular2-json2csv";
 import { WsService } from '../../services/ws/ws.service';
@@ -70,6 +70,17 @@ export class EncuestaComponent implements OnInit {
   img2 : string = null;
   img3 : string = null;
 
+  subiendo : boolean = null;
+
+  @ViewChild('myInput1')
+  myInputVariable1: any;
+
+  @ViewChild('myInput2')
+  myInputVariable2: any;
+
+  @ViewChild('myInput3')
+  myInputVariable3: any;
+
   constructor(public csv : CsvService, public ws : WsService,
               private router: Router)
   {
@@ -92,18 +103,25 @@ export class EncuestaComponent implements OnInit {
     {
       var data = JSON.parse(response);
 
+      this.subiendo = null;
+
       if (data.exito)
       {
         this.img1 = data.imagenSubida;
         console.log(this.img1);
       }
       else
+      {
+        this.myInputVariable1.nativeElement.value = "";
         alert(data.mensaje);
+      }
       this.uploader1.queue.pop();
     }
 
     this.uploader1.onErrorItem = (item, Response) =>
     {
+      this.myInputVariable1.nativeElement.value = "";
+      this.subiendo = null;
       this.uploader1.queue.pop();
       alert("Error en imagen opcional 1, vuelva a intentar");
       console.log("Error");
@@ -118,18 +136,25 @@ export class EncuestaComponent implements OnInit {
     {
       var data = JSON.parse(response);
 
+      this.subiendo = null;
+
       if (data.exito)
       {
         this.img2 = data.imagenSubida;
         console.log(this.img2);
       }
       else
+      {
+        this.myInputVariable2.nativeElement.value = "";
         alert(data.mensaje);
+      }
       this.uploader2.queue.pop();
     }
 
     this.uploader2.onErrorItem = (item, Response) =>
     {
+      this.myInputVariable2.nativeElement.value = "";
+      this.subiendo = null;
       this.uploader2.queue.pop();
       alert("Error en imagen opcional 2, vuelva a intentar");
       console.log("Error");
@@ -144,20 +169,45 @@ export class EncuestaComponent implements OnInit {
     {
       var data = JSON.parse(response);
 
+      this.subiendo = null;
+
       if (data.exito)
       {
         this.img3 = data.imagenSubida;
       }
       else
+      {
+        this.myInputVariable3.nativeElement.value = "";
         alert(data.mensaje);
+      }
       this.uploader3.queue.pop();
     }
 
     this.uploader3.onErrorItem = (item, Response) =>
     {
+      this.subiendo = null;
+      this.myInputVariable3.nativeElement.value = "";
       this.uploader3.queue.pop();
       alert("Error en imagen opcional 3, vuelva a intentar");
       console.log("Error");
+    }
+  }
+
+  Subir(queImagen : number)
+  {
+    this.subiendo = true;
+
+    if (queImagen == 0)
+    {
+      this.uploader1.queue[0].upload();
+    }
+    else if (queImagen == 1)
+    {
+      this.uploader2.queue[0].upload();
+    }
+    else
+    {
+      this.uploader3.queue[0].upload();
     }
   }
 
@@ -182,6 +232,12 @@ export class EncuestaComponent implements OnInit {
     this.empanada = false;
     this.combo = false;
     this.calidad = 0;
+    this.img1 = null;
+    this.img2 = null;
+    this.img3 = null;
+    this.myInputVariable1.nativeElement.value = "";
+    this.myInputVariable2.nativeElement.value = "";
+    this.myInputVariable3.nativeElement.value = "";
   }
 
   CancelarEncuesta()

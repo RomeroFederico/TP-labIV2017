@@ -1,0 +1,59 @@
+select {
+  font-family: 'FontAwesome', "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.contenedorObjetos {
+    background-color: #222; 
+    opacity: 0.9;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.contenedorPrincipal {
+    margin-bottom: 20px;
+}
+
+.columns-parent {
+    display: table;
+    width: 100%;
+}
+
+.my-column {
+    display: table-cell;
+}
+
+.responsive-width {
+    font-size: smaller;
+}
+
+.product-holder {
+    position: relative;
+    display: block;
+}
+
+.plus-image {
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    margin-top: -160px;
+    margin-left: 50px;
+}
+
+.parent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+@media screen and (min-width: 767px)
+{
+  .cargando {
+    height: 500px;
+  }
+}
+
+.table > tbody > tr > td {
+     vertical-align: middle;
+}
+

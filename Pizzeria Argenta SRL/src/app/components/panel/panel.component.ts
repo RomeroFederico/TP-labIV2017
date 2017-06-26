@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { WsService } from '../../services/ws/ws.service';
 import { AutService } from '../../services/auth/aut.service';
@@ -30,7 +30,7 @@ export class User {
 @Component({
   selector: 'app-panel',
   templateUrl: './panel.component.html',
-  styleUrls: ['./panel.component.css']
+  styleUrls: ['./panel.component.css'],
 })
 export class PanelComponent implements OnInit {
 
@@ -51,6 +51,16 @@ export class PanelComponent implements OnInit {
   imagenAnterior : string;
   public uploader1:FileUploader = new FileUploader({url: this.ws.url + "subir/usuarios/tmp/"});
 
+  @ViewChild('myInput1')
+  myInputVariable1: any;
+
+  vacioApellido : boolean = null;
+  vacioNombre : boolean = null;
+  vacioDireccion : boolean = null;
+  vacioTelefono : boolean = null;
+
+  validarDireccion : boolean = null;
+
   constructor(private router: Router, private route: ActivatedRoute, 
               private ws: WsService, private aut : AutService)
   {
@@ -59,6 +69,7 @@ export class PanelComponent implements OnInit {
   ngOnInit() {
 
     this.user = this.ObtenerUsuario();
+    this.user.imgAnterior = "";
     this.user.direccionCompleta = this.user.direccion + ", " + this.user.localidad + ", " + this.user.provincia + ", " + this.user.pais;
     console.log(this.user);
     this.usuarioSinModificar = new User();
@@ -74,6 +85,8 @@ export class PanelComponent implements OnInit {
     {
       var data = JSON.parse(response);
 
+      this.cargando = null;
+
       if (data.exito)
       {
         this.imagenAnterior = data.imagenSubida;
@@ -87,9 +100,62 @@ export class PanelComponent implements OnInit {
     this.uploader1.onErrorItem = (item, Response) =>
     {
       this.uploader1.queue.pop();
+      this.myInputVariable1.nativeElement.value = "";
+      this.cargando = null;
       alert("Error en subir la imagen, vuelva a intentar");
       console.log("Error");
     }
+  }
+
+  ValidarSoloLetras(event, atributo)
+  {
+    let newText: string = event.target.value;
+    if (/^[a-zA-Z]+$/.test(newText) || newText == "") {
+      //input is valid, so update the model
+      if (atributo == "Apellido")
+        this.user.apellido = newText;
+      else
+        this.user.nombre = newText;
+    }
+    else {
+      //restore the original value
+      if (atributo == "Apellido")
+        event.target.value = this.user.apellido;
+      else
+        event.target.value = this.user.nombre;
+    }
+  }
+
+  ValidarSoloNumeros(event)
+  {
+    let newText: string = event.target.value;
+    if (/^\d+$/.test(newText) || newText == "") {
+      //input is valid, so update the model
+      this.user.telefono = newText;
+    }
+    else {
+      //restore the original value
+      event.target.value = this.user.telefono;
+    }
+  }
+
+  ValidarDireccion()
+  {
+    this.cargando = true;
+
+    this.ws.getlatlng(this.direccion).then((value) => {
+
+      console.log(value);
+
+      if (value.results.length == 0)
+      {
+        alert("La direccion ingresada es invalida!!!");
+        this.validarDireccion = true;
+      }
+      else
+        this.ModificarUsuario();
+    })
+    .catch((error) => { this.cargando = null; console.log("Error"); });
   }
 
   MostrarConsola(mensaje)
@@ -99,7 +165,7 @@ export class PanelComponent implements OnInit {
 
   Mostrar(seleccion : string)
   {
-    if (seleccion != this.seleccion)
+    if (seleccion != this.seleccion && this.cargando == null)
     {
       this.seleccion = seleccion;
 
@@ -155,16 +221,37 @@ export class PanelComponent implements OnInit {
 
   Modificar()
   {
-    if (this.user.nombre == "" || this.user.apellido == "" ||
-        this.direccion == "" || this.user.telefono == "")
+    this.vacioApellido = null;
+    this.vacioNombre = null;
+    this.vacioDireccion = null;
+    this.vacioTelefono = null;
+
+    if (this.user.nombre == "")
+      this.vacioNombre = true;
+
+    if (this.user.apellido == "")
+      this.vacioApellido = true;
+
+    if (this.direccion == "")
+      this.vacioDireccion = true;
+      
+    if (this.user.telefono == "")
+      this.vacioTelefono = true;
+
+    if (this.vacioApellido != null || this.vacioNombre != null || this.vacioDireccion != null ||this.vacioTelefono != null)
     {
-      alert("Complete los campos para continuar. ");
+      alert("Error!!!, algunos campos no se han completados");
       return;
     }
 
     if (!(confirm("¿Desea modificar sus datos?")))
       return;
+    
+    this.ValidarDireccion();
+  }
 
+  ModificarUsuario()
+  {
     let direccion = this.direccion.split(", ");
     this.user.direccion = direccion[0];
     this.user.localidad = direccion[1];
@@ -173,6 +260,7 @@ export class PanelComponent implements OnInit {
     this.user.direccionCompleta = this.direccion;
 
     this.ws.ModificarUsuario(this.user).then( data => {
+      this.cargando = null;
       console.log(data);
       if (data.exito)
       {
@@ -190,9 +278,17 @@ export class PanelComponent implements OnInit {
       }
     })
     .catch( e => {
+      this.cargando = null;
       alert("Ocurrio un error, vuelva a intentarlo. ");
       console.log(e);
     } );
+  }
+
+  Subir()
+  {
+    this.cargando = true;
+
+    this.uploader1.queue[0].upload();
   }
 
   ModificarImagen()
@@ -252,7 +348,7 @@ export class PanelComponent implements OnInit {
       (error) => { /*this.cargandoPosicion = null; this.errorCargandoPosicion = true;*/ this.AlternativaMarcarUsuario(); console.log(error + ". Reintentando en alernativa... "); }, 
       {
         enableHighAccuracy: true,
-        timeout: 3000,
+        timeout: 10000,
         maximumAge: 0
       });
     };

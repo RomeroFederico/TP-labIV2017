@@ -12,6 +12,7 @@ import { LoginComponent } from './components/login/login.component';
 import { WsService }  from './services/ws/ws.service';
 import { AutService } from './services/auth/aut.service';
 import { VerificarJWTService } from './services/verificar-jwt/verificar-jwt.service';
+import { VerificarJWT2Service } from './services/verificar-jwt2/verificar-jwt2.service';
 import { JwtModule } from './jwt/jwt.module';
 import { ProductosComponent } from './components/productos/productos.component';
 import { LocalesComponent } from './components/locales/locales.component';
@@ -23,6 +24,9 @@ import { FileUploadModule } from 'ng2-file-upload';
 import { PanelComponent } from './components/panel/panel.component';
 
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { UsuariosComponent } from './components/usuarios/usuarios.component';
+
+import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -30,6 +34,7 @@ const appRoutes: Routes = [
   { path: 'locales', component: LocalesComponent },
   { path: 'pedidos', component: PedidosComponent, canActivate: [VerificarJWTService], },
   { path: 'encuesta', component: EncuestaComponent, canActivate: [VerificarJWTService], },
+  { path: 'usuarios', component: UsuariosComponent, canActivate: [VerificarJWT2Service], },
   { path: 'panel', component: PanelComponent, canActivate: [VerificarJWTService], },
   { path: 'login', component: LoginComponent },
   { path: '',   redirectTo: '/home', pathMatch: 'full' },
@@ -47,9 +52,11 @@ const appRoutes: Routes = [
     ProductosComponent,
     LocalesComponent,
     EncuestaComponent,
-    PanelComponent
+    PanelComponent,
+    UsuariosComponent
   ],
   imports: [
+    Ng2SmartTableModule,
     FileUploadModule,
     GooglePlaceModule,
     MultiselectDropdownModule,
@@ -63,6 +70,7 @@ const appRoutes: Routes = [
     WsService,
     AutService,
     VerificarJWTService,
+    VerificarJWT2Service,
     {provide: LocationStrategy, useClass: HashLocationStrategy}
   ],
   bootstrap: [AppComponent]

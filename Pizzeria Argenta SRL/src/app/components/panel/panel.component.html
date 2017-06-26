@@ -8,7 +8,7 @@
             </div>
             <h4 style = "color: white">Panel de Control</h4>
             <ul class="nav nav-pills nav-stacked opciones">
-                <li (click) = "Mostrar('Mi informacion')" [ngClass] = "seleccion == 'Mi informacion'? 'active' : ''"><a>Mi informacion</a></li>
+                <li (click) = "Mostrar('Mi informacion')" [ngClass] = "seleccion == 'Mi informacion'? 'active' : ''"><a >Mi informacion</a></li>
                 <li (click) = "Mostrar('Cambiar imagen')" [ngClass] = "seleccion == 'Cambiar imagen'? 'active' : ''"><a>Cambiar imagen</a></li>
             </ul>
         </div>
@@ -50,9 +50,10 @@
                             <div class="col-sm-6">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-font fa-fw"></i></span>
-                                <input class="form-control" type="text" placeholder="Apellido" [(ngModel)]="user.apellido" [readonly] = "editar == null">
+                                <input class="form-control" type="text" placeholder="Apellido" [value]="user.apellido" (input)="ValidarSoloLetras($event, 'Apellido')" [readonly] = "editar == null" maxlength="20">
                             </div>
                             </div>
+                            <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioApellido && editar" title = "Error, no se ha ingresado nada" style="color : #d9534f"></i>
                         </div>
                         <div class="row" style = "margin-bottom : 20px;">
                             <div class = "col-sm-2 col-sm-offset-2">
@@ -61,9 +62,10 @@
                             <div class="col-sm-6">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-font fa-fw"></i></span>
-                                <input class="form-control" type="text" placeholder="Nombre" [(ngModel)]="user.nombre" [readonly] = "editar == null">
+                                <input class="form-control" type="text" placeholder="Nombre" [value]="user.nombre" (input)="ValidarSoloLetras($event, 'Nombre')" [readonly] = "editar == null" maxlength="20">
                             </div>
                             </div>
+                            <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioNombre && editar" title = "Error, no se ha ingresado nada" style="color : #d9534f"></i>
                         </div>
                         <div class="row" style = "margin-bottom : 20px;" *ngIf = "editar != null">
                             <div class = "col-sm-2 col-sm-offset-2">
@@ -107,6 +109,8 @@
                                 </span> 
                             </div>
                             </div>
+                            <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "validarDireccion && editar" title = "Direccion no valida" style="color : #d9534f"></i>
+                            <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioDireccion && editar" title = "Error, no se ha ingresado nada" style="color : #d9534f"></i>
                         </div>
                         <div class="row" style = "margin-bottom : 20px;" *ngIf = "editar == null">
                             <div class = "col-sm-2 col-sm-offset-2">
@@ -126,9 +130,10 @@
                             <div class="col-sm-6">
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-phone fa-fw"></i></span>
-                                <input class="form-control" type="text-area" placeholder="Telefono" [(ngModel)]="user.telefono" [readonly] = "editar == null">
+                                <input [value]="user.telefono" (input)="ValidarSoloNumeros($event)" class="form-control" type="text" placeholder="Telefono" [readonly] = "editar == null" maxlength="20">
                             </div>
                             </div>
+                            <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioTelefono && editar" title = "Error, no se ha ingresado nada" style="color : #d9534f"></i>
                         </div>
                         <br>
                         <div class="form-group row">
@@ -172,7 +177,7 @@
 
                             <div class = "col-sm-7">
                                 <h5><i class="fa fa-cube" aria-hidden="true"></i>Seleccione una imagen:</h5>
-                                <input type="file" ng2FileSelect [uploader]="uploader1" (change) = "uploader1.queue.length != 0? uploader1.queue[0].upload() : MostrarConsola('Nada')" style = "color : black"/>
+                                <input #myInput1 type="file" ng2FileSelect [uploader]="uploader1" (change) = "uploader1.queue.length != 0? Subir() : MostrarConsola('Nada')" style = "color : black"/>
                                 <div class="progress" style="margin-bottom: 0;" *ngIf = "uploader1.queue.length != 0 || imagenAnterior != user.img">
                                     <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" [ngStyle]="{ 'width': (uploader1.queue.length != 0? uploader1.queue[0].progress : '100') + '%' }"></div>
                                 </div>
@@ -204,7 +209,7 @@
                         <div class="panel-footer">
 
                         <div class="col-sm-4 col-sm-offset-7" *ngIf = "editar == null">
-                            <button type="submit" class="btn btn-success btn-block" (click) = "ModificarImagen()">
+                            <button type="submit" class="btn btn-success btn-block" (click) = "ModificarImagen()" [disabled] = "cargando != null">
                                 <i class="fa fa-pencil-square-o fa-lg"></i> 
                                 Modificar
                             </button>

@@ -12,6 +12,7 @@
               <li><a routerLink="/productos" routerLinkActive="active">Productos</a></li>
               <li><a routerLink="/locales" routerLinkActive="active">Locales</a></li>
               <li><a routerLink="/pedidos" routerLinkActive="active">Pedidos</a></li>
+              <li *ngIf = "Comprobar() && ObtenerUsuario().tipo == 'Administrador'"><a routerLink="/usuarios" routerLinkActive="active">Usuarios</a></li>
             </ul>
           </div>
         </nav>
