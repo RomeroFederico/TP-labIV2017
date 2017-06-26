@@ -52,6 +52,17 @@ export class LoginComponent implements OnInit {
   verificadoF : boolean = null;
   errorVerificado : boolean = null;
 
+  vacioEmail : boolean = null;
+  vacioPassword : boolean = null;
+  vacioApellido : boolean = null;
+  vacioNombre : boolean = null;
+  vacioDireccion : boolean = null;
+  vacioTelefono : boolean = null;
+
+  validarDireccion : boolean = null;
+  validarEmail : boolean = null;
+  validarPassword : boolean = null;
+
   constructor(private router: Router, private route: ActivatedRoute, 
               private ws: WsService, private aut : AutService)
   {
@@ -95,6 +106,135 @@ export class LoginComponent implements OnInit {
       this.user.email = "admin@admin.com";
       this.user.password = "789456123";
     }
+  }
+
+  ValidarEmail(email)
+  {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+  }
+
+  ValidarSoloLetras(event, atributo)
+  {
+    let newText: string = event.target.value;
+    if (/^[a-zA-Z]+$/.test(newText) || newText == "") {
+      //input is valid, so update the model
+      if (atributo == "Apellido")
+        this.user.apellido = newText;
+      else
+        this.user.nombre = newText;
+    }
+    else {
+      //restore the original value
+      if (atributo == "Apellido")
+        event.target.value = this.user.apellido;
+      else
+        event.target.value = this.user.nombre;
+    }
+  }
+
+  ValidarSoloNumeros(event)
+  {
+    let newText: string = event.target.value;
+    if (/^\d+$/.test(newText) || newText == "") {
+      //input is valid, so update the model
+      this.user.telefono = newText;
+    }
+    else {
+      //restore the original value
+      event.target.value = this.user.telefono;
+    }
+  }
+
+  ValidarDireccion()
+  {
+    this.cargando = true;
+
+    this.ws.getlatlng(this.direccion).then((value) => {
+
+      console.log(value);
+
+      if (value.results.length == 0)
+      {
+        this.mostrarInfo = true;
+        this.mensaje = "Direccion invalida. "; 
+        this.validarDireccion = true;
+        this.cargando = null;
+      }
+      else
+      {
+        //this.ModificarUsuario();
+        console.log("Validado!!!!");
+        this.RegistrarUsuario();
+      }
+    })
+    .catch((error) => { this.cargando = null; console.log("Error"); });
+  }
+
+  Registrarse()
+  {
+    this.mostrarError = null;
+    this.mostrarMensaje = null;
+    this.mostrarInfo = null;
+
+    this.vacioEmail = null;
+    this.vacioPassword = null;
+    this.vacioApellido = null;
+    this.vacioNombre = null;
+    this.vacioDireccion = null;
+    this.vacioTelefono = null;
+
+    this.validarPassword = null;
+    this.validarDireccion = null;
+    this.validarEmail = null;
+
+    if (this.user.email == "")
+      this.vacioEmail = true;
+
+    if (this.user.password == "")
+      this.vacioPassword = true;
+
+    if (this.user.nombre == "")
+      this.vacioNombre = true;
+
+    if (this.user.apellido == "")
+      this.vacioApellido = true;
+
+    if (this.direccion == "")
+      this.vacioDireccion = true;
+      
+    if (this.user.telefono == "")
+      this.vacioTelefono = true;
+
+    if (!this.ValidarEmail(this.user.email))
+      this.validarEmail = true;
+
+    if (this.user.password.length <= 6)
+      this.validarPassword = true;
+
+    if (this.vacioEmail != null || this.vacioPassword != null || this.vacioApellido != null || this.vacioNombre != null || this.vacioDireccion != null || this.vacioTelefono != null)
+    {
+      this.mostrarInfo = true;
+      this.mensaje = "Complete los campos para continuar. ";
+      return;
+    }
+    else if (!this.ValidarEmail(this.user.email))
+    {
+      this.mostrarInfo = true;
+      this.mensaje = "El email ingresado no es valido. ";
+      return;
+    }
+    else if (this.user.password.length <= 6)
+    {
+      this.mostrarInfo = true;
+      this.mensaje = "El password ingresado no es valido. ";
+      return;
+    }
+
+    if (!(confirm("¿Desea registrarse con estos datos?")))
+      return;
+    
+    this.ValidarDireccion();
   }
 
   Login()
@@ -193,11 +333,18 @@ export class LoginComponent implements OnInit {
     this.verificado = null;
     this.verificadoF = null;
     this.errorVerificado = null;
+    this.validarEmail = null;
+    this.vacioEmail = null;
 
     if (email.length == 0)
     {
       console.log("No se ha ingresado un email valido!!!");
       this.errorVerificado = true;
+    }
+    else if (!this.ValidarEmail(this.user.email))
+    {
+      this.validarEmail = true;
+      return;
     }
     else
     {
@@ -240,20 +387,8 @@ export class LoginComponent implements OnInit {
     console.log("LLendo a registrarse...");
   }
 
-  Registrarse()
+  RegistrarUsuario()
   {
-    this.mostrarError = null;
-    this.mostrarMensaje = null;
-    this.mostrarInfo = null;
-
-    if (this.user.password == "" || this.user.email == "" || this.user.nombre == "" || this.user.apellido == "" ||
-        this.direccion == "" || this.user.telefono == "")
-    {
-      this.mostrarInfo = true;
-      this.mensaje = "Complete los campos para continuar. ";
-      return;
-    }
-
     this.cargando = true;
 
     let direccion = this.direccion.split(", ");

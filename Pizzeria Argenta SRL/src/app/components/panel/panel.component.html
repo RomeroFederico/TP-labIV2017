@@ -177,7 +177,7 @@
 
                             <div class = "col-sm-7">
                                 <h5><i class="fa fa-cube" aria-hidden="true"></i>Seleccione una imagen:</h5>
-                                <input #myInput1 type="file" ng2FileSelect [uploader]="uploader1" (change) = "uploader1.queue.length != 0? Subir() : MostrarConsola('Nada')" style = "color : black"/>
+                                <input #myInput1 type="file" ng2FileSelect [uploader]="uploader1" (change) = "uploader1.queue.length != 0? Subir() : MostrarConsola('Nada')" style = "color : black" [disabled] = "cargando != null"/>
                                 <div class="progress" style="margin-bottom: 0;" *ngIf = "uploader1.queue.length != 0 || imagenAnterior != user.img">
                                     <div class="progress-bar progress-bar-danger progress-bar-striped active" role="progressbar" [ngStyle]="{ 'width': (uploader1.queue.length != 0? uploader1.queue[0].progress : '100') + '%' }"></div>
                                 </div>

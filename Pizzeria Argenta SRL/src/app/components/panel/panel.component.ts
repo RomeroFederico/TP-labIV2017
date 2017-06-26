@@ -151,6 +151,7 @@ export class PanelComponent implements OnInit {
       {
         alert("La direccion ingresada es invalida!!!");
         this.validarDireccion = true;
+        this.cargando = null;
       }
       else
         this.ModificarUsuario();
@@ -225,6 +226,7 @@ export class PanelComponent implements OnInit {
     this.vacioNombre = null;
     this.vacioDireccion = null;
     this.vacioTelefono = null;
+    this.validarDireccion = null;
 
     if (this.user.nombre == "")
       this.vacioNombre = true;
