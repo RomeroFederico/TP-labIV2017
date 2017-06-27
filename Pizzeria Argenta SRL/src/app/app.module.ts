@@ -27,6 +27,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { UsuariosComponent } from './components/usuarios/usuarios.component';
 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
+import { AgregarUsuarioComponent } from './components/agregar-usuario/agregar-usuario.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -53,7 +54,8 @@ const appRoutes: Routes = [
     LocalesComponent,
     EncuestaComponent,
     PanelComponent,
-    UsuariosComponent
+    UsuariosComponent,
+    AgregarUsuarioComponent
   ],
   imports: [
     Ng2SmartTableModule,

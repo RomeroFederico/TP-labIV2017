@@ -57,3 +57,11 @@ select {
      vertical-align: middle;
 }
 
+.table tbody tr:hover td, .table tbody tr:hover th {
+    color: black;
+}
+
+miPuntero {
+    cursor: pointer;
+}
+

@@ -1,31 +1,48 @@
 <div class = "container-fluid contenedorPrincipal">
 <div class = "contenedorObjetos">
-  <div class="btn-group btn-group-justified" role="group" aria-label="..." style = "margin-bottom: 20px">
+  <div class = "row">
+    <div class = "col-sm-10">
+      <blockquote style = "color: white">
+        <h2>{{registrar == null? 'Listado de usuarios.' : 'Registrar Usuario.'}}</h2>
+      </blockquote>
+    </div>
+    <div class = "col-sm-2">
+      <button type="button" class="btn btn-success miPuntero" [disabled] = "cargando != null" (click) = "AlternarRegistro()">
+        <i *ngIf = "registrar == null" class = "fa fa-fw fa-user-plus fa-5x" title = "Agregar usuario"></i>
+        <i *ngIf = "registrar != null" class = "fa fa-fw fa-chevron-circle-left fa-5x" title = "Agregar usuario"></i>
+      </button>
+    </div>
+  </div>
+  <hr *ngIf = "registrar == true">
+  <div class="btn-group btn-group-justified" role="group" aria-label="..." style = "margin-bottom: 20px" *ngIf = "registrar == null">
     <div class="btn-group" role="group">
-      <button type="button" class="btn btn-success" (click) = "Mostrar('Todos')">Todos</button>
+      <button type="button" class="btn btn-success" (click) = "Mostrar('Todos')" [disabled] = "cargando != null">Todos</button>
     </div>
     <div class="btn-group" role="group">
-      <button type="button" class="btn btn-danger" (click) = "Mostrar('Cliente')">Clientes</button>
+      <button type="button" class="btn btn-danger" (click) = "Mostrar('Cliente')" [disabled] = "cargando != null">Clientes</button>
     </div>
     <div class="btn-group" role="group">
-      <button type="button" class="btn btn-warning" (click) = "Mostrar('Encargado')">Encargados</button>
+      <button type="button" class="btn btn-warning" (click) = "Mostrar('Encargado')" [disabled] = "cargando != null">Encargados</button>
     </div>
     <div class="btn-group" role="group">
-      <button type="button" class="btn btn-info" (click) = "Mostrar('Empleado')">Empleados</button>
+      <button type="button" class="btn btn-info" (click) = "Mostrar('Empleado')" [disabled] = "cargando != null">Empleados</button>
     </div>
   </div>
 
 <div class="container">
-  <div class = "col-sm-12 cargando parent" *ngIf = "usuariosBase == null">
+
+  <app-agregar-usuario *ngIf = "registrar == true" (onRegistrado) = "CapturarEventoRegistrado($event)"></app-agregar-usuario>
+
+  <div class = "col-sm-12 cargando parent" *ngIf = "usuariosBase == null && registrar == null">
                 <div class = "child">
                     <i class="fa fa-cog fa-spin fa-5x fa-fw" style = "color: white"></i><br>
                     <h2 style = "color: white">Cargando Usuarios</h2>
                 </div>
   </div> 
-  <div class="row" *ngIf = "usuariosBase != null" style = "min-height: 500px;">
+  <div class="row" *ngIf = "usuariosBase != null && registrar == null" style = "min-height: 500px;">
 
-  <div class="table-responsive vertical-align">
-    <table class="table text-center">
+  <div class="table-responsive vertical-align table-hover">
+    <table class="table text-center table-hover">
       <thead style = "color: white">
         <th class = "text-center">Imagen</th>
         <th class = "text-center">Apellido</th>
@@ -37,6 +54,7 @@
         <th class = "text-center">Localidad</th>
         <th class = "text-center">Estado</th>
         <th class = "text-center">Tipo</th>
+        <th class = "text-center">Accion</th>
       </thead>
       <tr *ngFor = "let usuario of usuarios" style = "color:white" >
         <td class="col-sm-1">
@@ -63,11 +81,28 @@
         <td class="col-sm-1">
           {{usuario.localidad}}
         </td>
-        <td class="col-sm-1">
-          {{usuario.estado == 1? 'Activo' : 'Inactivo'}}
+        <td class="col-sm-2">
+          <!--{{usuario.estado == 1? 'Activo' : 'Inactivo'}}-->
+          <select class="form-control" [(ngModel)]="usuario.estado">
+            <option value = "1"><div *ngIf = "usuario.estadoBase == 1">&#xf00c; </div>Activo</option>
+            <option value = "0"><div *ngIf = "usuario.estadoBase == 0">&#xf00c; </div>Inactivo</option>
+          </select>
+        </td>
+        <td class="col-sm-2">
+          <select class="form-control" [(ngModel)]="usuario.tipo">
+            <option value = "Cliente"><div *ngIf = "usuario.tipoBase == 'Cliente'">&#xf00c; </div>Cliente</option>
+            <option value = "Empleado"><div *ngIf = "usuario.tipoBase == 'Empleado'">&#xf00c; </div>Empleado</option>
+            <option value = "Encargado"><div *ngIf = "usuario.tipoBase == 'Encargado'">&#xf00c; </div>Encargado</option>
+          </select>
         </td>
         <td class="col-sm-1">
-          {{usuario.tipo}}
+          <button type="button" class="btn btn-warning miPuntero" (click) = "Modificar(usuario)" [disabled] = "Comprobar(usuario) || cargando != null">
+            <span class="fa-stack fa-lg" *ngIf = "cargando == null">
+              <i class="fa fa-pencil fa-stack-1x" title = "Modifcar"></i>
+              <i *ngIf = "Comprobar(usuario)" class="fa fa-ban fa-stack-2x text-danger" title = "No se ha modificado nada"></i>
+            </span>
+            <i *ngIf = "cargando != null" class = "fa fa-cog fa-2x fa-spin" title = "Modificando, espere un momento"></i>
+          </button>
         </td>
       </tr>
     </table>
