@@ -140,6 +140,16 @@ export class WsService {
     .catch( this.handleError );
   }
 
+  ModificarLocal(obj)
+  {
+    var body =  obj;
+
+    return this.http.post(this.url + 'locales/modificar', body)
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
   ObtenerLocales()
   {
     return this.http.get(this.url + 'locales')
@@ -151,6 +161,14 @@ export class WsService {
   ObtenerProductosDelLocal(idLocal)
   {
     return this.http.get(this.url + 'productos/local/' + idLocal)
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  ObtenerEmpleadosDelLocal(idLocal)
+  {
+    return this.http.get(this.url + 'empleados/local/' + idLocal)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );

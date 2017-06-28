@@ -21,7 +21,8 @@ export class Local
                public lng : number = 0,
                public marcador : any = null,
                public gerente : Gerente = null,
-               public productos : Array<Producto> = null)
+               public productos : Array<Producto> = null,
+               public empleados : Array<any> = null)
   {
 
   }
@@ -39,7 +40,8 @@ export class Gerente
                public localidadUsuario : string = "", 
                public provinciaUsuario : string = "", 
                public paisUsuario : string = "", 
-               public usuarioImg : string = "")
+               public usuarioImg : string = "",
+               public legajo : string = "")
   {
 
   }
@@ -73,6 +75,8 @@ export class ListaLocalesComponent implements OnInit {
   registrar : boolean = null;
   error : boolean = null;
 
+  localModificar : any = null;
+
   constructor(public ws : WsService, public autService : AutService,
               private router: Router)
   {
@@ -102,12 +106,14 @@ export class ListaLocalesComponent implements OnInit {
         gerente.provinciaUsuario = local.provinciaUsuario;
         gerente.paisUsuario = local.paisUsuario;
         gerente.usuarioImg = local.usuarioImg;
+        gerente.legajo = local.legajo;
 
         this.locales[this.locales.length - 1].gerente = gerente;
 
-        var direccionCompleta = local.direccion + " " + local.localidad + ", " + local.provincia + ", " + local.pais;
+        var direccionCompleta = local.direccion + ", " + local.localidad + ", " + local.provincia + ", " + local.pais;
         this.locales[this.locales.length - 1].direccionCompleta = direccionCompleta;
         this.CargarProductosDelLocal(local);
+        this.CargarEmpleadosDelLocal(local);
       });
     })
     .catch( error => {
@@ -133,10 +139,26 @@ export class ListaLocalesComponent implements OnInit {
     })
   }
 
+  CargarEmpleadosDelLocal(local : Local)
+  {
+    this.ws.ObtenerEmpleadosDelLocal(local.idLocal).then((data) =>
+    {
+      console.log(local.idLocal);
+      console.log(data);
+      local.empleados = data;
+    })
+    .catch( error => {
+      console.log(error);
+    })
+  }
+
   AlternarRegistro()
   {
     if (this.registrar == null)
+    {
+      this.localModificar = null;
       this.registrar = true;
+    }
     else
       this.registrar = null;
   }
@@ -153,6 +175,14 @@ export class ListaLocalesComponent implements OnInit {
     {
       this.registrar = null;
     }
+  }
+
+  Modificar(local : any)
+  {
+    console.log("Voy a modificar local");
+    console.log(local);
+    this.localModificar = local;
+    this.registrar = true;
   }
 
 }

@@ -18,7 +18,7 @@
 
 <div class="container">
 
-  <app-agregar-local *ngIf = "registrar == true" (onRegistrado) = "CapturarEventoRegistrado($event)"></app-agregar-local>
+  <app-agregar-local [Local] = "localModificar" *ngIf = "registrar == true" (onRegistrado) = "CapturarEventoRegistrado($event)"></app-agregar-local>
 
   <div class = "col-sm-12 cargando parent" *ngIf = "locales == null && registrar == null && error == null">
                 <div class = "child">
@@ -76,8 +76,9 @@
           {{local.gerente.apellido}}, {{local.gerente.nombre}}
         </td>
         <td class="col-sm-1">
-          <button type="button" class="btn btn-warning miPuntero" (click) = "Modificar(local)">
-            <i class="fa fa-pencil fa-2x" title = "Modificar"></i>
+          <button type="button" class="btn btn-warning miPuntero" (click) = "Modificar(local)" [disabled] = "local.productos == null || local.empleados == null">
+            <i *ngIf = "local.productos != null && local.empleados != null" class = "fa fa-pencil fa-2x" title = "Modificar"></i>
+            <i *ngIf = "local.productos == null || local.empleados == null" class = "fa fa-cog fa-spin fa-2x" title = "Cargando datos..."></i>
           </button>
         </td>
       </tr>

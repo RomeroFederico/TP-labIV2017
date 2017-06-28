@@ -113,7 +113,7 @@
 
                         <div style = "width: 150px; height: 150px; border-radius: 10px; border-style : solid; border-color: lightgreen">
 
-                          <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img1 == null">
+                          <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img1 == null && local.img1 == 'default.png'">
                             <div class = "child">
                               <img src = "http://www.romerofederico.hol.es/pizza/ws/img/locales/default.png" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
                             </div>
@@ -122,6 +122,12 @@
                           <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img1 != null">
                             <div class = "child">
                               <img [src] = "'http://www.romerofederico.hol.es/pizza/ws/tmp/locales/' + img1" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
+                            </div>
+                          </div>
+
+                          <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img1 == null && local.img1 != 'default.png'">
+                            <div class = "child">
+                              <img [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/locales/' + local.img1" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
                             </div>
                           </div>
 
@@ -145,7 +151,7 @@
 
                         <div style = "width: 150px; height: 150px; border-radius: 10px; border-style : solid; border-color: lightgreen">
 
-                          <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img2 == null">
+                          <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img2 == null && local.img2 == 'default.png'">
                             <div class = "child">
                               <img src = "http://www.romerofederico.hol.es/pizza/ws/img/locales/default.png" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
                             </div>
@@ -154,6 +160,12 @@
                           <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img2 != null">
                             <div class = "child">
                               <img [src] = "'http://www.romerofederico.hol.es/pizza/ws/tmp/locales/' + img2" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
+                            </div>
+                          </div>
+
+                          <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "local.img2 != 'default.png' && img2 == null">
+                            <div class = "child">
+                              <img [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/locales/' + local.img2" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
                             </div>
                           </div>
 
@@ -177,7 +189,7 @@
 
                         <div style = "width: 150px; height: 150px; border-radius: 10px; border-style : solid; border-color: lightgreen">
 
-                          <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img3 == null">
+                          <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img3 == null && local.img3 == 'default.png'">
                             <div class = "child">
                               <img src = "http://www.romerofederico.hol.es/pizza/ws/img/locales/default.png" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
                             </div>
@@ -186,6 +198,12 @@
                           <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img3 != null">
                             <div class = "child">
                               <img [src] = "'http://www.romerofederico.hol.es/pizza/ws/tmp/locales/' + img3" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
+                            </div>
+                          </div>
+
+                          <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img3 == null && local.img3 != 'default.png'">
+                            <div class = "child">
+                              <img [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/locales/' + local.img3" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
                             </div>
                           </div>
 

@@ -19,6 +19,9 @@ export class Local
                public img1 : string = "default.png",
                public img2 : string = "default.png",
                public img3 : string = "default.png",
+               public img1Anterior : string = "",
+               public img2Anterior : string = "",
+               public img3Anterior : string = "",
                public direccionCompleta : string = "",
                public direccion : string = "",
                public localidad : string = "",
@@ -79,6 +82,8 @@ export class AgregarLocalComponent implements OnInit, Input, Output {
   direccion : string = "";
 
   local: Local = new Local();
+
+  modifico : boolean = null;
 
   mensaje : string;
   mostrarMensaje : boolean = null;
@@ -322,6 +327,42 @@ export class AgregarLocalComponent implements OnInit, Input, Output {
 
   @Output() onRegistrado = new EventEmitter<any>();
 
+  @Input()
+
+  set Local(local : any)
+  {
+    if (local != null)
+    {
+      this.local = local;
+      this.modifico = true;
+
+      if (Object.keys(this.local.empleados).length != 0)
+      {
+        this.local.empleados.forEach(usuario => {
+          this.myOptions3.push({id: usuario.idUsuario, name: usuario.legajo + ": " + usuario.apellido + ", " + usuario.nombre});
+          this.optionsModelEmpleados.push(usuario.idUsuario);
+        });
+      }
+
+      this.myOptions2.push({id: this.local.gerente.idUsuario, name: this.local.gerente.legajo + ": " + this.local.gerente.apellido + ", " + this.local.gerente.nombre});
+      this.optionsModelEncargados.push(this.local.gerente.idUsuario);
+
+      console.log(this.local);
+
+      if (Object.keys(this.local.productos).length != 0)
+      {
+        this.local.productos.forEach(producto => {
+          this.optionsModelProductos.push(producto.idProducto);
+        });
+      }
+
+      this.direccion = this.local.direccionCompleta;
+      this.local.img1Anterior = this.local.img1;
+      this.local.img2Anterior = this.local.img2;
+      this.local.img3Anterior = this.local.img3;
+    }
+  } 
+
   Subir(queImagen : number)
   {
     this.cargando = true;
@@ -380,7 +421,10 @@ export class AgregarLocalComponent implements OnInit, Input, Output {
       else
       {
         console.log("Validado!!!!");
-        this.RegistrarUsuario();
+        if (this.modifico == null)
+          this.RegistrarUsuario();
+        else
+          this.ModificarLocal();
       }
     })
     .catch((error) => { this.cargando = null; console.log("Error"); });
@@ -426,7 +470,7 @@ export class AgregarLocalComponent implements OnInit, Input, Output {
       return;
     }
 
-    if (!(confirm("¿Desea registrar el local con estos datos?")))
+    if (!(confirm("¿Desea " + (this.modifico != null? "modificar" : "registrar") + " el local con estos datos?")))
       return;
     
     this.ValidarDireccion();
@@ -533,9 +577,54 @@ export class AgregarLocalComponent implements OnInit, Input, Output {
     } );
   }
 
+  ModificarLocal()
+  {
+    let direccion = this.direccion.split(", ");
+    this.local.direccion = direccion[0];
+    this.local.localidad = direccion[1];
+    this.local.provincia = direccion[2];
+    this.local.pais = direccion[3];
+
+    if (this.img1 != null)
+      this.local.img1 = this.img1;
+
+    if (this.img2 != null)
+      this.local.img2 = this.img2;
+
+    if (this.img3 != null)
+      this.local.img3 = this.img3;
+
+    this.local.idUsuario = this.optionsModelEncargados[0];
+    this.local.productos = this.optionsModelProductos;
+    this.local.empleados = this.optionsModelEmpleados;
+
+    console.log(this.local);
+
+    this.ws.ModificarLocal(this.local).then( data => {
+      console.log("Accediendo al servidor...");
+      console.log(data);
+      this.cargando = null;
+      if (data.exito)
+      {
+        alert("Local modificado con exito!!!");
+        this.onRegistrado.emit(true);
+      }
+      else
+      {
+        this.mensajeMostrar = data.mensaje;
+        this.mostrarMensaje = true;
+      }
+    })
+    .catch( e => {
+      this.cargando = null;
+      this.mostrarError = true;
+      console.log(e);
+    } );
+  }
+
   CancelarRegistro()
   {
-    if (confirm("Desea cancelar el registro del local?"))
+    if (confirm("Desea cancelar " + (this.modifico != null? "la modificacion" : "el registro") + " del local?"))
       this.onRegistrado.emit(false);
   }
 
@@ -566,7 +655,10 @@ export class AgregarLocalComponent implements OnInit, Input, Output {
       console.log(data);
       if (data == false || Object.keys(data).length === 0)
       {
-        this.noHayEmpleados = true;
+        if (this.myOptions3.length == 1)
+          this.noHayEmpleados = true;
+        else
+          this.empleados = this.local.empleados;
       }
       else
       {
@@ -587,7 +679,10 @@ export class AgregarLocalComponent implements OnInit, Input, Output {
       console.log(data);
       if (data == false || Object.keys(data).length === 0)
       {
-        this.noHayEncargados = true;
+        if (this.myOptions2.length == 1)
+          this.noHayEncargados = true;
+        else
+          this.encargados = [this.local.gerente];
       }
       else
       {
