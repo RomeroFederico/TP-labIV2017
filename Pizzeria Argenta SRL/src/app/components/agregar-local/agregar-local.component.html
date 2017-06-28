@@ -1,0 +1,216 @@
+<div class="container-fluid center_div">
+
+      <div class="alert alert-warning" role="alert" *ngIf = "mostrarMensaje">
+        {{mensajeMostrar}}
+      </div>
+
+      <div class="alert alert-danger" role="alert" *ngIf = "mostrarError">
+        <strong>ERROR!</strong> Ocurrio un problema en el servidor, vuelva a intentarlo.
+      </div>
+
+      <div class="alert alert-info" *ngIf = "mostrarInfo">
+        <strong>INFORMACION: </strong>{{mensaje}}
+      </div>
+
+      <div class="alert alert-info" *ngIf = "cargando">
+        <strong>Cargando: </strong>Espere un momento...
+      </div>
+
+   <div class="panel panel-success centrarRegistro">
+              <div class="panel-heading">
+                Registro de local
+              </div>
+              <div class="panel-body">
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Direccion</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-map-marker fa-fw"></i></span>
+                        <input type="text" class = "form-control" [(ngModel)]="direccion" googleplace/>
+                        <span class="input-group-btn">
+                          <button *ngIf = "cargandoPosicion == null && errorCargandoPosicion == null" class="btn btn-default" type="button" title="Obten tu ubicacion" (click) = "ObtenerDireccionUsuario()"><i class="fa fa-street-view fa-fw"></i></button>
+                          <button *ngIf = "cargandoPosicion" class="btn btn-default" type="button" title="Cargando posicion..."><i class="fa fa-cog fa-spin fa-fw"></i></button>
+                          <button *ngIf = "errorCargandoPosicion" class="btn btn-danger" type="button" title="Error, vuelva a intentarlo" (click) = "ReintentarObtenerDireccionUsuario()"><i class="fa fa-exclamation-triangle fa-fw"></i></button>
+                        </span> 
+                      </div>
+                    </div>
+                    <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "validarDireccion" title = "Direccion no valida" style="color : #d9534f"></i>
+                    <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioDireccion" title = "Error, no se ha ingresado nada" style="color : orange"></i>
+                  </div>
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Telefono</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-phone fa-fw"></i></span>
+                        <input [value]="local.telefono" (input)="ValidarSoloNumeros($event, 'Telefono')" class="form-control" type="text" placeholder="Telefono" maxlength="20">
+                      </div>
+                    </div>
+                    <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioTelefono" title = "Error, no se ha ingresado nada" style="color : orange"></i>
+                  </div>
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Capacidad</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-users fa-fw"></i></span>
+                        <input [value]="local.capacidad" (input)="ValidarSoloNumeros($event, 'Capacidad')" class="form-control" type="text" placeholder="Capacidad" maxlength="3">
+                      </div>
+                    </div>
+                    <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioCapacidad" title = "Error, no se ha ingresado nada" style="color : orange"></i>
+                  </div>
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Productos</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <ss-multiselect-dropdown *ngIf = "productos != null" [options]="myOptions" [texts]="myTexts" [settings]="mySettings" [(ngModel)]="optionsModelProductos"></ss-multiselect-dropdown>
+                      <label *ngIf = "productos == null">Cargando productos...</label>
+                      <label *ngIf = "ErrorProductos != null" style = "cursor : pointer" (click) = "ReintentarCargaProductos()">Error en la carga de productos. Reintentar</label>
+                    </div>
+                    <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioProducto" title = "Error, no se ha seleccionado ningun producto" style="color : orange"></i>
+                  </div>
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Encargado</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <ss-multiselect-dropdown *ngIf = "encargados != null" [options]="myOptions2" [texts]="myTexts2" [settings]="mySettings2" [(ngModel)]="optionsModelEncargados"></ss-multiselect-dropdown>
+                      <label *ngIf = "encargados == null && errorEncargados == null && noHayEncargados == null">Cargando encargados...</label>
+                      <label *ngIf = "errorEncargados != null" style = "cursor : pointer" (click) = "ReintentarCargarEncargadosLibres()">Error en la carga de encargados. Reintentar</label>
+                      <label *ngIf = "noHayEncargados != null">No hay encargados libres</label>
+                    </div>
+                    <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioEncargado" title = "Error, no se ha seleccionado ningun encargado" style="color : orange"></i>
+                  </div>
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Empleados</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <ss-multiselect-dropdown *ngIf = "empleados != null" [options]="myOptions3" [texts]="myTexts3" [settings]="mySettings" [(ngModel)]="optionsModelEmpleados"></ss-multiselect-dropdown>
+                      <label *ngIf = "empleados == null && errorEmpleados == null && noHayEmpleados == null">Cargando empleados...</label>
+                      <label *ngIf = "errorEmpleados != null" style = "cursor : pointer" (click) = "ReintentarCargarEmpleadosLibres()">Error en la carga de empleados. Reintentar</label>
+                      <label *ngIf = "noHayEmpleados != null">No hay empleados libres</label>
+                    </div>
+                    <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioEmpleado" title = "Error, no se han seleccionado 3 empleados como minimo" style="color : orange"></i>
+                  </div>
+                  
+                    <div class = "row" style = "margin-bottom : 20px;">
+
+                      <div class = "col-sm-4 col-sm-offset-2">
+                        <h5><i class="fa fa-cube" aria-hidden="true"></i> Imagen 1</h5>
+                        <input #myInput1 type="file" ng2FileSelect [uploader]="uploader1" (change) = "uploader1.queue.length != 0? Subir(0) : MostrarConsola('Nada')" [disabled] = "cargando != null"/>
+                        <div class="progress" style="margin-bottom: 0;" *ngIf = "uploader1.queue.length != 0 || img1 != null">
+                          <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" [ngStyle]="{ 'width': (uploader1.queue.length != 0? uploader1.queue[0].progress : '100') + '%' }"></div>
+                        </div>
+                      </div>
+
+                      <div class = "col-sm-4 col-sm-offset-2">
+
+                        <div style = "width: 150px; height: 150px; border-radius: 10px; border-style : solid; border-color: lightgreen">
+
+                          <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img1 == null">
+                            <div class = "child">
+                              <img src = "http://www.romerofederico.hol.es/pizza/ws/img/locales/default.png" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
+                            </div>
+                          </div>
+
+                          <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img1 != null">
+                            <div class = "child">
+                              <img [src] = "'http://www.romerofederico.hol.es/pizza/ws/tmp/locales/' + img1" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
+                            </div>
+                          </div>
+
+                        </div>
+                      
+                      </div>
+                    
+                    </div>
+                    
+                    <div class = "row" style = "margin-bottom : 20px;">
+
+                      <div class = "col-sm-4 col-sm-offset-2">
+                        <h5><i class="fa fa-cube" aria-hidden="true"></i> Imagen 2</h5>
+                        <input #myInput2 type="file" ng2FileSelect [uploader]="uploader2" (change) = "uploader2.queue.length != 0? Subir(1) : MostrarConsola('Nada')" [disabled] = "cargando != null"/>
+                        <div class="progress" style="margin-bottom: 0;" *ngIf = "uploader2.queue.length != 0 || img2 != null">
+                          <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" [ngStyle]="{ 'width': (uploader2.queue.length != 0? uploader2.queue[0].progress : '100') + '%' }"></div>
+                        </div>
+                      </div>
+
+                      <div class = "col-sm-4 col-sm-offset-2">
+
+                        <div style = "width: 150px; height: 150px; border-radius: 10px; border-style : solid; border-color: lightgreen">
+
+                          <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img2 == null">
+                            <div class = "child">
+                              <img src = "http://www.romerofederico.hol.es/pizza/ws/img/locales/default.png" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
+                            </div>
+                          </div>
+
+                          <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img2 != null">
+                            <div class = "child">
+                              <img [src] = "'http://www.romerofederico.hol.es/pizza/ws/tmp/locales/' + img2" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
+                            </div>
+                          </div>
+
+                        </div>
+                      
+                      </div>
+                    
+                    </div>
+
+                    <div class = "row" style = "margin-bottom : 20px;">
+
+                      <div class = "col-sm-4 col-sm-offset-2">
+                        <h5><i class="fa fa-cube" aria-hidden="true"></i> Imagen 3</h5>
+                        <input #myInput3 type="file" ng2FileSelect [uploader]="uploader3" (change) = "uploader3.queue.length != 0? Subir(2) : MostrarConsola('Nada')" [disabled] = "cargando != null"/>
+                        <div class="progress" style="margin-bottom: 0;" *ngIf = "uploader3.queue.length != 0 || img3 != null">
+                          <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" [ngStyle]="{ 'width': (uploader3.queue.length != 0? uploader3.queue[0].progress : '100') + '%' }"></div>
+                        </div>
+                      </div>
+
+                      <div class = "col-sm-4 col-sm-offset-2">
+
+                        <div style = "width: 150px; height: 150px; border-radius: 10px; border-style : solid; border-color: lightgreen">
+
+                          <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img3 == null">
+                            <div class = "child">
+                              <img src = "http://www.romerofederico.hol.es/pizza/ws/img/locales/default.png" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
+                            </div>
+                          </div>
+
+                          <div class = "col-sm-12 cargando parent" style = "height: 140px;" *ngIf = "img3 != null">
+                            <div class = "child">
+                              <img [src] = "'http://www.romerofederico.hol.es/pizza/ws/tmp/locales/' + img3" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
+                            </div>
+                          </div>
+
+                        </div>
+                      
+                      </div>
+                    
+                    </div>
+
+                  <br>
+                  <div class="form-group row">
+                    <div class = "col-sm-4  col-sm-offset-2">
+                      <button type="submit" class="btn btn-success btn-block" [disabled] = "cargando" (click) = "Registrarse()">
+                        <i class="fa fa-cutlery fa-lg"></i> 
+                        Registrar
+                      </button>
+                    </div>
+                    <div class="col-sm-4">
+                      <button type="submit" class="btn btn-danger btn-block" [disabled] = "cargando" (click) = "CancelarRegistro()">
+                        <i class="fa fa-arrow-left fa-lg"></i> 
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+              </div>
+  </div>
+
+</div>

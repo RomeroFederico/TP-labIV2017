@@ -33,6 +33,26 @@
                       </select>
                     </div>
                   </div>
+                  <div class="row" style = "margin-bottom : 20px;" *ngIf = "user.tipo != 'Cliente'">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Legajo</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-id-card-o fa-fw"></i></span>
+                        <input [value]="user.legajo" (input)="ValidarSoloNumeros($event, 'Legajo')" class="form-control" type="text" placeholder="Legajo (6 caracteres min.)" maxlength="8">
+                        <span class="input-group-btn">
+                          <button *ngIf = "cargandoVerificacionLegajo == null" class="btn btn-default" type="button" title="Comprobar" (click) = "VerificarLegajoUsuario(user.legajo)"><i class="fa fa-search fa-fw"></i></button>
+                          <button *ngIf = "cargandoVerificacionLegajo != null" class="btn btn-default" type="button" title="Revisando..."><i class="fa fa-cog fa-spin fa-fw"></i></button>
+                        </span>
+                      </div>
+                    </div>
+                    <i class="fa fa-check-circle fa-2x" title = "Disponible" *ngIf = "verificadoLegajo" style="color : #5cb85c"></i>
+                    <i class="fa fa-times-circle fa-2x" title = "No disponible" *ngIf = "verificadoFLegajo" style="color : #d9534f"></i>
+                    <i class="fa fa-exclamation-circle fa-2x" title = "Error de verificacion" *ngIf = "errorVerificadoLegajo" style="color : orange"></i>
+                    <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioLegajo" title = "Error, no se ha ingresado nada" style="color : orange"></i>
+                    <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "validarLegajo" title = "El legajo no es valido, debe contener 6 caracteres como minimo" style="color : darkred"></i>
+                  </div>
                   <div class="row" style = "margin-bottom : 20px;">
                     <div class = "col-sm-2 col-sm-offset-2">
                       <label>Email</label>
@@ -60,7 +80,7 @@
                     <div class="col-sm-6">
                       <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-                        <input class="form-control" type="password" placeholder="Password" [(ngModel)]="user.password" maxlength = "20">
+                        <input class="form-control" type="password" placeholder="Password (6 caracteres min.)" [(ngModel)]="user.password" maxlength = "20">
                       </div>
                     </div>
                     <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioPassword" title = "Error, no se ha ingresado nada" style="color : orange"></i>
@@ -132,7 +152,7 @@
                     <div class="col-sm-6">
                       <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-phone fa-fw"></i></span>
-                        <input [value]="user.telefono" (input)="ValidarSoloNumeros($event)" class="form-control" type="text" placeholder="Telefono" maxlength="20">
+                        <input [value]="user.telefono" (input)="ValidarSoloNumeros($event, 'Telefono')" class="form-control" type="text" placeholder="Telefono" maxlength="20">
                       </div>
                     </div>
                     <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioTelefono" title = "Error, no se ha ingresado nada" style="color : orange"></i>

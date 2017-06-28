@@ -28,6 +28,8 @@ import { UsuariosComponent } from './components/usuarios/usuarios.component';
 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { AgregarUsuarioComponent } from './components/agregar-usuario/agregar-usuario.component';
+import { ListaLocalesComponent } from './components/lista-locales/lista-locales.component';
+import { AgregarLocalComponent } from './components/agregar-local/agregar-local.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -36,6 +38,7 @@ const appRoutes: Routes = [
   { path: 'pedidos', component: PedidosComponent, canActivate: [VerificarJWTService], },
   { path: 'encuesta', component: EncuestaComponent, canActivate: [VerificarJWTService], },
   { path: 'usuarios', component: UsuariosComponent, canActivate: [VerificarJWT2Service], },
+  { path: 'lista-locales', component: ListaLocalesComponent, canActivate: [VerificarJWT2Service], },
   { path: 'panel', component: PanelComponent, canActivate: [VerificarJWTService], },
   { path: 'login', component: LoginComponent },
   { path: '',   redirectTo: '/home', pathMatch: 'full' },
@@ -55,7 +58,9 @@ const appRoutes: Routes = [
     EncuestaComponent,
     PanelComponent,
     UsuariosComponent,
-    AgregarUsuarioComponent
+    AgregarUsuarioComponent,
+    ListaLocalesComponent,
+    AgregarLocalComponent
   ],
   imports: [
     Ng2SmartTableModule,

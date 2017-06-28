@@ -1,0 +1,90 @@
+<div class = "container-fluid contenedorPrincipal">
+<div class = "contenedorObjetos">
+  <div class = "row">
+    <div class = "col-sm-10">
+      <blockquote style = "color: white">
+        <h2>{{registrar == null? 'Listado de Locales.' : 'Registrar Local.'}}</h2>
+      </blockquote>
+    </div>
+    <div class = "col-sm-2">
+      <button type="button" class="btn btn-success miPuntero" [disabled] = "cargando != null" (click) = "AlternarRegistro()">
+        <i *ngIf = "registrar == null" class = "fa fa-fw fa-cutlery fa-5x" title = "Agregar local"></i>
+        <i *ngIf = "registrar != null" class = "fa fa-fw fa-chevron-circle-left fa-5x" title = "Volver al listado"></i>
+      </button>
+    </div>
+  </div>
+
+  <hr>
+
+<div class="container">
+
+  <app-agregar-local *ngIf = "registrar == true" (onRegistrado) = "CapturarEventoRegistrado($event)"></app-agregar-local>
+
+  <div class = "col-sm-12 cargando parent" *ngIf = "locales == null && registrar == null && error == null">
+                <div class = "child">
+                    <i class="fa fa-cog fa-spin fa-5x fa-fw" style = "color: white"></i><br>
+                    <h2 style = "color: white">Cargando Locales</h2>
+                </div>
+  </div>
+
+  <div class = "col-sm-12 cargando parent" *ngIf = "locales == null && registrar == null && error != null">
+                <div class = "child">
+                    <i class="fa fa-exclamation-triangle fa-5x fa-fw" style = "color: white" aria-hidden="true"></i>
+                    <h2 style = "color: white">Error en la carga de locales.</h2>
+                    <h3 (click) = "ReintentarCargarLocales()" style = "cursor : pointer">Reintentar</h3>
+                </div>
+  </div>
+
+  <div class="row" *ngIf = "locales != null && registrar == null && error == null" style = "min-height: 500px;">
+
+  <div class="table-responsive vertical-align table-hover">
+    <table class="table text-center table-hover">
+      <thead style = "color: white">
+        <th class = "text-center">Imagen 1</th>
+        <th class = "text-center">Imagen 2</th>
+        <th class = "text-center">Imagen 3</th>
+        <th class = "text-center">Direccion</th>
+        <th class = "text-center">Localidad</th>
+        <th class = "text-center">Capacidad</th>
+        <th class = "text-center">Telefono</th>
+        <th class = "text-center">Gerente</th>
+        <th class = "text-center">Accion</th>
+      </thead>
+      <tr *ngFor = "let local of locales" style = "color:white" >
+        <td class="col-sm-1">
+          <img class = "img-responsive img-thumbnail" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/locales/' + local.img1">
+        </td>
+        <td class="col-sm-1">
+          <img class = "img-responsive img-thumbnail" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/locales/' + local.img2">
+        </td>
+        <td class="col-sm-1">
+          <img class = "img-responsive img-thumbnail" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/locales/' + local.img3">
+        </td>
+        <td class="col-sm-1">
+          {{local.direccion}}
+        </td>
+        <td class="col-sm-1">
+          {{local.localidad}}
+        </td>
+        <td class="col-sm-1">
+          {{local.capacidad}}
+        </td>
+        <td class="col-sm-1">
+          {{local.telefono}}
+        </td>
+        <td class="col-sm-1">
+          {{local.gerente.apellido}}, {{local.gerente.nombre}}
+        </td>
+        <td class="col-sm-1">
+          <button type="button" class="btn btn-warning miPuntero" (click) = "Modificar(local)">
+            <i class="fa fa-pencil fa-2x" title = "Modificar"></i>
+          </button>
+        </td>
+      </tr>
+    </table>
+  </div>
+    
+  </div>
+</div>
+</div>
+</div>

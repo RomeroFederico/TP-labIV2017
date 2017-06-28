@@ -18,6 +18,7 @@ export class UsuariosComponent implements OnInit {
 
   cargando : boolean = null;
   registrar : boolean = null;
+  error : boolean = null;
 
   constructor(public ws : WsService, public autService : AutService,
               private router: Router)
@@ -43,7 +44,13 @@ export class UsuariosComponent implements OnInit {
       this.Mostrar('Todos');
     }
     )
-    .catch((error) => { console.log(error)} );
+    .catch((error) => { this.error = true; console.log(error)} );
+  }
+
+  ReintentarCargarUsuarios()
+  {
+    this.error = null;
+    this.CargarUsuarios();
   }
 
   Mostrar(opcion)

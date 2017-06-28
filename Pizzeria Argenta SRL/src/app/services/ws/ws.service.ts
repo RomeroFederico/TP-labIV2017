@@ -35,6 +35,14 @@ export class WsService {
     .catch( this.handleError );
   }
 
+  VerificarLegajo(legajo: string)
+  {
+    return this.http.get(this.url + 'usuario/legajo/' + legajo)
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
   Registrar(user: Object)
   {
     var body =  user;
@@ -58,6 +66,22 @@ export class WsService {
   ObtenerUsuarios()
   {
     return this.http.get(this.url + 'usuarios')
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  ObtenerEmpleadosLibres()
+  {
+    return this.http.get(this.url + 'empleados/libres')
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  ObtenerEncargadosLibres()
+  {
+    return this.http.get(this.url + 'encargados/libres')
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -101,6 +125,16 @@ export class WsService {
   ObtenerProductos()
   {
     return this.http.get(this.url + 'productos')
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  RegistrarLocal(obj)
+  {
+    var body =  obj;
+
+    return this.http.post(this.url + 'locales/nuevo', body)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
