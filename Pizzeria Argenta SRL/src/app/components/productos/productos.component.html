@@ -1,9 +1,25 @@
 <div class = "container-fluid contenedorPrincipal">
 <div class = "contenedorObjetos">
-  <blockquote style = "color: white">
-    <h2>Nuestros Productos.</h2>
-    <footer>Nuestro Menu, <cite title="Source Title">Nuestra Identidad</cite></footer>
-  </blockquote>
+  <div class = "row">
+    <div class = "col-sm-7">
+      <blockquote style = "color: white">
+        <h2>Nuestros Productos.</h2>
+        <footer>Nuestro Menu, <cite title="Source Title">Nuestra Identidad</cite></footer>
+      </blockquote>
+    </div>
+
+    <div class = "col-sm-5" *ngIf = "localesCargados != null && locales != null" style = "margin-bottom: 10px;">
+      <div class = "row">
+        <div class = "col-sm-3">
+          <img src = "http://www.romerofederico.hol.es/pizza/ws/img/locales/default.png" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
+        </div>
+        <div class = "col-sm-9">
+        <h3 style = "color:white; font-style: italic">Seleccione un local : </h3>
+        <ss-multiselect-dropdown [options]="myOptions" [texts]="myTexts" [settings]="mySettings" [(ngModel)]="optionsModel" (ngModelChange) = "SeleccionDeLocal()"></ss-multiselect-dropdown>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="btn-group btn-group-justified" role="group" aria-label="..." style = "margin-bottom: 20px">
     <div class="btn-group" role="group">
       <button type="button" class="btn btn-success" (click) = "Mostrar('todos')">Todos</button>
@@ -16,9 +32,6 @@
     </div>
     <div class="btn-group" role="group">
       <button type="button" class="btn btn-info" (click) = "Mostrar('Combo')">Combos</button>
-    </div>
-    <div class = "btn-group" role = "group">
-      <ss-multiselect-dropdown *ngIf = "localesCargados != null && locales != null" [options]="myOptions" [texts]="myTexts" [settings]="mySettings" [(ngModel)]="optionsModel" (ngModelChange) = "SeleccionDeLocal()"></ss-multiselect-dropdown>
     </div>
   </div>
 

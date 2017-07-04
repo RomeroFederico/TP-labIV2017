@@ -51,7 +51,7 @@
         <th class = "text-center">Accion</th>
       </thead>
       <tr *ngFor = "let local of locales" style = "color:white" >
-        <td class="col-sm-1">
+        <td class="col-sm-1" (click) = "Mostrar(local)">
           <img class = "img-responsive img-thumbnail" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/locales/' + local.img1">
         </td>
         <td class="col-sm-1">
@@ -76,9 +76,15 @@
           {{local.gerente.apellido}}, {{local.gerente.nombre}}
         </td>
         <td class="col-sm-1">
-          <button type="button" class="btn btn-warning miPuntero" (click) = "Modificar(local)" [disabled] = "local.productos == null || local.empleados == null">
+          <button type="button" class="btn btn-warning miPuntero" (click) = "Modificar(local)" *ngIf = "local.errorProductos == null && local.errorEmpleados == null"[disabled] = "local.productos == null || local.empleados == null">
             <i *ngIf = "local.productos != null && local.empleados != null" class = "fa fa-pencil fa-2x" title = "Modificar"></i>
             <i *ngIf = "local.productos == null || local.empleados == null" class = "fa fa-cog fa-spin fa-2x" title = "Cargando datos..."></i>
+          </button>
+          <button type="button" class="btn btn-warning miPuntero" (click) = "ReintentarCargarProductos(local)" *ngIf = "local.errorProductos != null">
+            <i *ngIf = "local.errorProductos != null" class = "fa fa-cog fa-warning fa-2x" title = "Error al cargar productos, Reintentar"></i>
+          </button>
+          <button type="button" class="btn btn-warning miPuntero" (click) = "ReintentarCargarEmpleados(local)" *ngIf = "local.errorEmpleados != null">
+            <i *ngIf = "local.errorEmpleados != null" class = "fa fa-cog fa-warning fa-2x" title = "Error al cargar empleados, Reintentar"></i>
           </button>
         </td>
       </tr>

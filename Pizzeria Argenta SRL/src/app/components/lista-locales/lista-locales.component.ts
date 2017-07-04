@@ -22,7 +22,9 @@ export class Local
                public marcador : any = null,
                public gerente : Gerente = null,
                public productos : Array<Producto> = null,
-               public empleados : Array<any> = null)
+               public empleados : Array<any> = null,
+               public errorProductos : boolean = null,
+               public errorEmpleados : boolean = null)
   {
 
   }
@@ -135,8 +137,15 @@ export class ListaLocalesComponent implements OnInit {
       local.productos = data;
     })
     .catch( error => {
+      local.errorProductos = true;
       console.log(error);
     })
+  }
+
+  ReintentarCargarProductos(local)
+  {
+    local.errorProductos = null;
+    this.CargarProductosDelLocal(local);
   }
 
   CargarEmpleadosDelLocal(local : Local)
@@ -148,8 +157,15 @@ export class ListaLocalesComponent implements OnInit {
       local.empleados = data;
     })
     .catch( error => {
+      local.errorEmpleados = true;
       console.log(error);
     })
+  }
+
+  ReintentarCargarEmpleados(local)
+  {
+    local.errorEmpleados = null;
+    this.CargarEmpleadosDelLocal(local);
   }
 
   AlternarRegistro()
@@ -183,6 +199,11 @@ export class ListaLocalesComponent implements OnInit {
     console.log(local);
     this.localModificar = local;
     this.registrar = true;
+  }
+
+  Mostrar(local)
+  {
+    console.log(local);
   }
 
 }

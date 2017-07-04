@@ -70,7 +70,7 @@
                     <div class="col-sm-6">
                       <ss-multiselect-dropdown *ngIf = "productos != null" [options]="myOptions" [texts]="myTexts" [settings]="mySettings" [(ngModel)]="optionsModelProductos"></ss-multiselect-dropdown>
                       <label *ngIf = "productos == null">Cargando productos...</label>
-                      <label *ngIf = "ErrorProductos != null" style = "cursor : pointer" (click) = "ReintentarCargaProductos()">Error en la carga de productos. Reintentar</label>
+                      <label *ngIf = "errorProductos != null" style = "cursor : pointer" (click) = "ReintentarCargaProductos()">Error en la carga de productos. Reintentar</label>
                     </div>
                     <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioProducto" title = "Error, no se ha seleccionado ningun producto" style="color : orange"></i>
                   </div>

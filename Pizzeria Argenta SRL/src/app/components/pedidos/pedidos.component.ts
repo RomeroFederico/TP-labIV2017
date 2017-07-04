@@ -14,7 +14,9 @@ export class PedidosComponent implements OnInit {
 
   dias: string[] = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
 
-  pedidoActual : {productos : Array<any>, idLocal : any, distancia : any, tiempo : any} = null;
+  errorPedidoActual : boolean = null;
+
+  pedidoActual : {productos : Array<any>, idLocal : any, distancia : any, tiempo : any, direccion : any, localidad : any} = null;
 
   pedido : {local : any, productos : Array<any>, precio : number} = null;
 
@@ -32,6 +34,8 @@ export class PedidosComponent implements OnInit {
   errorPedidosRecibidos : boolean = null;
   pedidosRecibidos : Array<any> = new Array<any>();
 
+  cargando : boolean = null;
+
   constructor(public ws : WsService, public autService : AutService,
               private router: Router, private actRoute: ActivatedRoute)
   {
@@ -44,7 +48,7 @@ export class PedidosComponent implements OnInit {
         console.log(params);
         if (params["Local"] && params["Productos"])
         {
-          this.pedidoActual = {productos : null, idLocal : null, distancia : null, tiempo : null};
+          this.pedidoActual = {productos : null, idLocal : null, distancia : null, tiempo : null, direccion : '---', localidad : '---'};
           this.pedidoActual.productos = params["Productos"];
           this.pedidoActual.idLocal = params["Local"];
 
@@ -52,6 +56,12 @@ export class PedidosComponent implements OnInit {
           {
             this.pedidoActual.distancia = params["Distancia"];
             this.pedidoActual.tiempo = params["Tiempo"];
+          }
+
+          if (params["Direccion"] && params["Localidad"])
+          {
+            this.pedidoActual.direccion = params["Direccion"];
+            this.pedidoActual.localidad = params["Localidad"];
           }
 
           this.TraerDetallePedidoActual();
@@ -91,8 +101,61 @@ export class PedidosComponent implements OnInit {
       console.log(data);
       this.pedido = {productos : data.productos, local : data.local, precio : this.CalcularPedido(data.productos)};
 
+      this.pedido.productos.forEach((producto) => {
+        producto.cantidad = 1;
+      })
+
     })
-    .catch((error) => { console.log(error); });
+    .catch((error) => { this.errorPedidoActual = true; console.log(error); });
+  }
+
+  ReintentarTraerDetallesPedidoActual()
+  {
+    this.errorPedidoActual = null;
+    this.TraerDetallePedidoActual();
+  }
+
+  IncrementarCantidad(producto)
+  {
+    if (producto.cantidad < 10)
+    {
+      producto.cantidad++;
+      this.VolverACalcular();
+    }
+  }
+
+  DecrementarCantidad(producto)
+  {
+    if (producto.cantidad > 1)
+    {
+      producto.cantidad--;
+      this.VolverACalcular();
+    }
+  }
+
+  ObtenerCantidadTotal()
+  {
+    var contador = 0;
+
+    this.pedido.productos.forEach((producto) => {
+      contador += producto.cantidad;
+    })
+
+    return contador;
+  }
+
+  VolverACalcular()
+  {
+    var precioTotal = 0;
+
+    this.pedido.productos.forEach((producto) => {
+      if (this.ComprobarPromo(producto.promocion))
+        precioTotal = precioTotal + Number(producto.precio) * 0.75 * producto.cantidad;
+      else
+        precioTotal = precioTotal + Number(producto.precio) * producto.cantidad;
+    })
+
+    this.pedido.precio = precioTotal;
   }
 
   CalcularPedido(productos)
@@ -122,7 +185,7 @@ export class PedidosComponent implements OnInit {
   {
     if (confirm("Estas seguro de querer modificar el pedido actual?"))
     {
-      this.router.navigate(["/locales"], { queryParams: { Productos: this.ObtenerIdProductos(), idLocal : this.pedido.local.idLocal }});
+      this.router.navigate(["/locales"], { queryParams: { Productos: this.pedidoActual.productos, idLocal : this.pedido.local.idLocal }});
     }
   }
 
@@ -137,13 +200,17 @@ export class PedidosComponent implements OnInit {
 
   RegistrarPedido()
   {
+    this.cargando = true;
     this.ws.RegistrarPedido({idCliente : this.ObtenerUsuario().idUsuario,
                              idLocal : this.pedido.local.idLocal,
                              estado : "En Proceso",
                              precioTotal : this.pedido.precio,
-                             cantidad : this.pedido.productos.length,
+                             cantidad : this.ObtenerCantidadTotal(),
+                             direccion : this.pedidoActual.direccion,
+                             localidad : this.pedidoActual.localidad,
                              productos : this.ObtenerIdProductos()}).then((data) => {
         console.log(data);
+        this.cargando = null;
 
         if (data.exito)
         {
@@ -159,9 +226,10 @@ export class PedidosComponent implements OnInit {
             this.RegistrarPedido();
         }
     })
-    .catch((error) => { 
-      console.log(error); 
+    .catch((error) => {
 
+      this.cargando = null;
+      console.log(error); 
       alert("Ocurrio un error inesperado en el servidor, vuelva a intentarlo mas tarde.");
     });
   }
@@ -246,6 +314,12 @@ export class PedidosComponent implements OnInit {
     this.CargarPedidos(this.seleccion);
   }
 
+  ReintentarCargarPedidosRecibidos()
+  {
+    this.errorPedidosRecibidos = null;
+    this.CargarPedidos(this.seleccion);
+  }
+
   TerminarPedido(pedido)
   {
     if (confirm("Desea marcar como recibido el pedido?"))
@@ -277,9 +351,11 @@ export class PedidosComponent implements OnInit {
 
   ObtenerIdProductos()
   {
-    let ids : Array<number> = new Array<number>();
+    let ids : Array<{producto : number, cantidad : number}> = new Array<{producto : number, cantidad : number}>();
 
-    this.pedido.productos.forEach((producto) => { ids.push(producto.idProducto); });
+    this.pedido.productos.forEach((producto) => { ids.push({producto : producto.idProducto, cantidad : producto.cantidad}); });
+
+    console.log(ids);
 
     return ids;
   }

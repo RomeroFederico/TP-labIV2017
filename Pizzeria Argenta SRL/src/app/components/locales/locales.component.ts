@@ -84,6 +84,8 @@ export class LocalesComponent implements OnInit {
 
   marcadorUsuario : any = null;
   locacionUsuario : string = null;
+  direccionUsuario : string = null;
+  localidadUsuario : string  = null;
 
   distancia : string = null;
   duracion : string = null;
@@ -259,7 +261,7 @@ export class LocalesComponent implements OnInit {
 
         this.locales[this.locales.length - 1].gerente = gerente;
 
-        var direccionCompleta = local.direccion + " " + local.localidad + ", " + local.provincia + ", " + local.pais;
+        var direccionCompleta = local.direccion + ", " + local.localidad + ", " + local.provincia + ", " + local.pais;
         this.locales[this.locales.length - 1].direccionCompleta = direccionCompleta;
         this.ObtenerCordenadaLocal(this.locales.length - 1, direccionCompleta);
         this.CargarProductosDelLocal(local);
@@ -379,8 +381,12 @@ export class LocalesComponent implements OnInit {
   ObtenerDireccion()
   {
     this.ws.getDireccion(this.marcadorUsuario.position.lat(), this.marcadorUsuario.position.lng())
-    .then((data) => { 
+    .then((data) => {
+
       this.locacionUsuario = data.results[0].formatted_address;
+      var direccionExplotada = this.locacionUsuario.split(', ');
+      this.direccionUsuario = direccionExplotada[0];
+      this.localidadUsuario = direccionExplotada[1]; 
 
       this.MostrarInformacionPosicionUsuario();
 
@@ -487,7 +493,7 @@ export class LocalesComponent implements OnInit {
         alert("Seleccione algun producto que este disponible en el local seleccionado!!!");
       else
       {
-        this.router.navigate(['/pedidos'], { queryParams: { Local : this.local.idLocal, Productos : productoAPedir, Distancia : this.distancia, Tiempo : this.duracion }});
+        this.router.navigate(['/pedidos'], { queryParams: { Local : this.local.idLocal, Productos : productoAPedir, Distancia : this.distancia, Tiempo : this.duracion, Direccion : this.direccionUsuario, Localidad : this.localidadUsuario}});
       }
     }
   }
