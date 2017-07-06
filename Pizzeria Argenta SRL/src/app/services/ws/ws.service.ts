@@ -232,6 +232,40 @@ export class WsService {
     .catch( this.handleError );
   }
 
+  //Estadisticas
+  
+  TraerTodosLosPedidos()
+  {
+    return this.http.get(this.url + 'estadisticas/pedidos/todos')
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  TraerTodosLosPedidosUsuarios()
+  {
+    return this.http.get(this.url + 'estadisticas/pedidos/usuarios')
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  TraerTodosLosPedidosProductos()
+  {
+    return this.http.get(this.url + 'estadisticas/pedidos/productos')
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  TraerTodasLasEncuestas()
+  {
+    return this.http.get(this.url + 'estadisticas/encuestas')
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
   private extractData(res: Response) {
     let body = res.json();    
     

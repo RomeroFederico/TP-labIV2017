@@ -14,6 +14,7 @@
               <li *ngIf = "Comprobar() && ObtenerUsuario().tipo == 'Administrador'"><a routerLink="/lista-locales" routerLinkActive="active">Locales</a></li>
               <li><a routerLink="/pedidos" routerLinkActive="active">Pedidos</a></li>
               <li *ngIf = "Comprobar() && ObtenerUsuario().tipo == 'Administrador'"><a routerLink="/usuarios" routerLinkActive="active">Usuarios</a></li>
+              <li *ngIf = "Comprobar() && ObtenerUsuario().tipo == 'Administrador'"><a routerLink="/estadisticas" routerLinkActive="active">Estadisticas</a></li>
             </ul>
           </div>
         </nav>
@@ -24,7 +25,7 @@
         <nav class="navbar navbar-inverse">
           <div class="container-fluid" *ngIf = "Comprobar()">
             <div class="navbar-header">
-              <a class="navbar-brand" href="#"><img [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/usuarios/' + ObtenerUsuario().img" class="img-circle"></a>
+              <a class="navbar-brand"><img [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/usuarios/' + ObtenerUsuario().img" class="img-circle"></a>
             </div>
             <ul class="nav navbar-nav">
               <li><p class="navbar-text"><small>{{ObtenerUsuario().apellido}}, {{ObtenerUsuario().nombre}}</small></p></li>

@@ -1,0 +1,545 @@
+<div class="container-fluid">
+    <div class="row content" style = "padding: 20px">
+        <div class="col-sm-2 sidenav" style = "padding-top: 15px;">
+            <h4 style = "color: white"><i class="fa fa-bar-chart fa-2x" aria-hidden="true"></i> Estadisticas</h4>
+            <ul class="nav nav-pills nav-stacked opciones">
+                <li (click) = "Mostrar(1)" [ngClass] = "seleccion == 1? 'active' : ''"><a >1- Ventas por local</a></li>
+                <li (click) = "Mostrar(2)" [ngClass] = "seleccion == 2? 'active' : ''"><a >2- Ventas por clientes</a></li>
+                <li (click) = "Mostrar(3)" [ngClass] = "seleccion == 3? 'active' : ''"><a >3- Ventas por dias</a></li>
+                <li (click) = "Mostrar(4)" [ngClass] = "seleccion == 4? 'active' : ''"><a >4- Ventas por productos</a></li>
+                <li (click) = "Mostrar(5)" [ngClass] = "seleccion == 5? 'active' : ''"><a >5- Informacion de Logins</a></li>
+                <li (click) = "Mostrar(6)" [ngClass] = "seleccion == 6? 'active' : ''"><a >6- Datos de Encuestas</a></li>
+            </ul>
+        </div>
+        <div class= "col-sm-10 contenedorObjetos">
+          <div style = "min-height: 500px; background-color: white; border-radius: 10px; padding : 10px">
+
+            <!-- SELECCION -->
+            <div *ngIf = "seleccion == 1">
+
+              <div class = "contenedorObjetos" style = "height: 500px; background-color: white;" *ngIf = "cargando != null">
+                    <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <i class="fa fa-cog fa-spin fa-5x fa-fw"></i><br>
+                            <h2>Cargando detalles</h2>
+                        </div>
+                    </div>
+              </div>
+
+              <div class = "contenedorObjetos" style = "height: 500px; background-color: white;" *ngIf = "errorPedidosLocales != null">
+                    <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <i class="fa fa-exclamation-triangle fa-5x fa-fw"></i><br>
+                            <h2>Ocurrio un problema al cargar los detalles</h2>
+                            <h3 (click) = "ReintentarCargarTodosLosPedidos()"><a>Reintentar</a></h3>
+                        </div>
+                    </div>
+              </div>
+
+              <div class = "row" *ngIf = "cargando == null && errorPedidosLocales == null" style = "background-color: white;" id = "imprimir1">
+
+                <div class = "col-md-6">
+
+                  <div style="display: block; height : 450px" *ngIf = "mostrarBarra != null">
+                    <h4 style = "font-style: italic"><i class="fa fa-bar-chart" aria-hidden="true"></i> Estadistica de cantidades</h4>
+                    <canvas baseChart
+                            [datasets]="data1a"
+                            [labels]="labels1a"
+                            [options]="barChartOptions"
+                            [legend]="leyenda1a"
+                            [chartType]="tipo1a">
+                    </canvas>
+                  </div>
+
+                  <div style="display: block;" *ngIf = "mostrarBarra == null">
+                    <h4 style = "font-style: italic"><i class="fa fa-pie-chart" aria-hidden="true"></i> Estadistica de montos</h4>
+                    <canvas baseChart
+                                [data]="data1b"
+                                [labels]="labels1b"
+                                [chartType]="tipo1b">
+                    </canvas>
+                  </div>
+
+                </div>
+
+                <div class = "col-md-6">
+                  <div class="table-responsive vertical-align table-hover">
+                    <table class="table table-hover">
+                      <thead>
+                        <th>Local</th>
+                        <th>Pedidos</th>
+                        <th>Productos</th>
+                        <th>Monto</th>
+                      </thead>
+                      <tr *ngFor = "let detalle of pedidosLocales">
+                        <td>
+                          {{detalle.local.idLocal}}- {{detalle.local.direccion + ", " + detalle.local.localidad}}
+                        </td>
+                        <td>
+                          {{detalle.cantidad}}
+                        </td>
+                        <td>
+                          {{detalle.productos}}
+                        </td>
+                        <td>
+                          $ {{detalle.monto}}
+                        </td>
+                      </tr>
+                      <tr style = "font-weight: bold">
+                        <td>
+                          TOTAL : 
+                        </td>
+                        <td>
+                          {{totalPedidos}}
+                        </td>
+                        <td>
+                          {{totalProductos}}
+                        </td>
+                        <td>
+                          $ {{totalMonto}}
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                  <button type="button" class="btn btn-info btn-sm miPuntero btn-block" (click) = "GenerarArchivoCsv(1)">
+                    <i class = "fa fa-floppy-o fa-2x"></i> Guardar archivo
+                  </button>
+                  <button type="button" class="btn btn-success btn-sm miPuntero btn-block" (click) = "GenerarArchivoPdf(1)">
+                    <i class = "fa fa-floppy-o fa-2x"></i> Guardar pdf
+                  </button>
+
+                  <button type="button" class="btn btn-danger miPuntero btn-block botonCambiarGrafico" (click) = "CambiarGrafico()">
+                    <i class = "fa fa-cog fa-refresh fa-2x"></i> Cambiar grafico
+                  </button>
+
+                </div>
+
+              </div>
+            </div>
+            <!-- FIN SELECCION -->
+
+
+           <!-- SELECCION 2 -->
+            <div *ngIf = "seleccion == 2" style = "background-color: white;" id = "imprimir2">
+
+              <div class = "contenedorObjetos" style = "height: 500px; background-color: white;" *ngIf = "cargando != null">
+                    <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <i class="fa fa-cog fa-spin fa-5x fa-fw"></i><br>
+                            <h2>Cargando detalles</h2>
+                        </div>
+                    </div>
+              </div>
+
+              <div class = "contenedorObjetos" style = "height: 500px; background-color: white;" *ngIf = "errorPedidosUsuarios != null">
+                    <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <i class="fa fa-exclamation-triangle fa-5x fa-fw"></i><br>
+                            <h2>Ocurrio un problema al cargar los detalles</h2>
+                            <h3 (click) = "ReintentarCargarTodosLosPedidosUsuarios()"><a>Reintentar</a></h3>
+                        </div>
+                    </div>
+              </div>
+
+                  <div class="table-responsive vertical-align table-hover" *ngIf = "cargando == null && errorPedidosUsuarios == null">
+                    <table class="table table-hover">
+                      <thead>
+                        <th>Usuario</th>
+                        <th>Localidad</th>
+                        <th>Ultimo Pedido</th>
+                        <th>Pedidos</th>
+                        <th>Productos</th>
+                        <th>Monto</th>
+                      </thead>
+                      <tr *ngFor = "let detalle of pedidosUsuarios">
+                        <td>
+                          {{detalle.apellido}}, {{detalle.nombre}}
+                        </td>
+                        <td>
+                          {{detalle.localidad}}
+                        </td>
+                        <td>
+                          {{detalle.fechaPedido}}
+                        </td>
+                        <td>
+                          {{detalle.cantidad}}
+                        </td>
+                        <td>
+                          {{detalle.productos}}
+                        </td>
+                        <td>
+                          $ {{detalle.monto}}
+                        </td>
+                      </tr>
+                      <tr style = "font-weight: bold">
+                        <td>
+                          TOTAL : 
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                          {{totalPedidosUsuarios}}
+                        </td>
+                        <td>
+                          {{totalProductosUsuarios}}
+                        </td>
+                        <td>
+                          $ {{totalMontoUsuarios}}
+                        </td>
+                      </tr>
+                    </table>
+                    <button type="button" class="btn btn-info btn-sm miPuntero btn-block" (click) = "GenerarArchivoCsv(2)">
+                      <i class = "fa fa-floppy-o fa-2x"></i> Guardar archivo
+                    </button>
+                    <button type="button" class="btn btn-success btn-sm miPuntero btn-block" (click) = "GenerarArchivoPdf(2)">
+                      <i class = "fa fa-floppy-o fa-2x"></i> Guardar pdf
+                    </button>
+                  </div>
+
+            </div>
+            <!-- FIN SELECCION -->
+
+            <!-- SELECCION 3 -->
+            <div *ngIf = "seleccion == 3">
+
+              <div class = "contenedorObjetos" style = "height: 500px; background-color: white;" *ngIf = "cargando != null">
+                    <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <i class="fa fa-cog fa-spin fa-5x fa-fw"></i><br>
+                            <h2>Cargando detalles</h2>
+                        </div>
+                    </div>
+              </div>
+
+              <div class = "contenedorObjetos" style = "height: 500px; background-color: white;" *ngIf = "errorPedidosDias != null">
+                    <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <i class="fa fa-exclamation-triangle fa-5x fa-fw"></i><br>
+                            <h2>Ocurrio un problema al cargar los detalles</h2>
+                            <h3 (click) = "ReintentarCargarTodosLosPedidosDias()"><a>Reintentar</a></h3>
+                        </div>
+                    </div>
+              </div>
+
+              <div *ngIf = "errorPedidosDias == null && cargando == null" style = "background-color: white;" id = "imprimir3">
+
+                  <div class="row" *ngIf = "mostrarDias != null && mostrarMontosDias != null">
+                    <div class="col-md-12">
+                      <div class = "row">
+                        <div class = "col-sm-10">
+                          <h4 style = "font-style: italic"><i class="fa fa-bar-chart" aria-hidden="true"></i> Estadistica de cantidades</h4>
+                        </div>
+                        <div class = "col-sm-2">
+                          <button type="button" class="btn btn-danger miPuntero  btn-xs" (click) = "CambiarGraficoDias()">
+                            <i class = "fa fa-cog fa-refresh fa-2x"></i> Cambiar grafico
+                          </button>
+                        </div>
+                      </div>
+                      <div style="display: block;">
+                        <canvas baseChart
+                                    [datasets]="dataDias"
+                                    [labels]="labelsDias"
+                                    [options]="optionsDias"
+                                    [legend]="leyendaDias"
+                                    [chartType]="tipoDias"
+                        ></canvas>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="row" *ngIf = "mostrarDias != null && mostrarMontosDias == null">
+                    <div class="col-md-12">
+                      <div class = "row">
+                        <div class = "col-sm-10">
+                          <h4 style = "font-style: italic"><i class="fa fa-pie-chart" aria-hidden="true"></i> Estadistica de montos</h4>
+                        </div>
+                        <div class = "col-sm-2">
+                          <button type="button" class="btn btn-danger miPuntero  btn-xs" (click) = "CambiarGraficoDias()">
+                            <i class = "fa fa-cog fa-refresh fa-2x"></i> Cambiar grafico
+                          </button>
+                        </div>
+                      </div>
+                      <div style="display: block;">
+                        <canvas baseChart
+                                    [datasets]="dataDias2"
+                                    [labels]="labelsDias"
+                                    [options]="optionsDias"
+                                    [legend]="leyendaDias"
+                                    [chartType]="tipoDias" 
+                                    [colors]="lineChartColors"
+                        ></canvas>
+                      </div>
+                    </div>
+                  </div>
+
+                  <hr>
+
+                  <div class="table-responsive vertical-align table-hover">
+                    <table class="table table-hover">
+                      <thead>
+                        <th>Fecha</th>
+                        <th>Pedidos</th>
+                        <th>Productos</th>
+                        <th>Monto</th>
+                      </thead>
+                      <tr *ngFor = "let detalle of pedidosDias">
+                        <td>
+                          {{detalle.fechaPedido}}
+                        </td>
+                        <td>
+                          {{detalle.cantidad}}
+                        </td>
+                        <td>
+                          {{detalle.productos}}
+                        </td>
+                        <td>
+                          $ {{detalle.monto}}
+                        </td>
+                      </tr>
+                      <tr style = "font-weight: bold">
+                        <td>
+                          TOTAL : 
+                        </td>
+                        <td>
+                          {{totalPedidosDias}}
+                        </td>
+                        <td>
+                          {{totalProductosDias}}
+                        </td>
+                        <td>
+                          $ {{totalMontoDias}}
+                        </td>
+                      </tr>
+                    </table>
+                    <button type="button" class="btn btn-info btn-sm miPuntero btn-block" (click) = "GenerarArchivoCsv(3)">
+                      <i class = "fa fa-floppy-o fa-2x"></i> Guardar archivo
+                    </button>
+                    <button type="button" class="btn btn-success btn-sm miPuntero btn-block" (click) = "GenerarArchivoPdf(3)">
+                      <i class = "fa fa-floppy-o fa-2x"></i> Guardar pdf
+                    </button>
+                  </div>
+
+              </div>
+
+            </div>
+            <!-- FIN SELECCION -->
+
+            <!-- SELECCION 4 -->
+            <div *ngIf = "seleccion == 4">
+
+              <div class = "contenedorObjetos" style = "height: 500px; background-color: white;" *ngIf = "cargando != null">
+                    <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <i class="fa fa-cog fa-spin fa-5x fa-fw"></i><br>
+                            <h2>Cargando detalles</h2>
+                        </div>
+                    </div>
+              </div>
+
+              <div class = "contenedorObjetos" style = "height: 500px; background-color: white;" *ngIf = "errorPedidosProductos != null">
+                    <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <i class="fa fa-exclamation-triangle fa-5x fa-fw"></i><br>
+                            <h2>Ocurrio un problema al cargar los detalles</h2>
+                            <h3 (click) = "ReintentarCargarTodosLosPedidosProductos()"><a>Reintentar</a></h3>
+                        </div>
+                    </div>
+              </div>
+
+                <div *ngIf = "mostrarTablaProductos != null && errorPedidosProductos == null && cargando == null" style = "background-color: white;" id = "imprimir4">
+                  <div class = "row" style = "padding-left : 20px; padding-bottom: 20px">
+                    <h4 style = "font-style: italic"><i class="fa fa-clock-o" aria-hidden="true"></i> Seleccione las fechas a comparar: </h4>
+                    <input type ="date" [max] = "fechaLimiteFinal" [min] = "fechaLimiteInicial" [(ngModel)] = "fechaInicial" required=""> a 
+                    <input type ="date" [max] = "fechaLimiteFinal" [min] = "fechaLimiteInicial" [(ngModel)] = "fechaFinal" required="">
+                    <button type="button" class="btn btn-danger miPuntero  btn-xs" (click) = "CalcularProductosPorFecha()">
+                      Calcular
+                    </button>
+                  </div>
+                  <div class = "row">
+                    <div class = "col-sm-6">
+                    <div style="display: block">
+                      <canvas baseChart
+                              [data]="pieChartData"
+                              [labels]="pieChartLabels"
+                              [chartType]="pieChartType">
+                      </canvas>
+                    </div>
+                    </div>
+                    <div class = "col-sm-6">
+                      <div class="table-responsive vertical-align table-hover">
+                        <table class="table table-hover">
+                          <thead>
+                            <th>Producto</th>
+                            <th>Tipo</th>
+                            <th>Cantidad</th>
+                          </thead>
+                          <tr *ngFor = "let detalle of pedidosProductos">
+                            <td>
+                              {{detalle.descripcion}}
+                            </td>
+                            <td>
+                              {{detalle.tipo}}
+                            </td>
+                            <td>
+                              {{detalle.total}}
+                            </td>
+                          </tr>
+                        </table>
+                        <button type="button" class="btn btn-info btn-sm miPuntero btn-block" (click) = "GenerarArchivoCsv(4)">
+                          <i class = "fa fa-floppy-o fa-2x"></i> Guardar archivo
+                        </button>
+                        <button type="button" class="btn btn-success btn-sm miPuntero btn-block" (click) = "GenerarArchivoPdf(4)">
+                          <i class = "fa fa-floppy-o fa-2x"></i> Guardar pdf
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <!-- FIN SELECCION -->
+            <div *ngIf = "seleccion == 5">
+
+              NO IMPLEMENTADO :(
+
+            </div>
+
+            <div *ngIf = "seleccion == 6">
+
+              <div class = "contenedorObjetos" style = "height: 500px; background-color: white;" *ngIf = "cargando != null">
+                    <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <i class="fa fa-cog fa-spin fa-5x fa-fw"></i><br>
+                            <h2>Cargando detalles</h2>
+                        </div>
+                    </div>
+              </div>
+
+              <div class = "contenedorObjetos" style = "height: 500px; background-color: white;" *ngIf = "errorEncuestas != null">
+                    <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <i class="fa fa-exclamation-triangle fa-5x fa-fw"></i><br>
+                            <h2>Ocurrio un problema al cargar los detalles</h2>
+                            <h3 (click) = "ReintentarCargarTodasLasEncuestas()"><a>Reintentar</a></h3>
+                        </div>
+                    </div>
+              </div>
+
+              <div class="table-responsive vertical-align table-hover" *ngIf = "errorEncuestas == null && cargando == null" style = "background-color: white;" id = "imprimir6">
+                    <table class="table table-hover">
+                      <thead>
+                        <th>Fecha</th>
+                        <th>Imagen 1</th>
+                        <th>Imagen 2</th>
+                        <th>Imagen 3</th>
+                        <th>Pregunta 1</th>
+                        <th>Pregunta 2</th>
+                        <th>Pregunta 3</th>
+                        <th>Pregunta 4</th>
+                        <th>Pregunta 5</th>
+                        <th>Pregunta 6</th>
+                        <th>Pregunta 7</th>
+                        <th>Pregunta 8</th>
+                        <th>Pregunta 9</th>
+                        <th>Pregunta 10</th>
+                        <th>Pregunta 11</th>
+                        <th>Pregunta 12</th>
+                        <th>Pregunta 13</th>
+                        <th>Pregunta 14</th>
+                        <th>Pregunta 15</th>
+                        <th>Pregunta 16</th>
+                        <th>Pregunta 17</th>
+                        <th>Pregunta 18</th>
+                        <th>Pregunta 19</th>
+                        <th>Pregunta 20</th>
+                      </thead>
+                      <tr *ngFor = "let encuesta of encuestas">
+                        <td>
+                          {{encuesta.fecha}}
+                        </td>
+                        <td class="col-sm-1">
+                          <img *ngIf = "encuesta.img1 != null" class = "img-responsive img-thumbnail" style = "min-width: 100px; min-height: 100px;" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/encuesta/' + encuesta.img1">
+                          <img *ngIf = "encuesta.img1 == null" class = "img-responsive img-thumbnail" style = "min-width: 100px; min-height: 100px;" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/encuesta/' + 'default.png'">
+                        </td>
+                        <td class="col-sm-1">
+                          <img *ngIf = "encuesta.img2 != null" class = "img-responsive img-thumbnail" style = "min-width: 100px; min-height: 100px;" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/encuesta/' + encuesta.img2">
+                          <img *ngIf = "encuesta.img2 == null" class = "img-responsive img-thumbnail" style = "min-width: 100px; min-height: 100px;" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/encuesta/' + 'default.png'">
+                        </td>
+                        <td class="col-sm-1">
+                          <img *ngIf = "encuesta.img3 != null" class = "img-responsive img-thumbnail" style = "min-width: 100px; min-height: 100px;" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/encuesta/' + encuesta.img3">
+                          <img *ngIf = "encuesta.img3 == null" class = "img-responsive img-thumbnail" style = "min-width: 100px; min-height: 100px;" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/encuesta/' + 'default.png'">
+                        </td>
+                        <td>
+                          {{encuesta.pregunta1}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta2}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta3}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta4}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta5}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta6}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta7}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta8}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta9}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta10}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta11}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta12}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta13}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta14}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta15}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta16}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta17}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta18}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta19}}
+                        </td>
+                        <td>
+                          {{encuesta.pregunta20}}
+                        </td>
+                      </tr>
+                    </table>
+                    <button type="button" class="btn btn-info btn-sm miPuntero btn-block" (click) = "GenerarArchivoCsv(6)">
+                          <i class = "fa fa-floppy-o fa-2x"></i> Guardar archivo
+                    </button>
+                  </div>
+
+            </div>
+
+          </div>
+    </div>
+  </div>
+</div>

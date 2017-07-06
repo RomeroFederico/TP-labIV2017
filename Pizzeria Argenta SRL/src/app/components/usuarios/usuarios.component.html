@@ -98,12 +98,14 @@
             <option value = "0"><div *ngIf = "usuario.estadoBase == 0">&#xf00c; </div>Inactivo</option>
           </select>
         </td>
-        <td class="col-sm-2">
+        <td class="col-sm-2" *ngIf = "usuario.tipo != 'Cliente'">
           <select class="form-control" [(ngModel)]="usuario.tipo">
-            <option value = "Cliente"><div *ngIf = "usuario.tipoBase == 'Cliente'">&#xf00c; </div>Cliente</option>
             <option value = "Empleado"><div *ngIf = "usuario.tipoBase == 'Empleado'">&#xf00c; </div>Empleado</option>
             <option value = "Encargado"><div *ngIf = "usuario.tipoBase == 'Encargado'">&#xf00c; </div>Encargado</option>
           </select>
+        </td>
+        <td class="col-sm-2" *ngIf = "usuario.tipo == 'Cliente'">
+          {{usuario.tipo}}
         </td>
         <td class="col-sm-1">
           <button type="button" class="btn btn-warning miPuntero" (click) = "Modificar(usuario)" [disabled] = "Comprobar(usuario) || cargando != null">
