@@ -33,6 +33,8 @@ import { ListaLocalesComponent } from './components/lista-locales/lista-locales.
 import { AgregarLocalComponent } from './components/agregar-local/agregar-local.component';
 import { EstadisticasComponent } from './components/estadisticas/estadisticas.component';
 
+import { RecaptchaModule } from 'ng-recaptcha';
+
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'productos', component: ProductosComponent },
@@ -67,6 +69,7 @@ const appRoutes: Routes = [
     EstadisticasComponent
   ],
   imports: [
+    RecaptchaModule.forRoot(),
     ChartsModule,
     Ng2SmartTableModule,
     FileUploadModule,

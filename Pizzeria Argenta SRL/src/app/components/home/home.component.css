@@ -63,6 +63,10 @@
   padding-bottom: 20%;
 }
 
+.col-sm-4:nth-child(3n+1){
+    clear: left;
+}
+
     
     /* On small screens, set height to 'auto' for sidenav and grid */
 @media screen and (max-width: 767px)

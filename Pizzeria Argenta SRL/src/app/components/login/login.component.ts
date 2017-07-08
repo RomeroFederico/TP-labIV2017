@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, AbstractControl, FormBuilder, Validators} from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { WsService } from '../../services/ws/ws.service';
 import { AutService } from '../../services/auth/aut.service';
+
+import { RecaptchaModule } from 'ng-recaptcha';
 
 declare var google;
 
@@ -19,7 +21,8 @@ export class User {
                public pais : string = "",
                public estado : number = 1,
                public tipo : string = "Cliente",
-               public img : string = "default.png")
+               public img : string = "default.png",
+               public response : string = "")
   {}
 }
 
@@ -63,6 +66,13 @@ export class LoginComponent implements OnInit {
   validarEmail : boolean = null;
   validarPassword : boolean = null;
 
+  validarCaptcha : boolean = null;
+
+  captcha : string = null;
+
+  @ViewChild('miCaptcha')
+  miCaptcha: any;
+
   constructor(private router: Router, private route: ActivatedRoute, 
               private ws: WsService, private aut : AutService)
   {
@@ -82,6 +92,20 @@ export class LoginComponent implements OnInit {
 
     if (this.aut.isLogued())
       this.router.navigateByUrl("/home");
+  }
+
+  resolved(captchaResponse: string)
+  {
+      console.log(`Resolved captcha with response ${captchaResponse}:`);
+      this.captcha = captchaResponse;
+  }
+
+  VerificarCaptcha()
+  {
+    this.ws.VerificarCaptcha({response: this.captcha}).then((data => {
+      console.log(data);
+    }))
+    .catch((error) => { console.log(error); });
   }
 
   Rellenar(tipo : string)
@@ -149,6 +173,7 @@ export class LoginComponent implements OnInit {
   ValidarDireccion()
   {
     this.cargando = true;
+    document.getElementById("mostrarMensaje").scrollIntoView();
 
     this.ws.getlatlng(this.direccion).then((value) => {
 
@@ -160,12 +185,14 @@ export class LoginComponent implements OnInit {
         this.mensaje = "Direccion invalida. "; 
         this.validarDireccion = true;
         this.cargando = null;
+        //document.getElementById("mostrarMensaje").scrollIntoView();
       }
       else
       {
         //this.ModificarUsuario();
         console.log("Validado!!!!");
         this.RegistrarUsuario();
+        //this.VerificarCaptcha();
       }
     })
     .catch((error) => { this.cargando = null; console.log("Error"); });
@@ -187,6 +214,7 @@ export class LoginComponent implements OnInit {
     this.validarPassword = null;
     this.validarDireccion = null;
     this.validarEmail = null;
+    this.validarCaptcha = null;
 
     if (this.user.email == "")
       this.vacioEmail = true;
@@ -209,25 +237,38 @@ export class LoginComponent implements OnInit {
     if (!this.ValidarEmail(this.user.email))
       this.validarEmail = true;
 
-    if (this.user.password.length <= 6)
+    if (this.user.password.length < 6)
       this.validarPassword = true;
+
+    if (this.captcha == null)
+      this.validarCaptcha = true;
 
     if (this.vacioEmail != null || this.vacioPassword != null || this.vacioApellido != null || this.vacioNombre != null || this.vacioDireccion != null || this.vacioTelefono != null)
     {
       this.mostrarInfo = true;
       this.mensaje = "Complete los campos para continuar. ";
+      document.getElementById("mostrarMensaje").scrollIntoView();
       return;
     }
     else if (!this.ValidarEmail(this.user.email))
     {
       this.mostrarInfo = true;
       this.mensaje = "El email ingresado no es valido. ";
+      document.getElementById("mostrarMensaje").scrollIntoView();
       return;
     }
-    else if (this.user.password.length <= 6)
+    else if (this.user.password.length < 6)
     {
       this.mostrarInfo = true;
       this.mensaje = "El password ingresado no es valido. ";
+      document.getElementById("mostrarMensaje").scrollIntoView();
+      return;
+    }
+    else if (this.captcha == null)
+    {
+      this.mostrarInfo = true;
+      this.mensaje = "No se ha ingresado el captcha. ";
+      document.getElementById("mostrarMensaje").scrollIntoView();
       return;
     }
 
@@ -263,6 +304,7 @@ export class LoginComponent implements OnInit {
     }
 
     this.cargando = true;
+    document.getElementById("mostrarMensaje").scrollIntoView();
 
     this.ws.Login(this.user).then( data => {
       console.log("Accediendo al servidor...");
@@ -281,12 +323,14 @@ export class LoginComponent implements OnInit {
       {
         this.mensajeMostrar = data.mensaje;
         this.mostrarMensaje = true;
+        document.getElementById("mostrarMensaje").scrollIntoView();
         console.log(data.mensaje);
       }
     })
     .catch( e => {
       this.cargando = null;
       this.mostrarError = true;
+      document.getElementById("mostrarMensaje").scrollIntoView();
       console.log(e);
     } );
   }
@@ -390,12 +434,14 @@ export class LoginComponent implements OnInit {
   RegistrarUsuario()
   {
     this.cargando = true;
+    document.getElementById("mostrarMensaje").scrollIntoView();
 
     let direccion = this.direccion.split(", ");
     this.user.direccion = direccion[0];
     this.user.localidad = direccion[1];
     this.user.provincia = direccion[2];
     this.user.pais = direccion[3];
+    this.user.response = this.captcha;
 
     this.ws.Registrar(this.user).then( data => {
       console.log("Accediendo al servidor...");
@@ -413,14 +459,18 @@ export class LoginComponent implements OnInit {
       }
       else
       {
+        this.miCaptcha.reset();
         this.mensajeMostrar = data.mensaje;
         this.mostrarMensaje = true;
+        document.getElementById("mostrarMensaje").scrollIntoView();
         console.log(data.mensaje);
       }
     })
     .catch( e => {
+      this.miCaptcha.reset();
       this.cargando = null;
       this.mostrarError = true;
+      document.getElementById("mostrarMensaje").scrollIntoView();
       console.log(e);
     } );
   }

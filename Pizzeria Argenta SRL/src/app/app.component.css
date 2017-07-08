@@ -28,6 +28,13 @@ footer {
     align-items: center;
 }
 
+.vista {
+    width: 100%;
+    height: 525px;
+    overflow-y: scroll;
+    overflow-x:hidden;
+}
+
 @media screen and (min-width: 767px) {
     .row-eq-height {
         display: -webkit-box;
@@ -35,4 +42,25 @@ footer {
         display: -ms-flexbox;
     }
 
+}
+
+.table > tbody > tr > td {
+     vertical-align: middle;
+}
+
+.table tbody tr:hover td, .table tbody tr:hover th {
+    color: black;
+}
+
+i {
+    cursor: pointer;
+}
+
+.incrementar:hover {
+    color : green;
+}
+
+.borrar:hover,
+.decrementar:hover {
+    color : red;
 }

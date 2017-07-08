@@ -1,14 +1,14 @@
 <div class = "container-fluid contenedorPrincipal">
 <div class = "contenedorObjetos">
   <div class = "row">
-    <div class = "col-sm-7">
+    <div class = "col-sm-5">
       <blockquote style = "color: white">
         <h2>Nuestros Productos.</h2>
         <footer>Nuestro Menu, <cite title="Source Title">Nuestra Identidad</cite></footer>
       </blockquote>
     </div>
 
-    <div class = "col-sm-5" *ngIf = "localesCargados != null && locales != null" style = "margin-bottom: 10px;">
+    <div class = "col-sm-7" *ngIf = "localesCargados != null && locales != null" style = "margin-bottom: 10px;">
       <div class = "row">
         <div class = "col-sm-3">
           <img src = "http://www.romerofederico.hol.es/pizza/ws/img/locales/default.png" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
@@ -35,7 +35,7 @@
     </div>
   </div>
 
-<div class="container">
+<div class="">
   <div class = "col-sm-12 cargando parent" *ngIf = "productosBase == null">
                 <div class = "child">
                     <i class="fa fa-cog fa-spin fa-5x fa-fw" style = "color: white"></i><br>
@@ -43,29 +43,29 @@
                 </div>
   </div> 
   <div class="row">
-    <div class="col-sm-3" *ngFor = "let producto of productos; let i=index">
+    <div [ngClass] = "columnasProductos" *ngFor = "let producto of productos; let i=index">
       <div [ngClass] ="producto.tipo == 'Pizza'? 'panel panel-danger' : (producto.tipo == 'Empanadas'? 'panel panel-warning':'panel panel-info')">
         <div class="panel-heading">{{producto.tipo}}</div>
         <div class="panel-body">
           <div class="thumbnail">
             <div class='product-holder'>
               <img [src]="'http://www.romerofederico.hol.es/pizza/ws/img/productos/' + producto.img" class="img-responsive" style="width:100%" alt="Image">
-              <img *ngIf = "ComprobarPromo(producto.promocion)" title = "Dia de Promocion" src="assets/images/promo.png" width="100px" height="100px" class = "plus-image pulse animated infinite">
+              <img *ngIf = "ComprobarPromo(producto.promocion)" title = "Dia de Promocion" src="assets/images/promo.png" width="75px" height="75px" class = "plus-image pulse animated infinite">
             </div>
             <div class="caption">
-              <div style="height:75px;">
-              <h4>{{producto.descripcion}}</h4>
+              <div style="height:100px;">
+              <h5><strong>{{producto.descripcion}}</strong></h5>
               </div>
-              <div *ngIf = "producto.locales != null" >
+              <!--<div *ngIf = "producto.locales != null" >
               <p><span class="glyphicon glyphicon-home"></span> Locales :</p> 
               <div style="height:100px;">
               <p *ngFor = "let local of producto.locales" style = "padding: 0px; margin: 0px">
                 <small>{{local.direccion}}, {{local.localidad}}.</small>
               </p>
               </div>
-              </div>
+              </div>-->
               <p class="text-right" *ngIf = "!ComprobarPromo(producto.promocion)">Precio: <small>{{producto.precio}}$</small></p>
-              <p class="text-right" *ngIf = "ComprobarPromo(producto.promocion)">Precio: <small><s>{{producto.precio}}$</s> {{producto.precio * 0.75}}$</small></p>
+              <p class="text-right" *ngIf = "ComprobarPromo(producto.promocion)">Precio: <small>{{producto.precio * 0.75}}$</small></p>
             </div>
           </div>
           <select *ngIf = "Comprobar()" class="form-control" [(ngModel)]="localSeleccionado" (ngModelChange)="HacerPedido($event, producto)" >

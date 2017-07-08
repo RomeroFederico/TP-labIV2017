@@ -2,7 +2,7 @@
     <div class = "contenedorObjetos">
         <blockquote style = "color: white">
             <h2>Nuestros Locales.</h2>
-            <footer>Haz un pedido o ven a conozernos !!!</footer>
+            <footer>Haz un pedido o ven a conocernos !!!</footer>
         </blockquote>
         <hr>
         <div class="row content principal">
@@ -70,7 +70,7 @@
                     <div class="col-sm-6 slider" >
                             <div>
                                 <blockquote style = "color: #d9534f">
-                                    <h2>{{local.direccion}}</h2>
+                                    <h4>{{local.direccion}}</h4>
                                     <footer><span class="glyphicon glyphicon-flag"></span> {{local.localidad}}</footer>
                                     <footer *ngIf = "distancia != null"><span class="glyphicon glyphicon-road"></span> Distancia {{distancia}}</footer>
                                     <footer *ngIf = "duracion != null"><span class="glyphicon glyphicon-time"></span> Tiempo {{duracion}}</footer>
@@ -116,16 +116,15 @@
                                 <div class="panel-heading">
                                     <h3 class="panel-title">Informacion del Gerente</h3>
                                 </div>
-                                <div class="panel-body">
-                                    <div class="media"><div class="media-left media-top">
-                                        <img class="media-object" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/usuarios/' + 'default.png'" style = "  display: block; max-width:100px; max-height:100px; width: auto; height: auto;">
-                                    </div>
-                                    <div class="media-body">
-                                        <h4 class="media-heading">{{local.gerente.apellido}}, {{local.gerente.nombre}}</h4>
-                                        <p><span class="glyphicon glyphicon-phone-alt"></span> Mail : <small>{{local.gerente.email}}</small></p>
-                                        <p><span class="glyphicon glyphicon-envelope"></span> Tel. : <small>{{local.gerente.telefonoUsuario}}</small></p>
-                                    </div>
-                                    </div>
+                                <div class="row" style = "padding: 5px;">
+                                        <div class="col-sm-3">
+                                            <img class="" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/usuarios/' + 'default.png'" style = "  display: block; max-width:40px; max-height:40px; width: auto; height: auto;">
+                                        </div>
+                                        <div class="col-sm-9">
+                                            <h4 class="">{{local.gerente.apellido}}, {{local.gerente.nombre}}</h4>
+                                            <p><span class="glyphicon glyphicon-phone-alt"></span> Mail : <small>{{local.gerente.email}}</small></p>
+                                            <p><span class="glyphicon glyphicon-envelope"></span> Tel. : <small>{{local.gerente.telefonoUsuario}}</small></p>
+                                        </div>
                                 </div>
                         </div>  
                     </div>
@@ -138,7 +137,7 @@
                 <h3 style = "color : white">Productos</h3>
             </blockquote>
             <hr>
-            <div class="col-sm-2" *ngFor = "let producto of local.productos">
+            <div class="col-sm-3" *ngFor = "let producto of local.productos">
             <div [ngClass] = "ProductoSeleccionado(producto)? 'animation-examples one' : ''">
             <div [ngClass] ="producto.tipo == 'Pizza'? 'panel panel-danger' : (producto.tipo == 'Empanadas'? 'panel panel-warning':'panel panel-info')">
                 <div class="panel-heading">{{producto.tipo}}</div>
@@ -153,7 +152,7 @@
                     <h6>{{producto.descripcion}}</h6>
                     </div>
                     <p class="text-right" *ngIf = "!ComprobarPromo(producto.promocion)">Precio: <small>{{producto.precio}}$</small></p>
-                    <p class="text-right" *ngIf = "ComprobarPromo(producto.promocion)">Precio: <small><s>{{producto.precio}}$</s> {{producto.precio * 0.75}}$</small></p>
+                    <p class="text-right" *ngIf = "ComprobarPromo(producto.promocion)">Precio: <small>{{producto.precio * 0.75}}$</small></p>
                     </div>
                 </div>
                 <button *ngIf = "Comprobar() && !ProductoSeleccionado(producto)" (click) = "Pedir(producto.idProducto)"type="button" [ngClass] ="'btn btn-lg btn-block ' + (producto.tipo == 'Pizza'? 'btn-danger' : (producto.tipo == 'Empanadas'? 'btn-warning':'btn-info'))">

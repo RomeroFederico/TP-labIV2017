@@ -5,14 +5,90 @@
 <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>-->
 
 <div class = "fondo">
-<app-menu></app-menu>
-<router-outlet></router-outlet>
+<app-menu (onMostrarCarrito) = "CapturarEventoMostrarCarrito($event)"></app-menu>
+<div class = "row" style = "width: 100%; padding: 0; margin: 0">
+    <div [ngClass] = "principal">
+        <div class = "vista">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
+    <div class = "col-sm-3 animated slideInRight" *ngIf = "mostrarCarrito != null" style = "padding: 5px;">
+        <div style = "background-color: #222; opacity: 0.9; padding: 15px; border-radius: 10px;">
+
+            <div class="row" style = "min-height: 480px;">
+
+                <div class="table-responsive vertical-align table-hover" style = "min-height: 470px;">
+                    <table class="table text-center table-hover" style = "font-size: x-small; font-style: italic">
+                    <thead style = "color: white">
+                        <th class = "text-center">Img</th>
+                        <th class = "text-center">Desc</th>
+                        <th class = "text-center">Cant</th>
+                        <th></th>
+                        <th class = "text-center">$</th>
+                        <th></th>
+                    </thead>
+                    <tr style = "color:white;">
+                        <td class = "col-sm-2">
+                            <img class = "img-responsive" src = "http://www.romerofederico.hol.es/pizza/ws/img/productos/mozzarella.jpg">
+                        </td>
+                        <td class = "col-sm-5">
+                            Pizza Mozzarella
+                        </td>
+                        <td class = "col-sm-1">
+                            1
+                        </td>
+                        <td class = "col-sm-1">
+                            <i class="fa fa-angle-up fa-2x incrementar" aria-hidden="true"></i>
+                            <br>
+                            <i class="fa fa-angle-down fa-2x decrementar" aria-hidden="true"></i>
+                        </td>
+                        <td class = "col-sm-2">
+                            90
+                        </td>
+                        <td class = "col-sm-1">
+                            <i class="fa fa-trash fa-2x borrar" aria-hidden="true" title = "Quitar"></i>
+                        </td>
+                    </tr>
+                    <tr style = "color:white;">
+                        <td class = "col-sm-2">
+                            <img class = "img-responsive" src = "http://www.romerofederico.hol.es/pizza/ws/img/productos/comboSuper.jpg">
+                        </td>
+                        <td class = "col-sm-5">
+                            2 Pizza Napolitana, Docena de Empanadas de Carne y Gaseosa 2L
+                        </td>
+                        <td class = "col-sm-1">
+                            1
+                        </td>
+                        <td class = "col-sm-1">
+                            <i class="fa fa-angle-up fa-2x incrementar" aria-hidden="true" title = "Incrementar"></i>
+                            <br>
+                            <i class="fa fa-angle-down fa-2x decrementar" aria-hidden="true" title = "Decrementar"></i>
+                        </td>
+                        <td class = "col-sm-2">
+                            300
+                        </td>
+                        <td class = "col-sm-1">
+                            <i class="fa fa-trash fa-2x borrar" aria-hidden="true" title = "Quitar"></i>
+                        </td>
+                    </tr>
+                    </table>
+                </div>
+
+                <button type="button" class="btn btn-danger miPuntero btn-xs btn-block">
+                    <i class = "fa fa-shopping-cart fa-2x" aria-hidden="true"></i> Realizar Pedido
+                </button>
+            </div>
+
+
+        </div>
+    </div>
+</div>
 </div>
 
 <footer class="container-fluid">
     <div class = "row row-eq-height">
         <div class = "col-sm-1 col-xs-4">
-            <img src="https://avatars3.githubusercontent.com/u/17879446?v=3&s=460" class="img-circle imgGithub">
+            <img src="https://avatars3.githubusercontent.com/u/17879446?v=3&s=460" class="img-circle" style = "display: block; max-width:32px; max-height:32px; width: auto; height: auto;">
         </div>
         <div class = "col-sm-3 col-xs-8 filaCentrada">
             <a class = "info" href="https://github.com/RomeroFederico/">Romero Federico</a>

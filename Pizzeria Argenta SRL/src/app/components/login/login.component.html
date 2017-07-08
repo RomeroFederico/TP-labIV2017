@@ -1,5 +1,7 @@
 <div class="container-fluid center_div">
 
+      <div id = "mostrarMensaje"></div>
+
       <div class="alert alert-warning" role="alert" *ngIf = "mostrarMensaje">
         {{mensajeMostrar}}
       </div>
@@ -200,6 +202,15 @@
                     <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioTelefono" title = "Error, no se ha ingresado nada" style="color : orange"></i>
                   </div>
                   <br>
+                  <div class = "row">
+                    <div class = "col-sm-1 col-sm-offset-3">
+                      <re-captcha #miCaptcha (resolved)="resolved($event)" siteKey="6LddPygUAAAAAM75fpYxu-4xYIoo5HTN1hvzznhD"></re-captcha>
+                    </div>
+                    <div class = "col-sm-1 col-sm-offset-5">
+                      <i class="fa fa-exclamation-circle fa-2x animated pulse infinite" *ngIf = "validarCaptcha" title = "Error, no se ha ingresado el captcha" style="color : red"></i>
+                    </div>
+                  </div>
+                  <hr>
                   <div class="form-group row">
                     <div class = "col-sm-4  col-sm-offset-2">
                       <button type="submit" class="btn btn-success btn-block" [disabled] = "cargando" (click) = "Registrarse()">

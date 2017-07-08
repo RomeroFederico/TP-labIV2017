@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { WsService } from '../../services/ws/ws.service';
 import { AutService } from '../../services/auth/aut.service';
@@ -20,7 +20,7 @@ export class Producto
   templateUrl: './productos.component.html',
   styleUrls: ['./productos.component.css']
 })
-export class ProductosComponent implements OnInit {
+export class ProductosComponent implements OnInit, Input, Output {
 
   // Default selection
   optionsModel: number[] = [0];
@@ -64,6 +64,8 @@ export class ProductosComponent implements OnInit {
   localesCargados : boolean = null;
 
   localSeleccionado = "Seleccione un local";
+
+  columnasProductos : string = "col-sm-3";
 
   constructor(public ws : WsService, public autService : AutService,
               private router: Router)
