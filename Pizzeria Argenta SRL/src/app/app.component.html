@@ -13,70 +13,85 @@
         </div>
     </div>
     <div class = "col-sm-3 animated slideInRight" *ngIf = "mostrarCarrito != null" style = "padding: 5px;">
-        <div style = "background-color: #222; opacity: 0.9; padding: 15px; border-radius: 10px;">
+        <div style = "background-color: white; opacity: 1; padding: 15px; border-radius: 10px;">
 
             <div class="row" style = "min-height: 480px;">
 
-                <div class="table-responsive vertical-align table-hover" style = "min-height: 470px;">
-                    <table class="table text-center table-hover" style = "font-size: x-small; font-style: italic">
-                    <thead style = "color: white">
-                        <th class = "text-center">Img</th>
-                        <th class = "text-center">Desc</th>
-                        <th class = "text-center">Cant</th>
-                        <th></th>
-                        <th class = "text-center">$</th>
-                        <th></th>
-                    </thead>
-                    <tr style = "color:white;">
-                        <td class = "col-sm-2">
-                            <img class = "img-responsive" src = "http://www.romerofederico.hol.es/pizza/ws/img/productos/mozzarella.jpg">
-                        </td>
-                        <td class = "col-sm-5">
-                            Pizza Mozzarella
-                        </td>
-                        <td class = "col-sm-1">
-                            1
-                        </td>
-                        <td class = "col-sm-1">
-                            <i class="fa fa-angle-up fa-2x incrementar" aria-hidden="true"></i>
-                            <br>
-                            <i class="fa fa-angle-down fa-2x decrementar" aria-hidden="true"></i>
-                        </td>
-                        <td class = "col-sm-2">
-                            90
-                        </td>
-                        <td class = "col-sm-1">
-                            <i class="fa fa-trash fa-2x borrar" aria-hidden="true" title = "Quitar"></i>
-                        </td>
-                    </tr>
-                    <tr style = "color:white;">
-                        <td class = "col-sm-2">
-                            <img class = "img-responsive" src = "http://www.romerofederico.hol.es/pizza/ws/img/productos/comboSuper.jpg">
-                        </td>
-                        <td class = "col-sm-5">
-                            2 Pizza Napolitana, Docena de Empanadas de Carne y Gaseosa 2L
-                        </td>
-                        <td class = "col-sm-1">
-                            1
-                        </td>
-                        <td class = "col-sm-1">
-                            <i class="fa fa-angle-up fa-2x incrementar" aria-hidden="true" title = "Incrementar"></i>
-                            <br>
-                            <i class="fa fa-angle-down fa-2x decrementar" aria-hidden="true" title = "Decrementar"></i>
-                        </td>
-                        <td class = "col-sm-2">
-                            300
-                        </td>
-                        <td class = "col-sm-1">
-                            <i class="fa fa-trash fa-2x borrar" aria-hidden="true" title = "Quitar"></i>
-                        </td>
-                    </tr>
-                    </table>
+                <div *ngIf = "productos == null">
+
+                    <div class = "col-sm-12 cargando parent" style = "height: 450px;">
+                        <div class = "child">
+                            <i class="fa fa-cart-arrow-down fa-4x" style = "color: #222"></i>
+                            <h4 style = "color: #222">No se han cargado productos</h4>
+                            <h5 style = "color: #222">Cargue un producto desde la pagina Locales o Productos</h5>
+                        </div>
+                    </div>
+
                 </div>
 
-                <button type="button" class="btn btn-danger miPuntero btn-xs btn-block">
-                    <i class = "fa fa-shopping-cart fa-2x" aria-hidden="true"></i> Realizar Pedido
-                </button>
+                <div *ngIf = "productos != null">
+
+                    <div class="table-responsive vertical-align table-hover" class = "vista2">
+                        <table class="table text-center table-hover table-condensed" style = "font-size: x-small; font-style: italic;">
+                        <thead style = "color: #222">
+                            <th class = "text-center">Img</th>
+                            <th class = "text-center">Desc</th>
+                            <th class = "text-center">Cant</th>
+                            <th></th>
+                            <th class = "text-center">$</th>
+                            <th></th>
+                        </thead>
+                        <tr style = "color: #222;" *ngFor = "let producto of productos" [ngClass] = "'animated slideInRight ' + (producto.tipo == 'Pizza'? 'danger' : (producto.tipo == 'Empanadas'? 'warning' : 'info'))">
+                            <td class = "col-sm-2">
+                                <img class = "img-responsive" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/productos/' + producto.img">
+                            </td>
+                            <td class = "col-sm-5">
+                                {{producto.descripcion}}
+                            </td>
+                            <td class = "col-sm-1">
+                                {{producto.cantidad}}
+                            </td>
+                            <td class = "col-sm-1">
+                                <i class="fa fa-angle-up fa-2x incrementar" aria-hidden="true" (click) = "IncrementarCantidad(producto)"></i>
+                                <br>
+                                <i class="fa fa-angle-down fa-2x decrementar" aria-hidden="true" (click) = "DecrementarCantidad(producto)"></i>
+                            </td>
+                            <td class = "col-sm-2">
+                                {{producto.precio * producto.cantidad}}
+                            </td>
+                            <td class = "col-sm-1">
+                                <i class="fa fa-trash fa-2x borrar" aria-hidden="true" title = "Quitar" (click) = "QuitarProducto(producto)"></i>
+                            </td>
+                        </tr>
+                        <!--<tr style = "color:white;">
+                            <td class = "col-sm-2">
+                                <img class = "img-responsive" src = "http://www.romerofederico.hol.es/pizza/ws/img/productos/comboSuper.jpg">
+                            </td>
+                            <td class = "col-sm-5">
+                                2 Pizza Napolitana, Docena de Empanadas de Carne y Gaseosa 2L
+                            </td>
+                            <td class = "col-sm-1">
+                                1
+                            </td>
+                            <td class = "col-sm-1">
+                                <i class="fa fa-angle-up fa-2x incrementar" aria-hidden="true" title = "Incrementar"></i>
+                                <br>
+                                <i class="fa fa-angle-down fa-2x decrementar" aria-hidden="true" title = "Decrementar"></i>
+                            </td>
+                            <td class = "col-sm-2">
+                                300
+                            </td>
+                            <td class = "col-sm-1">
+                                <i class="fa fa-trash fa-2x borrar" aria-hidden="true" title = "Quitar"></i>
+                            </td>
+                        </tr>-->
+                        </table>
+                    </div>
+
+                    <button type="button" class="btn btn-danger miPuntero btn-xs btn-block">
+                        <i class = "fa fa-shopping-cart fa-2x" aria-hidden="true"></i> Realizar Pedido
+                    </button>
+                </div>
             </div>
 
 

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { WsService } from '../../services/ws/ws.service';
 import { AutService } from '../../services/auth/aut.service';
@@ -6,6 +6,9 @@ import { AutService } from '../../services/auth/aut.service';
 import { IMultiSelectOption } from 'angular-2-dropdown-multiselect';
 import { IMultiSelectSettings } from 'angular-2-dropdown-multiselect';
 import { IMultiSelectTexts } from 'angular-2-dropdown-multiselect';
+
+import { ComunicacionService } from '../../services/comunicacion/comunicacion';
+import { Subscription }   from 'rxjs/Subscription';
 
 export class Producto
 {
@@ -67,14 +70,27 @@ export class ProductosComponent implements OnInit, Input, Output {
 
   columnasProductos : string = "col-sm-3";
 
+  subscription: Subscription;
+
+  errorProductos : boolean = null;
+  errorLocales : boolean = null;
+  errorProductosLocales : boolean = null;
+
   constructor(public ws : WsService, public autService : AutService,
-              private router: Router)
+              private router: Router, private comunicacionService: ComunicacionService)
   {
     this.CargarLocales();
     this.CargarProductos();
   }
 
   ngOnInit() {
+  }
+
+  //@Output() onAgregarAlCarrito = new EventEmitter<any>();
+
+  ngOnDestroy() {
+    // prevent memory leak when component destroyed
+    //this.subscription.unsubscribe();
   }
 
   SeleccionDeLocal()
@@ -93,7 +109,26 @@ export class ProductosComponent implements OnInit, Input, Output {
       this.Mostrar('Todos');
     }
     )
-    .catch((error) => { console.log(error)} );
+    .catch((error) => { this.errorProductos = true;  console.log(error)} );
+  }
+
+  Reintentar()
+  {
+    if (this.errorProductos = true)
+    {
+      this.errorProductos = null;
+      this.CargarProductos();
+    }
+    if (this.errorLocales = true)
+    {
+      this.errorLocales = null;
+      this.CargarLocales();
+    }
+    if (this.errorProductosLocales = true)
+    {
+      this.errorProductosLocales = null;
+      this.CargarLocalesPorProductos();
+    }
   }
 
   CargarLocales()
@@ -107,6 +142,7 @@ export class ProductosComponent implements OnInit, Input, Output {
       });
     })
     .catch( error => {
+      this.errorLocales = true;
       console.log(error);
     })
   }
@@ -130,7 +166,7 @@ export class ProductosComponent implements OnInit, Input, Output {
         });
       });
     })
-    .catch((error) => { console.log(error)} );
+    .catch((error) => { this.errorProductosLocales = true; console.log(error)} );
   }
 
   Mostrar(opcion)
@@ -172,6 +208,11 @@ export class ProductosComponent implements OnInit, Input, Output {
     }
   }
 
+  ObtenerUsuario()
+  {
+    return this.autService.getToken().usuario;
+  }
+
   Comprobar()
   {
     return this.autService.isLogued();
@@ -187,5 +228,12 @@ export class ProductosComponent implements OnInit, Input, Output {
     console.log(local);
     console.log(producto);
     this.router.navigate(["/locales"], { queryParams: { idProducto: producto.idProducto, idLocal : local.idLocal }});
+  }
+
+  EnviarAlCarrito(producto)
+  {
+    console.log("Envio al carrito...");
+    //this.onAgregarAlCarrito.emit(producto);
+    this.comunicacionService.EnviarAlCarrito(producto);
   }
 }

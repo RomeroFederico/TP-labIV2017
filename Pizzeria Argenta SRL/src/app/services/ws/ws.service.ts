@@ -236,7 +236,8 @@ export class WsService {
   
   TraerTodosLosPedidos()
   {
-    return this.http.get(this.url + 'estadisticas/pedidos/todos')
+    console.log(localStorage.getItem('token'));
+    return this.authHttp.get(this.url + 'estadisticas/pedidos/todos')
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );

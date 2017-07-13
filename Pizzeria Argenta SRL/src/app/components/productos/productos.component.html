@@ -8,7 +8,7 @@
       </blockquote>
     </div>
 
-    <div class = "col-sm-7" *ngIf = "localesCargados != null && locales != null" style = "margin-bottom: 10px;">
+    <div class = "col-sm-7" *ngIf = "localesCargados != null && locales != null && productosBase != null" style = "margin-bottom: 10px;">
       <div class = "row">
         <div class = "col-sm-3">
           <img src = "http://www.romerofederico.hol.es/pizza/ws/img/locales/default.png" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
@@ -20,7 +20,7 @@
       </div>
     </div>
   </div>
-  <div class="btn-group btn-group-justified" role="group" aria-label="..." style = "margin-bottom: 20px">
+  <div class="btn-group btn-group-justified" role="group" aria-label="..." style = "margin-bottom: 20px"  *ngIf = "productosBase != null && locales != null && localesCargados != null">
     <div class="btn-group" role="group">
       <button type="button" class="btn btn-success" (click) = "Mostrar('todos')">Todos</button>
     </div>
@@ -36,13 +36,20 @@
   </div>
 
 <div class="">
-  <div class = "col-sm-12 cargando parent" *ngIf = "productosBase == null">
+  <div class = "col-sm-12 cargando parent" *ngIf = "(productosBase == null || locales == null || localesCargados == null) && (errorProductos == null && errorLocales == null && errorProductosLocales == null)">
                 <div class = "child">
                     <i class="fa fa-cog fa-spin fa-5x fa-fw" style = "color: white"></i><br>
                     <h2 style = "color: white">Cargando Productos</h2>
                 </div>
-  </div> 
-  <div class="row">
+  </div>
+  <div class = "col-sm-12 cargando parent" *ngIf = "errorProductos != null || errorLocales != null || errorProductosLocales != null">
+                <div class = "child">
+                    <i class="fa fa-cog fa-spin fa-5x fa-fw" style = "color: white"></i><br>
+                    <h3 style = "color: white">Ocurrio un error al cargar los datos</h3>
+                    <h2 style = "color: white; cursor: pointer" (click) = "Reintentar()">Reintentar</h2>
+                </div>
+  </div>
+  <div class="row" *ngIf = "productosBase != null && locales != null && localesCargados != null">
     <div [ngClass] = "columnasProductos" *ngFor = "let producto of productos; let i=index">
       <div [ngClass] ="producto.tipo == 'Pizza'? 'panel panel-danger' : (producto.tipo == 'Empanadas'? 'panel panel-warning':'panel panel-info')">
         <div class="panel-heading">{{producto.tipo}}</div>
@@ -68,12 +75,15 @@
               <p class="text-right" *ngIf = "ComprobarPromo(producto.promocion)">Precio: <small>{{producto.precio * 0.75}}$</small></p>
             </div>
           </div>
-          <select *ngIf = "Comprobar()" class="form-control" [(ngModel)]="localSeleccionado" (ngModelChange)="HacerPedido($event, producto)" >
+          <select *ngIf = "Comprobar() && ObtenerUsuario().tipo != 'Cliente'" class="form-control" [(ngModel)]="localSeleccionado" (ngModelChange)="HacerPedido($event, producto)" >
             <option [value]="localSeleccionado">&#xf217; Seleccione un local</option>
             <option *ngFor="let local of producto.locales" [ngValue]="local">{{local.direccion}}, {{local.localidad}}</option>
           </select>
           <button *ngIf = "!Comprobar()" type="button" [ngClass] ="'btn btn-lg btn-block responsive-width ' + (producto.tipo == 'Pizza'? 'btn-danger' : (producto.tipo == 'Empanadas'? 'btn-warning':'btn-info'))">
             <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span><small> Necesitas estar logueado para pedir</small>
+          </button>
+          <button *ngIf = "Comprobar() && ObtenerUsuario().tipo == 'Cliente'" type="button" (click) = "EnviarAlCarrito(producto)" [ngClass] ="'btn btn-lg btn-block responsive-width ' + (producto.tipo == 'Pizza'? 'btn-danger' : (producto.tipo == 'Empanadas'? 'btn-warning':'btn-info'))">
+            <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span><small> Pedir</small>
           </button>
         </div>
       </div>

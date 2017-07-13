@@ -54,5 +54,7 @@ select {
 {
   .cargando {
     height: 500px;
+    background-color: #222; 
+    opacity: 0.9;
   }
 }

@@ -10,6 +10,7 @@ import { HomeComponent } from './components/home/home.component';
 import { PedidosComponent } from './components/pedidos/pedidos.component';
 import { LoginComponent } from './components/login/login.component';
 import { WsService }  from './services/ws/ws.service';
+import { ComunicacionService }  from './services/comunicacion/comunicacion';
 import { AutService } from './services/auth/aut.service';
 import { VerificarJWTService } from './services/verificar-jwt/verificar-jwt.service';
 import { VerificarJWT2Service } from './services/verificar-jwt2/verificar-jwt2.service';
@@ -82,6 +83,7 @@ const appRoutes: Routes = [
     RouterModule.forRoot(appRoutes)
   ],
   providers: [
+    ComunicacionService,
     WsService,
     AutService,
     VerificarJWTService,
