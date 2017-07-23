@@ -10,7 +10,7 @@ import { AutService } from '../../services/auth/aut.service';
 })
 export class PedidosComponent implements OnInit {
 
-  seleccion : string = "Actual";
+  seleccion : string = "";
 
   dias: string[] = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
 
@@ -39,6 +39,7 @@ export class PedidosComponent implements OnInit {
   constructor(public ws : WsService, public autService : AutService,
               private router: Router, private actRoute: ActivatedRoute)
   {
+    this.Mostrar("En Proceso");
   }
 
   ngOnInit()

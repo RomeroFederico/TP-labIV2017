@@ -53,8 +53,6 @@ export class ProductosComponent implements OnInit, Input, Output {
 
   // Labels / Parents
   myOptions: IMultiSelectOption[] = [
-      { id: -1, name: 'Seleccionar Local', isLabel: true },
-      { id: 0, name: 'Todos los locales', parentId: -1 },
   ];
 
   productosBase : Array<Producto>;
@@ -114,17 +112,17 @@ export class ProductosComponent implements OnInit, Input, Output {
 
   Reintentar()
   {
-    if (this.errorProductos = true)
+    if (this.errorProductos == true)
     {
       this.errorProductos = null;
       this.CargarProductos();
     }
-    if (this.errorLocales = true)
+    if (this.errorLocales == true)
     {
       this.errorLocales = null;
       this.CargarLocales();
     }
-    if (this.errorProductosLocales = true)
+    if (this.errorProductosLocales == true)
     {
       this.errorProductosLocales = null;
       this.CargarLocalesPorProductos();
@@ -138,8 +136,9 @@ export class ProductosComponent implements OnInit, Input, Output {
 
       this.locales.forEach(local => {
       
-        this.myOptions.push({id: local.idLocal, name: local.direccion + ", " + local.localidad, parentId: -1});
+        this.myOptions.push({id: local.idLocal, name: local.direccion + ", " + local.localidad});
       });
+      this.optionsModel = [this.locales[0].idLocal];
     })
     .catch( error => {
       this.errorLocales = true;
@@ -165,6 +164,8 @@ export class ProductosComponent implements OnInit, Input, Output {
             producto.locales.push(local);
         });
       });
+
+      this.FiltrarPorLocal(1);
     })
     .catch((error) => { this.errorProductosLocales = true; console.log(error)} );
   }
@@ -233,7 +234,7 @@ export class ProductosComponent implements OnInit, Input, Output {
   EnviarAlCarrito(producto)
   {
     console.log("Envio al carrito...");
-    //this.onAgregarAlCarrito.emit(producto);
+    producto.localSeleccionado = this.optionsModel[0];
     this.comunicacionService.EnviarAlCarrito(producto);
   }
 }

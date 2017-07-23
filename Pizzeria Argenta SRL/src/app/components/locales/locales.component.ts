@@ -3,6 +3,9 @@ import { Router, ActivatedRoute} from '@angular/router';
 import { WsService } from '../../services/ws/ws.service';
 import { AutService } from '../../services/auth/aut.service';
 
+import { ComunicacionService } from '../../services/comunicacion/comunicacion';
+import { Subscription }   from 'rxjs/Subscription';
+
 declare var google;
 
 export class Local
@@ -104,7 +107,8 @@ export class LocalesComponent implements OnInit {
   map: any;
 
   constructor(public ws : WsService, public autService : AutService,
-              private router: Router, private actRoute: ActivatedRoute)
+              private router: Router, private actRoute: ActivatedRoute, 
+              private comunicacionService: ComunicacionService)
   {
     this.CargarLocales();
   }
@@ -448,6 +452,11 @@ export class LocalesComponent implements OnInit {
     return this.autService.isLogued();
   }
 
+  ObtenerUsuario()
+  {
+    return this.autService.getToken().usuario;
+  }
+
   ComprobarPromo(diaPromo)
   {
     var dia : any = this.dias[new Date().getDay()]
@@ -496,6 +505,29 @@ export class LocalesComponent implements OnInit {
         this.router.navigate(['/pedidos'], { queryParams: { Local : this.local.idLocal, Productos : productoAPedir, Distancia : this.distancia, Tiempo : this.duracion, Direccion : this.direccionUsuario, Localidad : this.localidadUsuario}});
       }
     }
+  }
+
+  ObtenerLocalesDelProducto(idProducto)
+  {
+    let locales = [];
+    this.locales.forEach(local => {
+      for (var index = 0; index < local.productos.length; index++) {
+        if (local.productos[index].idProducto == idProducto)
+        {
+          locales.push(local);
+          break;
+        }
+      }
+    });
+    return locales;
+  }
+
+  AgregarAlCarrito(producto)
+  {
+    console.log("Envio al carrito...");
+    producto.localSeleccionado = this.local.idLocal;
+    producto.locales = this.ObtenerLocalesDelProducto(producto.idProducto);
+    this.comunicacionService.EnviarAlCarrito(producto);
   }
 
   //Funciones del Slider

@@ -37,7 +37,7 @@ footer {
 
 .vista2 {
     width: 100%;
-    height: 470px;
+    height: 300px;
     overflow-y: scroll;
     overflow-x:hidden;
 }
@@ -79,4 +79,3 @@ i {
   align-items: center;
   text-align: center;
 }
-
