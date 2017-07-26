@@ -1,8 +1,9 @@
+<img src="Img/logo.png">
 <h1>Pizzeria Argenta SRL</h1>
 
-img
+<img src="Img/home.png">
 
- <h1>www.romero.federico.hol.es/argenta</h1>
+<h1>www.romero.federico.hol.es/argenta</h1>
 <h2>Ingreso sin Loguearse</h2>
 <p>Una vez ingresada a la pagina, se muestra la pagina principal, conteniendo tres accesos directos a las principales funciones 
 del sistema: El listado de productos, la visualizacion de los locales y el estado de los pedidos. Como no se encuentra registrado, 
@@ -15,7 +16,7 @@ exitosamente en la pagina.
 <h2>Login </h2>
 Si ya se encuentra registrado en el sistema, puede loguearse con el email y el password. Si no son correctos se emitira un mensaje de error. En caso de que el usuario no sea valido en el sistema, no podra loguearse. Para la prueba de testing, se incluyen cuatro botones de 
 prueba con los tipos de usuarios del sistema: <strong>Cliente, Empleado, Encargado y Administrador</strong>
-h2>Operatoria comun de los usuarios:</h2>
+<h2>Operatoria comun de los usuarios:</h2>
 <p>Al ingresar al sistema ya logueado, gracias al token almacenado del lado del cliente, se verifica desde el servidor si el usuario 
 es valido, si el token no expiro o si se nego el acceso al mismo. En cualquier caso, se cerrara la sesion del individuo.
 Cualquier usuario podra modificar sus datos en el panel de control, con excepcion del email por razones de seguridad.</p> 
