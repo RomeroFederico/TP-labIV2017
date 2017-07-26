@@ -110,7 +110,18 @@ export class AgregarProductoComponent implements OnInit, Input, Output {
     {
       this.local = local;
     }
-  } 
+  }
+
+  @Input()
+
+  set Producto(producto : any)
+  {
+    if (producto != null)
+    {
+      this.modifico = true;
+      this.producto = producto;
+    }
+  }
 
   Subir()
   {
@@ -149,7 +160,10 @@ export class AgregarProductoComponent implements OnInit, Input, Output {
     if (!(confirm("¿Desea " + (this.modifico != null? "modificar" : "registrar") + " el producto con estos datos?")))
       return;
     
-    this.RegistrarProducto();
+    if (this.modifico != null)
+      this.ModificarProducto();
+    else
+      this.RegistrarProducto();
   }
 
   RegistrarProducto()
@@ -162,6 +176,8 @@ export class AgregarProductoComponent implements OnInit, Input, Output {
     this.producto.idLocal = this.local.idLocal;
 
     console.log(this.producto);
+
+    this.cargando = true;
 
     this.ws.RegistrarProducto(this.producto).then( data => {
       console.log("Accediendo al servidor...");
@@ -185,50 +201,36 @@ export class AgregarProductoComponent implements OnInit, Input, Output {
     } );
   }
 
-  // ModificarLocal()
-  // {
-  //   let direccion = this.direccion.split(", ");
-  //   this.local.direccion = direccion[0];
-  //   this.local.localidad = direccion[1];
-  //   this.local.provincia = direccion[2];
-  //   this.local.pais = direccion[3];
+  ModificarProducto()
+  {
+    if (this.img1 != null)
+      this.producto.img = this.img1;
 
-  //   if (this.img1 != null)
-  //     this.local.img1 = this.img1;
+    this.producto.idLocal = this.local.idLocal;
 
-  //   if (this.img2 != null)
-  //     this.local.img2 = this.img2;
+    this.cargando = true;
 
-  //   if (this.img3 != null)
-  //     this.local.img3 = this.img3;
-
-  //   this.local.idUsuario = this.optionsModelEncargados[0];
-  //   this.local.productos = this.optionsModelProductos;
-  //   this.local.empleados = this.optionsModelEmpleados;
-
-  //   console.log(this.local);
-
-  //   this.ws.ModificarLocal(this.local).then( data => {
-  //     console.log("Accediendo al servidor...");
-  //     console.log(data);
-  //     this.cargando = null;
-  //     if (data.exito)
-  //     {
-  //       alert("Local modificado con exito!!!");
-  //       this.onRegistrado.emit(true);
-  //     }
-  //     else
-  //     {
-  //       this.mensajeMostrar = data.mensaje;
-  //       this.mostrarMensaje = true;
-  //     }
-  //   })
-  //   .catch( e => {
-  //     this.cargando = null;
-  //     this.mostrarError = true;
-  //     console.log(e);
-  //   } );
-  // }
+    this.ws.ModificarProducto(this.producto).then( data => {
+      console.log("Accediendo al servidor...");
+      console.log(data);
+      this.cargando = null;
+      if (data.exito)
+      {
+        alert("Producto modificado con exito!!!");
+        this.onRegistrado.emit(true);
+      }
+      else
+      {
+        this.mensajeMostrar = data.mensaje;
+        this.mostrarMensaje = true;
+      }
+    })
+    .catch( e => {
+      this.cargando = null;
+      this.mostrarError = true;
+      console.log(e);
+    } );
+  }
 
   CancelarRegistro()
   {

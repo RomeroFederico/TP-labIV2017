@@ -13,6 +13,7 @@ import { LocalDataSource } from 'ng2-smart-table';
 export class ClientesComponent implements OnInit {
 
   usuarios = null;
+  usuariosBase : any = null;
 
   cargando : boolean = null;
   registrar : boolean = null;
@@ -27,15 +28,50 @@ export class ClientesComponent implements OnInit {
   ngOnInit() {
   }
 
+  Mostrar(opcion)
+  {
+    this.usuarios = this.usuariosBase;
+
+    if (opcion == 'Cliente')
+      this.usuarios = this.usuarios.filter((item)=>{
+        return item.tipo == "Cliente";
+      })
+    else if (opcion == 'Empleado')
+      this.usuarios = this.usuarios.filter((item)=>{
+        return item.tipo == "Empleado";
+      })
+  }
+
   CargarUsuarios()
   {
-    this.ws.ObtenerClientes().then((data) => 
+    if (this.Comprobar() && this.ObtenerUsuario().tipo == 'Empleado')
     {
-      console.log(data);
-      this.usuarios = data;
+      this.ws.ObtenerClientes().then((data) => 
+      {
+        console.log(data);
+        this.usuarios = data;
+        this.usuarios.forEach(usuario => {
+          usuario.estadoBase = usuario.estado;
+        });
+      }
+      )
+      .catch((error) => { this.error = true; console.log(error)} );
     }
-    )
-    .catch((error) => { this.error = true; console.log(error)} );
+    else if (this.Comprobar() && this.ObtenerUsuario().tipo == 'Encargado')
+    {
+      this.ws.ObtenerClientesYEmpleados(this.ObtenerUsuario().idUsuario).then((data) => 
+      {
+        console.log(data);
+        this.usuarios = data;
+        this.usuariosBase = data;
+        this.usuarios.forEach(usuario => {
+          usuario.estadoBase = usuario.estado;
+        });
+        this.Mostrar('Todos');
+      }
+      )
+      .catch((error) => { this.error = true; console.log(error)} );
+      }
   }
 
   ReintentarCargarUsuarios()
@@ -44,10 +80,18 @@ export class ClientesComponent implements OnInit {
     this.CargarUsuarios();
   }
 
+  ComprobarSiSeModifico(usuario)
+  {
+    if (usuario.estado != usuario.estadoBase)
+      return null;
+    else
+      return true;
+  }
+
   // USADO POR ENCARGADO
   Modificar(usuario)
   {
-    if (!confirm("Desea modificar al cliente " + usuario.apellido + " " + usuario.nombre + "?"))
+    if (!confirm("Desea modificar al usuario " + usuario.apellido + " " + usuario.nombre + "?"))
       return;
 
     this.cargando = true;
@@ -56,9 +100,8 @@ export class ClientesComponent implements OnInit {
       this.cargando = null;
       if (data.exito)
       {
-        usuario.tipoBase = usuario.tipo;
         usuario.estadoBase = usuario.estado;
-        alert("Cliente modificado con exito!!!");
+        alert("Usuario modificado con exito!!!");
       }
       else
         alert(data.mensaje);
@@ -88,4 +131,13 @@ export class ClientesComponent implements OnInit {
     }
   }
 
+  ObtenerUsuario()
+  {
+    return this.autService.getToken().usuario;
+  }
+
+  Comprobar()
+  {
+    return this.autService.isLogued();
+  }
 }

@@ -26,7 +26,8 @@ export class Local
                public lng : number = 0,
                public marcador : any = null,
                public gerente : Gerente = null,
-               public productos : Array<Producto> = null)
+               public productos : Array<Producto> = null,
+               public empleados : Array<any> = null)
   {
 
   }
@@ -105,6 +106,9 @@ export class LocalesComponent implements OnInit {
   //localDelUsuario : any = null;
   errorUsuarioSinLocal : boolean = null;
 
+  modifico : boolean = null;
+  localModificar : any = null;
+
   @ViewChild('map') mapElement: ElementRef;
 
   map: any;
@@ -130,7 +134,7 @@ export class LocalesComponent implements OnInit {
     this.slider();
     this.CargarMapa();
 
-    if (!this.Comprobar() || (this.Comprobar() && this.ObtenerUsuario() == "Cliente"))
+    if (!this.Comprobar() || (this.Comprobar() && this.ObtenerUsuario().tipo == "Cliente"))
       this.MarcarUsuario();
 
     this.actRoute.queryParams
@@ -654,6 +658,65 @@ export class LocalesComponent implements OnInit {
     producto.localSeleccionado = this.local.idLocal;
     producto.locales = this.ObtenerLocalesDelProducto(producto.idProducto);
     this.comunicacionService.EnviarAlCarrito(producto);
+  }
+
+  Modificar(local : any)
+  {
+    console.log("Voy a modificar local");
+    console.log(local);
+
+    var nuevoLocal = new Local();
+
+    nuevoLocal.idLocal = local.idLocal;
+    nuevoLocal.idUsuario = this.ObtenerUsuario().idUsuario;
+    nuevoLocal.img1 = local.img1;
+    nuevoLocal.img2 = local.img2;
+    nuevoLocal.img3 = local.img3;
+    nuevoLocal.direccionCompleta = local.direccionCompleta;
+    nuevoLocal.direccion = local.direccion;
+    nuevoLocal.localidad = local.localidad;
+    nuevoLocal.provincia = local.provincia;
+    nuevoLocal.pais = local.pais;
+    nuevoLocal.capacidad = local.capacidad;
+    nuevoLocal.telefono = local.telefono;
+    
+    nuevoLocal.productos = local.productos;
+
+    this.CargarEmpleadosDelLocal(nuevoLocal);
+  }
+
+  CargarEmpleadosDelLocal(local : Local)
+  {
+    this.ws.ObtenerEmpleadosDelLocal(local.idLocal).then((data) =>
+    {
+      console.log(local.idLocal);
+      console.log(data);
+      local.empleados = data;
+      this.localModificar = local;
+      console.log(this.localModificar);
+      this.modifico = true;
+    })
+    .catch( error => {
+      this.CargarEmpleadosDelLocal(local);
+      console.log(error);
+    })
+  }
+
+  CapturarEventoRegistrado($event)
+  {
+    if ($event == true)
+    {
+      this.seleccionProducto = new Array<number>();
+      this.local = null;
+      this.locales = null;
+      this.mostrarCargando = null;
+      this.modifico = null;
+      this.CargarLocalDelUsuario();
+    }
+    else
+    {
+      this.modifico = null;
+    }
   }
 
   //Funciones del Slider

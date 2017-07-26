@@ -343,9 +343,11 @@ export class AgregarLocalComponent implements OnInit, Input, Output {
           this.optionsModelEmpleados.push(usuario.idUsuario);
         });
       }
-
-      this.myOptions2.push({id: this.local.gerente.idUsuario, name: this.local.gerente.legajo + ": " + this.local.gerente.apellido + ", " + this.local.gerente.nombre});
-      this.optionsModelEncargados.push(this.local.gerente.idUsuario);
+      if (this.Comprobar() && this.ObtenerUsuario().tipo != 'Encargado')
+      {
+        this.myOptions2.push({id: this.local.gerente.idUsuario, name: this.local.gerente.legajo + ": " + this.local.gerente.apellido + ", " + this.local.gerente.nombre});
+        this.optionsModelEncargados.push(this.local.gerente.idUsuario);
+      }
 
       console.log(this.local);
 
@@ -384,6 +386,16 @@ export class AgregarLocalComponent implements OnInit, Input, Output {
   MostrarConsola(mensaje)
   {
     console.log(mensaje);
+  }
+
+  Comprobar()
+  {
+    return this.aut.isLogued();
+  }
+
+  ObtenerUsuario()
+  {
+    return this.aut.getToken().usuario;
   }
 
   ValidarSoloNumeros(event, atributo)
@@ -457,7 +469,7 @@ export class AgregarLocalComponent implements OnInit, Input, Output {
     if (this.optionsModelProductos.length == 0)
       this.vacioProducto = true;
 
-    if (this.optionsModelEncargados.length == 0)
+    if (this.Comprobar() && this.ObtenerUsuario().tipo != 'Encargado' && this.optionsModelEncargados.length == 0)
       this.vacioEncargado = true;
 
     if (this.optionsModelEmpleados.length < 3)
@@ -594,7 +606,8 @@ export class AgregarLocalComponent implements OnInit, Input, Output {
     if (this.img3 != null)
       this.local.img3 = this.img3;
 
-    this.local.idUsuario = this.optionsModelEncargados[0];
+    if (this.Comprobar() && this.ObtenerUsuario().tipo != 'Encargado')
+      this.local.idUsuario = this.optionsModelEncargados[0];
     this.local.productos = this.optionsModelProductos;
     this.local.empleados = this.optionsModelEmpleados;
 

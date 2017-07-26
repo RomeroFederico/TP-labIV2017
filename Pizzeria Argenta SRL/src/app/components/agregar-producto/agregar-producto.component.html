@@ -18,7 +18,7 @@
 
    <div class="panel panel-success centrarRegistro">
               <div class="panel-heading">
-                Registro de producto
+                {{modifico == null? 'Registro de producto' : 'Modificar producto'}}
               </div>
               <div class="panel-body">
 
@@ -56,7 +56,7 @@
                       <select class="form-control" [(ngModel)]="producto.tipo">
                         <option value = "Pizza">Pizza</option>
                         <option value = "Empanadas">Empanadas</option>
-                        <option value = "Combos">Combos</option>
+                        <option value = "Combo">Combo</option>
                       </select>
                     </div>
                   </div>
@@ -120,7 +120,7 @@
                     <div class = "col-sm-4  col-sm-offset-2">
                       <button type="submit" class="btn btn-success btn-block" [disabled] = "cargando" (click) = "Registrarse()">
                         <i class="fa fa-cutlery fa-lg"></i> 
-                        Registrar
+                        {{modifico == null? 'Registrar' : 'Modificar'}}
                       </button>
                     </div>
                     <div class="col-sm-4">

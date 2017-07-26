@@ -15,6 +15,7 @@ export class MenuComponent implements OnInit, Input, Output {
   }
 
   @Output() onMostrarCarrito = new EventEmitter<any>();
+  @Output() onLogout = new EventEmitter<any>();
 
   salir()
   {
@@ -22,6 +23,7 @@ export class MenuComponent implements OnInit, Input, Output {
     {
       localStorage.setItem('token', null);
       window.alert('Sesion cerrada!!!');
+      this.onLogout.emit(true);
       this.router.navigate(['/login']);
     }
   }

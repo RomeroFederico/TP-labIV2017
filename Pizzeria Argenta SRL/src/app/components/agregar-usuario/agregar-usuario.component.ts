@@ -372,8 +372,18 @@ export class AgregarUsuarioComponent implements OnInit, Input, Output {
       this.cargando = null;
       if (data.exito)
       {
-        alert("Usuario registrado con exito!!!");
-        this.onRegistrado.emit(true);
+        console.log(this.user.tipo != 'Empleado' || (this.user.tipo == 'Empleado' && this.Comprobar() && this.ObtenerUsuario() != 'Encargado'));
+        console.log(this.user.tipo == 'Empleado' && this.Comprobar() && this.ObtenerUsuario().tipo == 'Encargado');
+        if (this.user.tipo != 'Empleado' || (this.user.tipo == 'Empleado' && this.Comprobar() && this.ObtenerUsuario().tipo != 'Encargado'))
+        {
+          alert("Usuario registrado con exito!!!");
+          this.onRegistrado.emit(true);
+        }
+        else if (this.user.tipo == 'Empleado' && this.Comprobar() && this.ObtenerUsuario().tipo == 'Encargado')
+        {
+          this.cargando = true;
+          this.RegistrarEmpleado(data.idUsuario);
+        }
       }
       else
       {
@@ -396,6 +406,33 @@ export class AgregarUsuarioComponent implements OnInit, Input, Output {
   {
     if (confirm("Desea cancelar el registro de usuario?"))
       this.onRegistrado.emit(false);
+  }
+
+  RegistrarEmpleado(idUsuario)
+  {
+    this.ws.RegistrarEmpleadoEnLocal({idUsuario: idUsuario, idEncargado: this.ObtenerUsuario().idUsuario}).then((data) => {
+      if (data.exito)
+      {
+        alert("Empleado registrado con exito en el local!!!");
+        this.onRegistrado.emit(true);
+      }
+      else
+      {
+        alert("Empleado registrado con exito, no se asigno local por que no se tiene uno asignado a tu cuenta!!!");
+        this.onRegistrado.emit(true);
+      }
+    })
+    .catch((error) => { this.RegistrarEmpleado(idUsuario); console.log(error); });
+  }
+
+  ObtenerUsuario()
+  {
+    return this.aut.getToken().usuario;
+  }
+
+  Comprobar()
+  {
+    return this.aut.isLogued();
   }
 
 }

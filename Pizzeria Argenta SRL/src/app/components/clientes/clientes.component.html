@@ -3,7 +3,8 @@
   <div class = "row">
     <div class = "col-sm-10">
       <blockquote style = "color: white">
-        <h2>{{registrar == null? 'Listado de Clientes.' : 'Registrar Cliente.'}}</h2>
+        <h2 *ngIf = "Comprobar() && ObtenerUsuario().tipo == 'Empleado'">{{registrar == null? 'Listado de Clientes.' : 'Registrar Cliente.'}}</h2>
+        <h2 *ngIf = "Comprobar() && ObtenerUsuario().tipo == 'Encargado'">{{registrar == null? 'Listado de Usuarios.' : 'Registrar Usuario.'}}</h2>        
       </blockquote>
     </div>
     <div class = "col-sm-2">
@@ -15,28 +16,43 @@
   </div>
   <hr>
 
+  <div class="btn-group btn-group-justified" role="group" aria-label="..." style = "margin-bottom: 20px" *ngIf = "registrar == null && this.Comprobar() && this.ObtenerUsuario().tipo == 'Encargado'">
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-success" (click) = "Mostrar('Todos')" [disabled] = "cargando != null">Todos</button>
+    </div>
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-danger" (click) = "Mostrar('Cliente')" [disabled] = "cargando != null">Clientes</button>
+    </div>
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-info" (click) = "Mostrar('Empleado')" [disabled] = "cargando != null">Empleados</button>
+    </div>
+  </div>
+
 <div class="container">
 
-  <app-agregar-cliente *ngIf = "registrar == true" (onRegistrado) = "CapturarEventoRegistrado($event)"></app-agregar-cliente>
+  <app-agregar-cliente *ngIf = "registrar == true && Comprobar() && ObtenerUsuario().tipo == 'Empleado'" (onRegistrado) = "CapturarEventoRegistrado($event)"></app-agregar-cliente>
+  <app-agregar-usuario *ngIf = "registrar == true && Comprobar() && ObtenerUsuario().tipo == 'Encargado'" (onRegistrado) = "CapturarEventoRegistrado($event)"></app-agregar-usuario>
 
   <div class = "col-sm-12 cargando parent" *ngIf = "usuarios == null && registrar == null && error == null">
                 <div class = "child">
                     <i class="fa fa-cog fa-spin fa-5x fa-fw" style = "color: white"></i><br>
-                    <h2 style = "color: white">Cargando Clientes</h2>
+                    <h2 style = "color: white" *ngIf = "Comprobar() && ObtenerUsuario().tipo == 'Empleado'">Cargando Clientes</h2>
+                    <h2 style = "color: white" *ngIf = "Comprobar() && ObtenerUsuario().tipo == 'Encargado'">Cargando Usuarios</h2>
                 </div>
   </div>
 
   <div class = "col-sm-12 cargando parent" *ngIf = "usuarios == null && registrar == null && error != null">
                 <div class = "child">
                     <i class="fa fa-exclamation-triangle fa-5x fa-fw" style = "color: white" aria-hidden="true"></i>
-                    <h2 style = "color: white">Error en la carga de clientes.</h2>
+                    <h2 style = "color: white" *ngIf = "Comprobar() && ObtenerUsuario().tipo == 'Empleado'">Error en la carga de clientes.</h2>
+                    <h2 style = "color: white" *ngIf = "Comprobar() && ObtenerUsuario().tipo == 'Encargado'">Error en la carga de usuarios.</h2>
                     <h3 (click) = "ReintentarCargarUsuarios()" style = "cursor : pointer">Reintentar</h3>
                 </div>
   </div>
 
   <div class="row" *ngIf = "usuarios != null && registrar == null && error == null" style = "min-height: 500px;">
 
-  <div class="table-responsive vertical-align table-hover">
+  <div class="table-responsive vertical-align table-hover" *ngIf = "Comprobar() && ObtenerUsuario().tipo == 'Empleado'">
     <table class="table text-center table-hover">
       <thead style = "color: white">
         <th class = "text-center">Imagen</th>
@@ -71,8 +87,72 @@
         <td class="col-sm-1">
           {{usuario.localidad}}
         </td>
-        <td class="col-sm-2">
+        <td class="col-sm-1">
           {{usuario.estado == 1? 'Activo' : 'Suspendido'}}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="table-responsive vertical-align table-hover" *ngIf = "Comprobar() && ObtenerUsuario().tipo == 'Encargado'">
+    <table class="table text-center table-hover">
+      <thead style = "color: white">
+        <th class = "text-center">Imagen</th>
+        <th class = "text-center">Legajo</th>
+        <th class = "text-center">Apellido y Nombre</th>
+        <th class = "text-center">Email</th>
+        <th class = "text-center">Sexo</th>
+        <th class = "text-center">Telefono</th>
+        <th class = "text-center">Direccion</th>
+        <th class = "text-center">Localidad</th>
+        <th class = "text-center">Tipo</th>
+        <th class = "text-center">Estado</th>
+        <th class = "text-center">Accion</th>
+      </thead>
+      <tr *ngFor = "let usuario of usuarios" style = "color:white" >
+        <td class="col-sm-1">
+          <img class = "img-responsive img-thumbnail" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/usuarios/' + usuario.img">
+        </td>
+        <td class="col-sm-1">
+          {{usuario.legajo != null? usuario.legajo : '---'}}
+        </td>
+        <td class="col-sm-1">
+          {{usuario.apellido}}, {{usuario.nombre}}
+        </td>
+        <td class="col-sm-1">
+          {{usuario.email}}
+        </td>
+        <td class="col-sm-1">
+          <i *ngIf = "usuario.sexo == 'Masculino'" class="fa fa-mars fa-2x fa-fw" style = "color:lightblue" title = 'Masculino'></i>
+          <i *ngIf = "usuario.sexo == 'Femenino'" class="fa fa-venus fa-2x fa-fw" style = "color:pink" title = 'Femenino'></i>
+        </td>
+        <td class="col-sm-1">
+          {{usuario.telefono}}
+        </td>
+        <td class="col-sm-1">
+          {{usuario.direccion}}
+        </td>
+        <td class="col-sm-1">
+          {{usuario.localidad}}
+        </td>
+        <td class="col-sm-1">
+          {{usuario.tipo}}
+        </td>
+        <td class="col-sm-2">
+          <!--{{usuario.estado == 1? 'Activo' : 'Inactivo'}}-->
+          <select class="form-control" [(ngModel)]="usuario.estado">
+            <option value = "1"><div *ngIf = "usuario.estadoBase == 1">&#xf00c; </div>Activo</option>
+            <option value = "0"><div *ngIf = "usuario.estadoBase == 0">&#xf00c; </div>Inactivo</option>
+          </select>
+        </td>
+        <td class="col-sm-1">
+          <button type="button" class="btn btn-warning miPuntero" (click) = "Modificar(usuario)" [disabled] = "ComprobarSiSeModifico(usuario) || cargando != null">
+            <span class="fa-stack fa-lg" *ngIf = "cargando == null">
+              <i class="fa fa-pencil fa-stack-1x" title = "Modifcar"></i>
+              <i *ngIf = "ComprobarSiSeModifico(usuario)" class="fa fa-ban fa-stack-2x text-danger" title = "No se ha modificado nada"></i>
+            </span>
+            <i *ngIf = "cargando != null" class = "fa fa-cog fa-2x fa-spin" title = "Modificando, espere un momento"></i>
+          </button>
         </td>
       </tr>
     </table>

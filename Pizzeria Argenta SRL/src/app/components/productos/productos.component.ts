@@ -80,6 +80,8 @@ export class ProductosComponent implements OnInit, Input, Output {
 
   registrar : boolean = null;
 
+  modificar : any = null;
+
   constructor(public ws : WsService, public autService : AutService,
               private router: Router, private comunicacionService: ComunicacionService)
   {
@@ -317,7 +319,16 @@ export class ProductosComponent implements OnInit, Input, Output {
     if (this.registrar == null)
       this.registrar = true;
     else
+    {
+      this.modificar = null;
       this.registrar = null;
+    }
+  }
+
+  Modificar(producto)
+  {
+    this.modificar = {idProducto : producto.idProducto, descripcion : producto.descripcion, precio : producto.precio, promocion : producto.promocion, img : producto.img, tipo : producto.tipo, imgAnterior : producto.img};
+    this.registrar = true;
   }
 
   CapturarEventoRegistrado($event)

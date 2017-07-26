@@ -55,7 +55,7 @@
     </div>
 
     <div class="row content opciones">
-      <div class="col-sm-4 opcion" (mouseenter) = "Mostrar(1)" (mouseleave) = "NoMostrar(1)">
+      <div class="col-sm-4 opcion" (mouseenter) = "Mostrar(1)" (mouseleave) = "NoMostrar(1)" (click) = "IrA('Locales')">
         <div class = "imagebox">
           <img src="assets/images/locales.jpg" class = "category-banner img-responsive">
           <span class="imagebox-desc">
@@ -63,13 +63,13 @@
               Locales
             </p>
             <p *ngIf = "locales">
-              Ven a nuestros locales para disfrutar de nuestro servicio !!!
+              Revisa nuestros locales, busca el mas cercano al tuyo!!!
             </p>
           </span>
         </div>
       </div>
 
-      <div class="col-sm-4 opcion" (mouseenter) = "Mostrar(2)" (mouseleave) = "NoMostrar(2)">
+      <div class="col-sm-4 opcion" (mouseenter) = "Mostrar(2)" (mouseleave) = "NoMostrar(2)" (click) = "IrA('Pedidos')">
         <div class = "imagebox">
           <img src="assets/images/delivery.jpg" class = "category-banner img-responsive">
           <span class="imagebox-desc">
@@ -77,13 +77,13 @@
               Delivery
             </p>
             <p *ngIf = "delivery">
-              Haz un pedido y recibelo en el menor tiempo posible !!!
+              Mantente informado del estado de tus pedidos!!!
             </p>
           </span>
         </div>
       </div>
 
-      <div class="col-sm-4 opcion"  (mouseover) = "Mostrar(3)" (mouseout) = "NoMostrar(3)">
+      <div class="col-sm-4 opcion"  (mouseover) = "Mostrar(3)" (mouseout) = "NoMostrar(3)" (click) = "IrA('Productos')">
         <div class = "imagebox">
           <img src="assets/images/productos.jpg" class = "category-banner img-responsive">
           <span class="imagebox-desc">
@@ -91,7 +91,7 @@
               Productos
             </p>
             <p *ngIf = "productos">
-              Conoce nuestros productos !!!
+              Conoce nuestros productos!!!
             </p>
           </span>
         </div>

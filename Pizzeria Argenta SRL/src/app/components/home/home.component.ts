@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute} from '@angular/router';
+import { AutService } from '../../services/auth/aut.service';
 
 @Component({
   selector: 'app-home',
@@ -21,7 +23,7 @@ export class HomeComponent implements OnInit {
   delivery : boolean = null;
   productos : boolean = null;
   
-  constructor()
+  constructor(public aut : AutService, public router : Router)
   {
 
   }
@@ -29,6 +31,31 @@ export class HomeComponent implements OnInit {
   ngOnInit() 
   {
     this.slider();
+  }
+
+  Comprobar()
+  {
+    return this.aut.isLogued();
+  }
+
+  ObtenerUsuario()
+  {
+    return this.aut.getToken().usuario;
+  }
+
+  IrA(opcion)
+  {
+    if (this.Comprobar() && this.ObtenerUsuario().tipo == "Administrador")
+      return;
+    else
+    {
+      if (opcion == "Locales")
+        this.router.navigate(['/locales']);
+      else if (opcion == "Pedidos")
+        this.router.navigate(['/pedidos']);
+      else
+        this.router.navigate(['/productos']);
+    }
   }
   
   cambiar(func)

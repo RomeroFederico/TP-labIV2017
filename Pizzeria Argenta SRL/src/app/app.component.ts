@@ -230,6 +230,12 @@ export class AppComponent {
     });
   }
 
+  CapturarLogout()
+  {
+    this.mostrarCarrito = null;
+    this.principal = "";
+  }
+
   CapturarEventoMostrarCarrito()
   {
     if (this.mostrarCarrito != null)

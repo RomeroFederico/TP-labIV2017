@@ -63,6 +63,16 @@ export class WsService {
     .catch( this.handleError );
   }
 
+  RegistrarEmpleadoEnLocal(datos)
+  {
+    var body =  datos;
+
+    return this.http.post(this.url + 'registrar/empleado', body)
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
   ModificarUsuario(user: Object)
   {
     var body =  user;
@@ -84,6 +94,14 @@ export class WsService {
   ObtenerClientes()
   {
     return this.http.get(this.url + 'clientes')
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  ObtenerClientesYEmpleados(idEncargado)
+  {
+    return this.http.get(this.url + 'clientesempleados/' + idEncargado)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -161,6 +179,16 @@ export class WsService {
     var body =  producto;
 
     return this.http.post(this.url + 'productos/registrar', body)
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  ModificarProducto(producto: Object)
+  {
+    var body =  producto;
+
+    return this.http.post(this.url + 'productos/modificar', body)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );

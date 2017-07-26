@@ -306,6 +306,7 @@ export class AgregarClienteComponent implements OnInit, Input, Output {
     this.user.localidad = direccion[1];
     this.user.provincia = direccion[2];
     this.user.pais = direccion[3];
+    this.user.legajo = null;
 
     this.ws.RegistrarOficial(this.user).then( data => {
       console.log("Accediendo al servidor...");

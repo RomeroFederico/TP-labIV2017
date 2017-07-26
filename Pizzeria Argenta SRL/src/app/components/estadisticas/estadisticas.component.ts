@@ -455,7 +455,9 @@ export class EstadisticasComponent implements OnInit {
     var eventEndTime = new Date();
     var duration = eventEndTime.valueOf() - eventStartTime.valueOf();
 
-    duration = new Date(duration).getDate();
+    //duration = new Date(duration).getDate();
+
+    duration = 40;
 
     var indice = this.pedidosDias.length - 1;
     var fechaIndice = eventStartTime;
@@ -463,6 +465,8 @@ export class EstadisticasComponent implements OnInit {
     for (var index = 0; index <= duration; index++) {
 
       var fechaIndiceFormateada = fechaIndice.getFullYear() + "-" + (fechaIndice.getMonth() < 10? "0" : "") +(fechaIndice.getMonth() + 1) + "-" + (fechaIndice.getDate() < 10? "0" : "") + fechaIndice.getDate();
+
+      console.log(fechaIndiceFormateada);
 
       this.labelsDias.push(fechaIndiceFormateada);
 
@@ -492,6 +496,9 @@ export class EstadisticasComponent implements OnInit {
 
     this.dataDias = clone;
     this.dataDias2 = clone2;
+
+    console.log(this.dataDias);
+    console.log(this.dataDias2);
 
     this.mostrarDias = true;
   }

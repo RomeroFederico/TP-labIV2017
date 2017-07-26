@@ -232,7 +232,7 @@
                 <div class = "container-fluid contenedorObjetos" *ngIf = "cargandoPedidosEnProceso == null && pedidoEnProceso.length != 0 && errorPedidosEnProceso == null" style = "min-height: 500px">
                     <div *ngFor = "let pedido of pedidoEnProceso" style = "border: 2px; border-color : white; border-style: solid; margin: 5px; padding: 10px; border-radius: 5px">
                     
-                    <div class = "row" style = "margin-bottom : 20px" *ngIf = "Comprobar() && (ObtenerUsuario().tipo != 'Empleado' || ObtenerUsuario().tipo != 'Encargado')">
+                    <div class = "row" style = "margin-bottom : 20px" *ngIf = "Comprobar() && (ObtenerUsuario().tipo == 'Empleado' || ObtenerUsuario().tipo == 'Encargado')">
 
                             <div class="col-sm-2">
                                 <img class = "img-responsive img-thumbnail" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/usuarios/' + pedido.cliente.img">
@@ -353,7 +353,7 @@
                 <div class = "container-fluid contenedorObjetos" *ngIf = "cargandoPedidosRecibidos == null && pedidosRecibidos.length != 0 && errorPedidosRecibidos == null" style = "min-height: 500px">
                     <div *ngFor = "let pedido of pedidosRecibidos" style = "border: 2px; border-color : white; border-style: solid; margin: 5px; padding: 10px; border-radius: 5px">
 
-                    <div class = "row" style = "margin-bottom : 20px" *ngIf = "Comprobar() && (ObtenerUsuario().tipo != 'Empleado' || ObtenerUsuario().tipo != 'Encargado')">
+                    <div class = "row" style = "margin-bottom : 20px" *ngIf = "Comprobar() && (ObtenerUsuario().tipo == 'Empleado' || ObtenerUsuario().tipo == 'Encargado')">
 
                             <div class="col-sm-2">
                                 <img class = "img-responsive img-thumbnail" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/usuarios/' + pedido.cliente.img">

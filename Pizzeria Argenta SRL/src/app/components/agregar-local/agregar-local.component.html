@@ -74,7 +74,7 @@
                     </div>
                     <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioProducto" title = "Error, no se ha seleccionado ningun producto" style="color : orange"></i>
                   </div>
-                  <div class="row" style = "margin-bottom : 20px;">
+                  <div class="row" style = "margin-bottom : 20px;" *ngIf = "Comprobar() && ObtenerUsuario().tipo != 'Encargado'">
                     <div class = "col-sm-2 col-sm-offset-2">
                       <label>Encargado</label>
                     </div>

@@ -29,7 +29,7 @@
                       <select class="form-control" [(ngModel)]="user.tipo">
                         <option value = "Cliente">Cliente</option>
                         <option value = "Empleado">Empleado</option>
-                        <option value = "Encargado">Encargado</option>
+                        <option *ngIf = "Comprobar() && ObtenerUsuario().tipo == 'Administrador'" value = "Encargado">Encargado</option>
                       </select>
                     </div>
                   </div>
@@ -60,7 +60,7 @@
                     <div class="col-sm-6">
                       <div class="input-group">
                         <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
-                        <input class="form-control" type="email" placeholder="Email" [(ngModel)]="user.email" maxlength = "20">
+                        <input class="form-control" type="email" placeholder="Email" [(ngModel)]="user.email" maxlength = "30">
                         <span class="input-group-btn">
                           <button *ngIf = "cargandoVerificacion == null" class="btn btn-default" type="button" title="Comprobar" (click) = "VerificarEmailUsuario(user.email)"><i class="fa fa-search fa-fw"></i></button>
                           <button *ngIf = "cargandoVerificacion != null" class="btn btn-default" type="button" title="Revisando..."><i class="fa fa-cog fa-spin fa-fw"></i></button>
