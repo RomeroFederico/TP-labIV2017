@@ -74,11 +74,24 @@ export class ProductosComponent implements OnInit, Input, Output {
   errorLocales : boolean = null;
   errorProductosLocales : boolean = null;
 
+  localDelUsuario : any = null;
+  errorUsuarioSinLocal : boolean = null;
+  errorCargarLocalDelUsuario : boolean = null;
+
+  registrar : boolean = null;
+
   constructor(public ws : WsService, public autService : AutService,
               private router: Router, private comunicacionService: ComunicacionService)
   {
-    this.CargarLocales();
-    this.CargarProductos();
+    if (this.Comprobar() && (this.ObtenerUsuario().tipo == "Empleado" || this.ObtenerUsuario().tipo == "Encargado"))
+    {
+      this.CargarLocalDelUsuario();
+    }
+    else
+    {
+      this.CargarLocales();
+      this.CargarProductos();
+    }
   }
 
   ngOnInit() {
@@ -95,6 +108,69 @@ export class ProductosComponent implements OnInit, Input, Output {
   {
     console.log(this.optionsModel);
     this.FiltrarPorLocal(this.optionsModel[0]);
+  }
+
+  CargarLocalDelUsuario()
+  {
+    this.ws.ObtenerLocalDelUsuario(this.ObtenerUsuario()).then((data) => {
+
+      console.log(data);
+
+      if (data.local == false)
+      {
+        console.log("No hay local para mostrar...");
+        this.errorUsuarioSinLocal = true;
+      }
+      else
+      {
+        console.log("Se encontro un local...");
+        this.localDelUsuario = data.local;
+        this.CargarProductosDelLocalDelUsuario(this.localDelUsuario);
+      }
+    })
+    .catch((error) => { this.errorCargarLocalDelUsuario = true;  console.log(error)} );
+  }
+
+  ReintentarCargarLocalDelUsuario()
+  {
+    this.errorCargarLocalDelUsuario = null;
+    this.CargarLocalDelUsuario();
+  }
+
+  CargarProductosDelLocalDelUsuario(local)
+  {
+    this.ws.ObtenerProductosDelLocal(local.idLocal).then((data) => 
+    {
+      console.log(data);
+      this.productosBase = data;
+      this.Mostrar('Todos');
+    }
+    )
+    .catch((error) => { this.errorProductos = true;  console.log(error)} );
+  }
+
+  ReintentarOficial()
+  {
+    if (this.errorCargarLocalDelUsuario == true)
+      this.ReintentarCargarLocalDelUsuario();
+    else if (this.errorProductos == true)
+    {
+      this.errorProductos = null;
+      this.CargarProductosDelLocalDelUsuario(this.localDelUsuario);
+    }
+  }
+
+  CargarProductosDelLocal()
+  {
+    this.ws.ObtenerProductos().then((data) => 
+    {
+      console.log(data);
+      this.productosBase = data;
+      this.CargarLocalesPorProductos();
+      this.Mostrar('Todos');
+    }
+    )
+    .catch((error) => { this.errorProductos = true;  console.log(error)} );
   }
 
   CargarProductos()
@@ -225,10 +301,8 @@ export class ProductosComponent implements OnInit, Input, Output {
     return dia == diaPromo || dia == "Domingo";
   }
 
-  HacerPedido(local, producto) {
-    console.log(local);
-    console.log(producto);
-    this.router.navigate(["/locales"], { queryParams: { idProducto: producto.idProducto, idLocal : local.idLocal }});
+  HacerPedido(producto) {
+    this.router.navigate(["/locales"], { queryParams: { idProducto: producto.idProducto, idLocal : this.localDelUsuario.idLocal }});
   }
 
   EnviarAlCarrito(producto)
@@ -236,5 +310,29 @@ export class ProductosComponent implements OnInit, Input, Output {
     console.log("Envio al carrito...");
     producto.localSeleccionado = this.optionsModel[0];
     this.comunicacionService.EnviarAlCarrito(producto);
+  }
+
+  AlternarRegistro()
+  {
+    if (this.registrar == null)
+      this.registrar = true;
+    else
+      this.registrar = null;
+  }
+
+  CapturarEventoRegistrado($event)
+  {
+    if ($event == true)
+    {
+      this.registrar = null;
+      this.productos = null;
+      this.productosBase = null;
+      this.localDelUsuario = null;
+      this.CargarLocalDelUsuario();
+    }
+    else
+    {
+      this.registrar = null;
+    }
   }
 }

@@ -14,6 +14,7 @@ import { ComunicacionService }  from './services/comunicacion/comunicacion';
 import { AutService } from './services/auth/aut.service';
 import { VerificarJWTService } from './services/verificar-jwt/verificar-jwt.service';
 import { VerificarJWT2Service } from './services/verificar-jwt2/verificar-jwt2.service';
+import { VerificarJWT3Service } from './services/verificar-jwt3/verificar-jwt3.service';
 import { JwtModule } from './jwt/jwt.module';
 import { ProductosComponent } from './components/productos/productos.component';
 import { LocalesComponent } from './components/locales/locales.component';
@@ -27,9 +28,12 @@ import { PanelComponent } from './components/panel/panel.component';
 
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { UsuariosComponent } from './components/usuarios/usuarios.component';
+import { ClientesComponent } from './components/clientes/clientes.component';
 
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { AgregarUsuarioComponent } from './components/agregar-usuario/agregar-usuario.component';
+import { AgregarClienteComponent } from './components/agregar-cliente/agregar-cliente.component';
+import { AgregarProductoComponent } from './components/agregar-producto/agregar-producto.component';
 import { ListaLocalesComponent } from './components/lista-locales/lista-locales.component';
 import { AgregarLocalComponent } from './components/agregar-local/agregar-local.component';
 import { EstadisticasComponent } from './components/estadisticas/estadisticas.component';
@@ -43,6 +47,7 @@ const appRoutes: Routes = [
   { path: 'pedidos', component: PedidosComponent, canActivate: [VerificarJWTService], },
   { path: 'encuesta', component: EncuestaComponent, canActivate: [VerificarJWTService], },
   { path: 'usuarios', component: UsuariosComponent, canActivate: [VerificarJWT2Service], },
+  { path: 'clientes', component: ClientesComponent, canActivate: [VerificarJWT3Service], },
   { path: 'lista-locales', component: ListaLocalesComponent, canActivate: [VerificarJWT2Service], },
   { path: 'estadisticas', component: EstadisticasComponent, canActivate: [VerificarJWT2Service], },
   { path: 'panel', component: PanelComponent, canActivate: [VerificarJWTService], },
@@ -64,7 +69,10 @@ const appRoutes: Routes = [
     EncuestaComponent,
     PanelComponent,
     UsuariosComponent,
+    ClientesComponent,
     AgregarUsuarioComponent,
+    AgregarClienteComponent,
+    AgregarProductoComponent,
     ListaLocalesComponent,
     AgregarLocalComponent,
     EstadisticasComponent
@@ -88,6 +96,7 @@ const appRoutes: Routes = [
     AutService,
     VerificarJWTService,
     VerificarJWT2Service,
+    VerificarJWT3Service,
     {provide: LocationStrategy, useClass: HashLocationStrategy}
   ],
   bootstrap: [AppComponent]

@@ -1,0 +1,146 @@
+<div class="container-fluid center_div">
+
+      <div class="alert alert-warning" role="alert" *ngIf = "mostrarMensaje">
+        {{mensajeMostrar}}
+      </div>
+
+      <div class="alert alert-danger" role="alert" *ngIf = "mostrarError">
+        <strong>ERROR!</strong> Ocurrio un problema en el servidor, vuelva a intentarlo.
+      </div>
+
+      <div class="alert alert-info" *ngIf = "mostrarInfo">
+        <strong>INFORMACION: </strong>{{mensaje}}
+      </div>
+
+      <div class="alert alert-info" *ngIf = "cargando">
+        <strong>Cargando: </strong>Espere un momento...
+      </div>
+
+   <div class="panel panel-success centrarRegistro">
+              <div class="panel-heading">
+                Registro de cliente
+              </div>
+              <div class="panel-body">
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Email</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+                        <input class="form-control" type="email" placeholder="Email" [(ngModel)]="user.email" maxlength = "20">
+                        <span class="input-group-btn">
+                          <button *ngIf = "cargandoVerificacion == null" class="btn btn-default" type="button" title="Comprobar" (click) = "VerificarEmailUsuario(user.email)"><i class="fa fa-search fa-fw"></i></button>
+                          <button *ngIf = "cargandoVerificacion != null" class="btn btn-default" type="button" title="Revisando..."><i class="fa fa-cog fa-spin fa-fw"></i></button>
+                        </span> 
+                      </div>
+                    </div>
+                    <i class="fa fa-check-circle fa-2x" title = "Disponible" *ngIf = "verificado" style="color : #5cb85c"></i>
+                    <i class="fa fa-times-circle fa-2x" title = "No disponible" *ngIf = "verificadoF" style="color : #d9534f"></i>
+                    <i class="fa fa-exclamation-circle fa-2x" title = "Error de verificacion" *ngIf = "errorVerificado" style="color : orange"></i>
+                    <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioEmail" title = "Error, no se ha ingresado nada" style="color : orange"></i>
+                    <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "validarEmail" title = "El email no es valido" style="color : darkred"></i>
+                  </div>
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2  col-sm-offset-2">
+                      <label>Password</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
+                        <input class="form-control" type="password" placeholder="Password (6 caracteres min.)" [(ngModel)]="user.password" maxlength = "20">
+                      </div>
+                    </div>
+                    <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioPassword" title = "Error, no se ha ingresado nada" style="color : orange"></i>
+                    <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "validarPassword" title = "El password debe contener al menos 6 caracteres." style="color : darkred"></i>
+                  </div>
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Apellido</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-font fa-fw"></i></span>
+                        <input class="form-control" type="text" placeholder="Apellido" [value] ="user.apellido" (input)="ValidarSoloLetras($event, 'Apellido')" maxlength = "20">
+                      </div>
+                    </div>
+                    <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioApellido" title = "Error, no se ha ingresado nada" style="color : orange"></i>
+                  </div>
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Nombre</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-font fa-fw"></i></span>
+                        <input class="form-control" type="text" placeholder="Nombre" [value] ="user.nombre" (input)="ValidarSoloLetras($event, 'Nombre')" maxlength = "20">
+                      </div>
+                    </div>
+                    <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioNombre" title = "Error, no se ha ingresado nada" style="color : orange"></i>
+                  </div>
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Sexo</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class = "col-sm-6">
+                      <label class="radio-inline">
+                        <input type="radio" value = "Masculino" [(ngModel)]="user.sexo" [checked] = "user.sexo == 'Masculino'"><i class="fa fa-mars fa-fw" style = "color:lightblue"></i> Masculino
+                      </label>
+                      </div>
+                      <div class = "col-sm-6">
+                      <label class="radio-inline">
+                        <input type="radio" value = "Femenino" [(ngModel)]="user.sexo" [checked] = "user.sexo == 'Femenino'"><i class="fa fa-venus fa-fw" style = "color:pink"></i> Femenino
+                      </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Direccion</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-map-marker fa-fw"></i></span>
+                        <input type="text" class = "form-control" [(ngModel)]="direccion" googleplace/>
+                        <span class="input-group-btn">
+                          <button *ngIf = "cargandoPosicion == null && errorCargandoPosicion == null" class="btn btn-default" type="button" title="Obten tu ubicacion" (click) = "ObtenerDireccionUsuario()"><i class="fa fa-street-view fa-fw"></i></button>
+                          <button *ngIf = "cargandoPosicion" class="btn btn-default" type="button" title="Cargando posicion..."><i class="fa fa-cog fa-spin fa-fw"></i></button>
+                          <button *ngIf = "errorCargandoPosicion" class="btn btn-danger" type="button" title="Error, vuelva a intentarlo" (click) = "ReintentarObtenerDireccionUsuario()"><i class="fa fa-exclamation-triangle fa-fw"></i></button>
+                        </span> 
+                      </div>
+                    </div>
+                    <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "validarDireccion" title = "Direccion no valida" style="color : #d9534f"></i>
+                    <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioDireccion" title = "Error, no se ha ingresado nada" style="color : orange"></i>
+                  </div>
+                  <div class="row" style = "margin-bottom : 20px;">
+                    <div class = "col-sm-2 col-sm-offset-2">
+                      <label>Telefono</label>
+                    </div>
+                    <div class="col-sm-6">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-phone fa-fw"></i></span>
+                        <input [value]="user.telefono" (input)="ValidarSoloNumeros($event, 'Telefono')" class="form-control" type="text" placeholder="Telefono" maxlength="20">
+                      </div>
+                    </div>
+                    <i class="fa fa-times-circle fa-2x animated pulse infinite" *ngIf = "vacioTelefono" title = "Error, no se ha ingresado nada" style="color : orange"></i>
+                  </div>
+                  <br>
+                  <div class="form-group row">
+                    <div class = "col-sm-4  col-sm-offset-2">
+                      <button type="submit" class="btn btn-success btn-block" [disabled] = "cargando" (click) = "Registrarse()">
+                        <i class="fa fa-user-plus fa-lg"></i> 
+                        Registrar
+                      </button>
+                    </div>
+                    <div class="col-sm-4">
+                      <button type="submit" class="btn btn-danger btn-block" [disabled] = "cargando" (click) = "CancelarRegistro()">
+                        <i class="fa fa-arrow-left fa-lg"></i> 
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+              </div>
+  </div>
+
+</div>

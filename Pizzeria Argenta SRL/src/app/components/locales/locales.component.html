@@ -17,12 +17,18 @@
                 <div class="centrar">
                     <div #map id="map"></div>
                 </div>
-                <button type="button" class="btn btn-danger btn-lg btn-block" style = "margin-top: 20px;">Cambiar a direccion registrada</button>
+                <button type="button" class="btn btn-danger btn-lg btn-block" style = "margin-top: 20px;" *ngIf = "Comprobar() && ObtenerUsuario().tipo == 'Cliente'">Cambiar a direccion registrada</button>
             </div>
-            <div class = "col-sm-6 cargando parent" *ngIf = "local == null">
+            <div class = "col-sm-6 cargando parent" *ngIf = "local == null && errorUsuarioSinLocal == null">
                 <div class = "child">
                     <i class="fa fa-cog fa-spin fa-5x fa-fw" style = "color: white"></i><br>
                     <h2 style = "color: white">Cargando Locales</h2>
+                </div>
+            </div>
+            <div class = "col-sm-6 cargando parent" *ngIf = "errorUsuarioSinLocal != null">
+                <div class = "child">
+                    <i class="fa fa-exclamation-triangle fa-5x fa-fw" style = "color: white"></i><br>
+                    <h3 style = "color: white">No se tiene asingado un local.</h3>
                 </div>
             </div>
             <div class="col-sm-6" *ngIf = "local != null">
@@ -99,7 +105,7 @@
                                 <button *ngIf = "Comprobar() && ObtenerUsuario().tipo != 'Cliente'" type="button" class = 'btn btn-lg btn-block btn-danger' (click) = "ProcesarPedido()">
                                     <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> Pedir
                                 </button>
-                                <button *ngIf = "Comprobar()" type="button" class = 'btn btn-lg btn-block btn-danger'>
+                                <button *ngIf = "Comprobar() && ObtenerUsuario().tipo == 'Cliente'" type="button" class = 'btn btn-lg btn-block btn-danger'>
                                     <span class="glyphicon glyphicon-cutlery" aria-hidden="true"></span> Reservar
                                 </button>
                                 <button *ngIf = "!Comprobar()" type="button" class = 'btn btn-lg btn-block btn-danger'>

@@ -53,6 +53,16 @@ export class WsService {
     .catch( this.handleError );
   }
 
+  RegistrarOficial(user: Object)
+  {
+    var body =  user;
+
+    return this.http.post(this.url + 'oficial/registrar', body)
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
   ModificarUsuario(user: Object)
   {
     var body =  user;
@@ -66,6 +76,22 @@ export class WsService {
   ObtenerUsuarios()
   {
     return this.http.get(this.url + 'usuarios')
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  ObtenerClientes()
+  {
+    return this.http.get(this.url + 'clientes')
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  ObtenerClientePorEmail(email)
+  {
+    return this.http.get(this.url + 'cliente/email/' + email)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -130,6 +156,16 @@ export class WsService {
     .catch( this.handleError );
   }
 
+  RegistrarProducto(producto: Object)
+  {
+    var body =  producto;
+
+    return this.http.post(this.url + 'productos/registrar', body)
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
   RegistrarLocal(obj)
   {
     var body =  obj;
@@ -153,6 +189,16 @@ export class WsService {
   ObtenerLocales()
   {
     return this.http.get(this.url + 'locales')
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  ObtenerLocalDelUsuario(usuario)
+  {
+    var body =  usuario;
+
+    return this.http.post(this.url + 'local/usuario', body)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -217,6 +263,16 @@ export class WsService {
     var body =  obj;
 
     return this.http.post(this.url + 'pedidos', body)
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  TraerPedidosDelLocal(obj)
+  {
+    var body =  obj;
+
+    return this.http.post(this.url + 'pedidos/local', body)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );

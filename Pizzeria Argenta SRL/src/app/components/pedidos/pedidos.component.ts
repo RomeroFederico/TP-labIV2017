@@ -3,6 +3,8 @@ import { Router, ActivatedRoute} from '@angular/router';
 import { WsService } from '../../services/ws/ws.service';
 import { AutService } from '../../services/auth/aut.service';
 
+declare var google;
+
 @Component({
   selector: 'app-pedidos',
   templateUrl: './pedidos.component.html',
@@ -36,10 +38,31 @@ export class PedidosComponent implements OnInit {
 
   cargando : boolean = null;
 
+  cargandoVerificacion : boolean = null;
+  cliente : any = null;
+  email : string = "";
+
+  errorVerificado : boolean = null;
+  noExiste : boolean = null;
+  vacioEmail : boolean = null;
+
+  exitoVerificacion : boolean = null;
+
+  directionsService;
+
+  datosExitosos : boolean = null;
+
+  localDelUsuario : any = null;
+  errorUsuarioSinLocal : boolean = null;
+  errorCargarLocalDelUsuario : boolean = null;
+
   constructor(public ws : WsService, public autService : AutService,
               private router: Router, private actRoute: ActivatedRoute)
   {
-    this.Mostrar("En Proceso");
+    if (this.Comprobar() && this.ObtenerUsuario().tipo == 'Cliente')
+      this.Mostrar("En Proceso");
+    else if (this.Comprobar() && (this.ObtenerUsuario().tipo == 'Empleado' || this.ObtenerUsuario().tipo == 'Encargado'))
+      this.Mostrar("Actual");
   }
 
   ngOnInit()
@@ -79,6 +102,103 @@ export class PedidosComponent implements OnInit {
       if (this.seleccion == 'En Proceso' || this.seleccion == 'Recibidos')
         this.CargarPedidos(seleccion);
     }
+  }
+
+  VerificarEmailUsuario(email)
+  {
+    this.cargandoVerificacion = true;
+    this.exitoVerificacion = null;
+    this.errorVerificado = null;
+    this.noExiste = null;
+    this.vacioEmail = null;
+
+    if (this.email.length == 0)
+    {
+      this.cargandoVerificacion = null;
+      this.vacioEmail = true;
+      return;
+    }
+
+    this.ws.ObtenerClientePorEmail(email).then((data) => {
+
+      this.cargandoVerificacion = null;
+
+      if (data.exito)
+      {
+        this.cliente = data.cliente;
+        this.cliente.direccionCompleta = this.cliente.direccion + ", " + this.cliente.localidad + ", " + this.cliente.provincia + ", " + this.cliente.pais;
+        this.exitoVerificacion = true;
+
+        this.ObtenerCordenadasUsuario();
+      }
+      else
+        this.noExiste = true;
+    })
+    .catch((error) => { this.cargandoVerificacion = null; this.errorVerificado = true; console.log(error)})
+  }
+
+  // 2
+  ObtenerCordenadasUsuario()
+  {
+      this.ws.getlatlng(this.cliente.direccionCompleta).then( data => {
+        var cordenadas = data.results[0].geometry.location;
+        this.cliente.lat = cordenadas.lat;
+        this.cliente.lng = cordenadas.lng;
+        let position = new google.maps.LatLng(this.cliente.lat, this.cliente.lng);
+        this.cliente.position = position;
+
+        this.pedido.local.direccionCompleta = this.pedido.local.direccion + ", " + this.pedido.local.localidad + ", " + this.pedido.local.provincia + ", " + this.pedido.local.pais;
+        this.ObtenerCordenadaLocal(this.pedido.local.direccionCompleta, this.pedido.local);
+      })
+      .catch( e => {
+        console.log(e);
+        this.ObtenerCordenadasUsuario();
+      } );
+  }
+
+  ObtenerCordenadaLocal(direccion, local)
+  {
+      this.ws.getlatlng(direccion).then( data => {
+        var cordenadas = data.results[0].geometry.location;
+        local.lat = cordenadas.lat;
+        local.lng = cordenadas.lng;
+        let position = new google.maps.LatLng(local.lat, local.lng);
+        local.position = position;
+        this.ObtenerDistanciaYTiempoConLocal(local, 2);
+      })
+      .catch( e => {
+        console.log(e);
+        this.ObtenerCordenadaLocal(local, direccion);
+      } );
+  }
+
+  ObtenerDistanciaYTiempoConLocal(local, opcion)
+  {
+    this.directionsService = new google.maps.DirectionsService;
+
+    this.directionsService.route({
+      origin: local.position,
+      destination: this.cliente.position,
+      travelMode: google.maps.TravelMode.DRIVING
+    }, (response, status) => {
+      if (status == google.maps.DirectionsStatus.OK) {
+        console.log(response);
+        // Hago la distancia y tiempo aqui...
+
+        this.pedidoActual.direccion = this.cliente.direccion;
+        this.pedidoActual.localidad = this.cliente.localidad;
+
+        this.pedidoActual.distancia = response.routes[0].legs[0].distance.text;
+        this.pedidoActual.tiempo = response.routes[0].legs[0].duration.text;
+
+        this.datosExitosos = true;
+
+        alert("Cliente y datos de envio verificados!!!");
+
+      } else {
+        window.alert('Directions request failed due to ' + status);
+      }
+    });
   }
 
   ComprobarPromo(diaPromo)
@@ -192,6 +312,17 @@ export class PedidosComponent implements OnInit {
 
   ConfirmarPedido()
   {
+    if (this.cliente == null)
+    {
+      alert("Ingrese un cliente valido!!!");
+      return;
+    }
+    else if (this.datosExitosos == null)
+    {
+      alert("Aun no se comprobo los datos de envio, espere un momento...");
+      return;
+    }
+
     var resultado = confirm("Confirma el pedido actual\n(Precio total: "  + this.pedido.precio + "$)?");
     if (resultado)
       this.RegistrarPedido();
@@ -202,7 +333,7 @@ export class PedidosComponent implements OnInit {
   RegistrarPedido()
   {
     this.cargando = true;
-    this.ws.RegistrarPedido({idCliente : this.ObtenerUsuario().idUsuario,
+    this.ws.RegistrarPedido({idCliente : this.cliente.idUsuario,
                              idLocal : this.pedido.local.idLocal,
                              estado : "En Proceso",
                              precioTotal : this.pedido.precio,
@@ -235,13 +366,123 @@ export class PedidosComponent implements OnInit {
     });
   }
 
+  CargarLocalDelUsuario(tipo)
+  {
+    this.errorUsuarioSinLocal = null;
+
+    this.ws.ObtenerLocalDelUsuario(this.ObtenerUsuario()).then((data) => {
+
+      console.log(data);
+
+      if (data.local == false)
+      {
+        console.log("No hay local para mostrar...");
+        if (tipo == "En Proceso")
+          this.cargandoPedidosEnProceso = null;
+        else if (tipo == "Recibidos")
+          this.cargandoPedidosRecibidos = null;
+        this.errorUsuarioSinLocal = true;
+      }
+      else
+      {
+        console.log("Se encontro un local...");
+        this.localDelUsuario = data.local;
+        this.CargarPedidosDelLocal(this.localDelUsuario.idLocal, tipo);
+      }
+    })
+    .catch((error) => { this.ReintentarCargarLocalDelUsuario(tipo);  console.log(error)} );
+  }
+
+  ReintentarCargarLocalDelUsuario(tipo)
+  {
+    this.errorCargarLocalDelUsuario = null;
+    this.CargarLocalDelUsuario(tipo);
+  }
+
+  CargarPedidosDelLocal(idLocal, tipo)
+  {
+    this.ws.TraerPedidosDelLocal({idLocal : 1, tipo : tipo}).then((data) => {
+
+      console.log(data);
+
+      if (tipo == "En Proceso")
+      {
+        this.cargandoPedidosEnProceso = null;
+        this.pedidoEnProceso = new Array<any>();
+
+        if (data.exito)
+        {
+          this.pedidoEnProceso = data.pedidos;
+
+          this.pedidoEnProceso.forEach(pedido => {
+
+            pedido.cliente = {nombre : pedido.nombre, apellido : pedido.apellido, img : pedido.imgUsuario, telefono : pedido.telefonoUsuario, email : pedido.email};
+            
+            data.detalles.forEach(producto => {
+              if (pedido.idPedido == producto.idPedido)
+              {
+                if (pedido.productos == undefined)
+                  pedido.productos = new Array<any>();
+                pedido.productos.push(producto);
+              }
+            });
+
+          });
+
+        }
+      }
+      else if (tipo == "Recibidos")
+      {
+        this.cargandoPedidosRecibidos = null;
+        this.pedidosRecibidos = new Array<any>();
+
+        if (data.exito)
+        {
+          this.pedidosRecibidos = data.pedidos;
+
+          this.pedidosRecibidos.forEach(pedido => {
+
+            pedido.cliente = {nombre : pedido.nombre, apellido : pedido.apellido, img : pedido.imgUsuario, telefono : pedido.telefonoUsuario, email : pedido.email};
+            
+            data.detalles.forEach(producto => {
+              if (pedido.idPedido == producto.idPedido)
+              {
+                if (pedido.productos == undefined)
+                  pedido.productos = new Array<any>();
+                pedido.productos.push(producto);
+              }
+            });
+
+          });
+
+        }
+      }
+    })
+    .catch((error) => {
+      if (tipo == "En Proceso")
+      {
+        this.cargandoPedidosEnProceso = null;
+        this.errorPedidosEnProceso = true;
+      }
+      else if (tipo == "Recibidos")
+      {
+        this.cargandoPedidosRecibidos = null;
+        this.errorPedidosRecibidos = true;
+      }
+      console.log(error); 
+    });
+  }
+
   CargarPedidos(tipo)
   {
     if (tipo == "En Proceso")
       this.cargandoPedidosEnProceso = true;
     else if (tipo == "Recibidos")
       this.cargandoPedidosRecibidos = true;
-    this.ws.TraerPedidos({idCliente : this.ObtenerUsuario().idUsuario, tipo : tipo}).then((data) => {
+
+    if (this.Comprobar() && this.ObtenerUsuario().tipo == 'Cliente')
+    {
+      this.ws.TraerPedidos({idCliente : this.ObtenerUsuario().idUsuario, tipo : tipo}).then((data) => {
 
       console.log(data);
 
@@ -308,6 +549,12 @@ export class PedidosComponent implements OnInit {
       console.log(error); 
     });
   }
+  
+  else if (this.Comprobar() && (this.ObtenerUsuario().tipo == 'Empleado' || this.ObtenerUsuario().tipo == 'Encargado'))
+  {
+    this.CargarLocalDelUsuario(tipo);
+  }
+  }
 
   ReintentarCargarPedidosEnProceso()
   {
@@ -343,6 +590,11 @@ export class PedidosComponent implements OnInit {
       })
       .catch((error) => { this.cargandoEnvioRecibido = null; alert("Ocurrio un problema en el servidor"); console.log(error);});
     }
+  }
+
+  Comprobar()
+  {
+    return this.autService.isLogued();
   }
 
   ObtenerUsuario()

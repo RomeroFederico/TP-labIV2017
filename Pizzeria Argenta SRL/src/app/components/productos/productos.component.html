@@ -8,7 +8,7 @@
       </blockquote>
     </div>
 
-    <div class = "col-sm-7" *ngIf = "localesCargados != null && locales != null && productosBase != null" style = "margin-bottom: 10px;">
+    <div class = "col-sm-7" *ngIf = "(!Comprobar() || (Comprobar() && ObtenerUsuario().tipo == 'Cliente')) && localesCargados != null && locales != null && productosBase != null" style = "margin-bottom: 10px;">
       <div class = "row">
         <div class = "col-sm-3">
           <img src = "http://www.romerofederico.hol.es/pizza/ws/img/locales/default.png" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
@@ -19,37 +19,98 @@
         </div>
       </div>
     </div>
+    <div class = "col-sm-5" *ngIf = "(Comprobar() && (ObtenerUsuario().tipo == 'Empleado' || ObtenerUsuario().tipo == 'Encargado')) && localDelUsuario != null" style = "margin-bottom: 10px;">
+      <div class = "row">
+        <div class = "col-sm-3">
+          <img src = "http://www.romerofederico.hol.es/pizza/ws/img/locales/default.png" style = "display: block; max-width:120px; max-height:120px; width: auto; height: auto;">
+        </div>
+        <div class = "col-sm-9">
+        <h3 style = "color:white; font-style: italic">{{localDelUsuario.direccion + ", " + localDelUsuario.localidad}}</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class = "col-sm-2" *ngIf = "(Comprobar() && (ObtenerUsuario().tipo == 'Empleado' || ObtenerUsuario().tipo == 'Encargado')) && localDelUsuario != null && productosBase != null" style = "margin-bottom: 10px;">
+      <button type="button" class="btn btn-success miPuntero" [disabled] = "cargando != null" (click) = "AlternarRegistro()">
+        <i *ngIf = "registrar == null" class = "fa fa-fw fa-plus-square-o fa-5x" title = "Agregar producto"></i>
+        <i *ngIf = "registrar != null" class = "fa fa-fw fa-chevron-circle-left fa-5x" title = "Volver al listado"></i>
+      </button>
+    </div>
   </div>
-  <div class="btn-group btn-group-justified" role="group" aria-label="..." style = "margin-bottom: 20px"  *ngIf = "productosBase != null && locales != null && localesCargados != null">
-    <div class="btn-group" role="group">
-      <button type="button" class="btn btn-success" (click) = "Mostrar('todos')">Todos</button>
+  <hr *ngIf = "registrar == true">
+  <div *ngIf = "registrar == null">
+    <div class="btn-group btn-group-justified" role="group" aria-label="..." style = "margin-bottom: 20px"  *ngIf = "(!Comprobar() || (Comprobar() && ObtenerUsuario().tipo == 'Cliente')) && productosBase != null && locales != null && localesCargados != null">
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-success" (click) = "Mostrar('todos')">Todos</button>
+      </div>
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-danger" (click) = "Mostrar('Pizza')">Pizzas</button>
+      </div>
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-warning" (click) = "Mostrar('Empanadas')">Empanadas</button>
+      </div>
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-info" (click) = "Mostrar('Combo')">Combos</button>
+      </div>
     </div>
-    <div class="btn-group" role="group">
-      <button type="button" class="btn btn-danger" (click) = "Mostrar('Pizza')">Pizzas</button>
-    </div>
-    <div class="btn-group" role="group">
-      <button type="button" class="btn btn-warning" (click) = "Mostrar('Empanadas')">Empanadas</button>
-    </div>
-    <div class="btn-group" role="group">
-      <button type="button" class="btn btn-info" (click) = "Mostrar('Combo')">Combos</button>
+    <div class="btn-group btn-group-justified" role="group" aria-label="..." style = "margin-bottom: 20px"  *ngIf = "Comprobar() && (ObtenerUsuario().tipo == 'Empleado' || ObtenerUsuario().tipo == 'Encargado') && localDelUsuario != null && productosBase != null">
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-success" (click) = "Mostrar('todos')">Todos</button>
+      </div>
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-danger" (click) = "Mostrar('Pizza')">Pizzas</button>
+      </div>
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-warning" (click) = "Mostrar('Empanadas')">Empanadas</button>
+      </div>
+      <div class="btn-group" role="group">
+        <button type="button" class="btn btn-info" (click) = "Mostrar('Combo')">Combos</button>
+      </div>
     </div>
   </div>
 
-<div class="">
-  <div class = "col-sm-12 cargando parent" *ngIf = "(productosBase == null || locales == null || localesCargados == null) && (errorProductos == null && errorLocales == null && errorProductosLocales == null)">
+<app-agregar-producto *ngIf = "registrar == true" [Local] = "localDelUsuario" (onRegistrado) = "CapturarEventoRegistrado($event)"></app-agregar-producto>
+
+<div class="" *ngIf = "registrar == null">
+
+  <div class = "col-sm-12 cargando parent" *ngIf = "(!Comprobar() || (Comprobar() && ObtenerUsuario().tipo == 'Cliente')) && (productosBase == null || locales == null || localesCargados == null) && (errorProductos == null && errorLocales == null && errorProductosLocales == null)">
                 <div class = "child">
                     <i class="fa fa-cog fa-spin fa-5x fa-fw" style = "color: white"></i><br>
                     <h2 style = "color: white">Cargando Productos</h2>
                 </div>
   </div>
-  <div class = "col-sm-12 cargando parent" *ngIf = "errorProductos != null || errorLocales != null || errorProductosLocales != null">
+
+  <div class = "col-sm-12 cargando parent" *ngIf = "Comprobar() && (ObtenerUsuario().tipo == 'Empleado' || ObtenerUsuario().tipo == 'Encargado') && (localDelUsuario == null || productosBase == null) && errorUsuarioSinLocal == null && errorCargarLocalDelUsuario == null && errorProductos == null">
+                <div class = "child">
+                    <i class="fa fa-cog fa-spin fa-5x fa-fw" style = "color: white"></i><br>
+                    <h2 style = "color: white">Cargando Productos de su Local</h2>
+                </div>
+  </div>
+
+  <div class = "col-sm-12 cargando parent" *ngIf = "(!Comprobar() || (Comprobar() && ObtenerUsuario().tipo == 'Cliente')) && (errorProductos != null || errorLocales != null || errorProductosLocales != null)">
                 <div class = "child">
                     <i class="fa fa-exclamation-triangle fa-5x fa-fw" style = "color: white"></i><br>
                     <h3 style = "color: white">Ocurrio un error al cargar los datos</h3>
                     <h2 style = "color: white; cursor: pointer" (click) = "Reintentar()">Reintentar</h2>
                 </div>
   </div>
-  <div class="row" *ngIf = "productosBase != null && locales != null && localesCargados != null">
+
+  <div class = "col-sm-12 cargando parent" *ngIf = "Comprobar() && (ObtenerUsuario().tipo == 'Empleado' || ObtenerUsuario().tipo == 'Encargado') && (errorCargarLocalDelUsuario != null || errorProductos != null)">
+                <div class = "child">
+                    <i class="fa fa-exclamation-triangle fa-5x fa-fw" style = "color: white"></i><br>
+                    <h3 style = "color: white">Ocurrio un error al cargar los datos</h3>
+                    <h2 style = "color: white; cursor: pointer" (click) = "ReintentarOficial()">Reintentar</h2>
+                </div>
+  </div>
+
+  <div class = "col-sm-12 cargando parent" *ngIf = "Comprobar() && (ObtenerUsuario().tipo == 'Empleado' || ObtenerUsuario().tipo == 'Encargado') && (errorUsuarioSinLocal != null)">
+                <div class = "child">
+                    <i class="fa fa-exclamation-triangle fa-5x fa-fw" style = "color: white"></i><br>
+                    <h3 style = "color: white">No hay productos para mostrar, ya que no tienes un local asignado.</h3>
+                </div>
+  </div>
+
+  <div class="row" *ngIf = "(productosBase != null && locales != null && localesCargados != null) || (productosBase != null && localDelUsuario != null)">
     <div [ngClass] = "columnasProductos" *ngFor = "let producto of productos; let i=index">
       <div [ngClass] ="producto.tipo == 'Pizza'? 'panel panel-danger' : (producto.tipo == 'Empanadas'? 'panel panel-warning':'panel panel-info')">
         <div class="panel-heading">{{producto.tipo}}</div>
@@ -75,10 +136,9 @@
               <p class="text-right" *ngIf = "ComprobarPromo(producto.promocion)">Precio: <small>{{producto.precio * 0.75}}$</small></p>
             </div>
           </div>
-          <select *ngIf = "Comprobar() && ObtenerUsuario().tipo != 'Cliente'" class="form-control" [(ngModel)]="localSeleccionado" (ngModelChange)="HacerPedido($event, producto)" >
-            <option [value]="localSeleccionado">&#xf217; Seleccione un local</option>
-            <option *ngFor="let local of producto.locales" [ngValue]="local">{{local.direccion}}, {{local.localidad}}</option>
-          </select>
+          <button type="button" *ngIf = "Comprobar() && (ObtenerUsuario().tipo == 'Empleado' || ObtenerUsuario().tipo == 'Encargado')" [ngClass] ="'btn btn-lg btn-block responsive-width ' + (producto.tipo == 'Pizza'? 'btn-danger' : (producto.tipo == 'Empanadas'? 'btn-warning':'btn-info'))" (click)="HacerPedido(producto)" >
+            <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span><small> Pedir</small>
+          </button>
           <button *ngIf = "!Comprobar()" type="button" [ngClass] ="'btn btn-lg btn-block responsive-width ' + (producto.tipo == 'Pizza'? 'btn-danger' : (producto.tipo == 'Empanadas'? 'btn-warning':'btn-info'))">
             <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span><small> Necesitas estar logueado para pedir</small>
           </button>

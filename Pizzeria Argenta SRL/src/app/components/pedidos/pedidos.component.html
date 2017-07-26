@@ -3,7 +3,7 @@
         <div class="col-sm-3 sidenav">
             <h4 style = "color: white">Mis Pedidos</h4>
             <ul class="nav nav-pills nav-stacked opciones">
-                <!--<li (click) = "Mostrar('Actual')" [ngClass] = "seleccion == 'Actual'? 'active' : ''"><a>Actual</a></li>-->
+                <li *ngIf = "Comprobar() && (ObtenerUsuario().tipo == 'Empleado' || ObtenerUsuario().tipo == 'Encargado')"(click) = "Mostrar('Actual')" [ngClass] = "seleccion == 'Actual'? 'active' : ''"><a>Actual</a></li>
                 <li (click) = "Mostrar('En Proceso')" [ngClass] = "seleccion == 'En Proceso'? 'active' : ''"><a>En Proceso</a></li>
                 <li (click) = "Mostrar('Recibidos')" [ngClass] = "seleccion == 'Recibidos'? 'active' : ''"><a>Recibidos</a></li>
             </ul>
@@ -48,6 +48,54 @@
                 </div>
                 <div class = "contenedorObjetos" *ngIf = "pedidoActual != null && pedido != null && pedidoExitoso == null">
                     <div *ngIf = "pedidoActual != null" style = "color: white">
+
+                        <div class="row" style = "margin-bottom : 20px;">
+                            <div class = "col-sm-2 col-sm-offset-2">
+                            <label>Email del Cliente</label>
+                            </div>
+                            <div class="col-sm-6">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+                                <input class="form-control" type="email" placeholder="Email" [(ngModel)]="email" maxlength = "20">
+                                <span class="input-group-btn">
+                                <button *ngIf = "cargandoVerificacion == null" class="btn btn-default" type="button" title="Comprobar" (click) = "VerificarEmailUsuario(email)"><i class="fa fa-search fa-fw"></i></button>
+                                <button *ngIf = "cargandoVerificacion != null" class="btn btn-default" type="button" title="Revisando..."><i class="fa fa-cog fa-spin fa-fw"></i></button>
+                                </span> 
+                            </div>
+                            </div>
+                            <i class="fa fa-check-circle fa-2x" title = "Cliente encontrado" *ngIf = "exitoVerificacion" style="color : green"></i>
+                            <i class="fa fa-exclamation-circle fa-2x" title = "Error de verificacion, vuelva a intentar" *ngIf = "errorVerificado" style="color : orange"></i>
+                            <i class="fa fa-times-circle fa-2x" title = "El cliente no existe" *ngIf = "noExiste" style="color : red"></i>
+                            <i class="fa fa-exclamation-circle fa-2x animated pulse infinite" *ngIf = "vacioEmail" title = "Error, no se ha ingresado nada" style="color : orange"></i>
+                        </div>
+
+                        <div class = "row" style = "margin-bottom : 20px" *ngIf = "cliente != null">
+
+                            <div class="col-sm-2 col-sm-offset-2">
+                                <img class = "img-responsive img-thumbnail" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/usuarios/' + cliente.img">
+                            </div>
+                            <div class="col-sm-6">
+                                <div class = "col-sm-12" style = "margin-bottom: 15px">
+                                    {{cliente.apellido}}, {{cliente.nombre}}
+                                </div>
+                                <div class="col-sm-6" style = "margin-bottom: 10px">
+                                    <ins>Email:</ins> {{cliente.email}}
+                                </div>
+                                <div class="col-sm-6" style = "margin-bottom: 10px">
+                                    <ins>Telefono:</ins> {{cliente.telefono}}
+                                </div>
+                                <div class="col-sm-12" style = "margin-bottom: 10px">
+                                    <ins>Direccion:</ins> {{cliente.direccion}}
+                                </div>
+                                <div class="col-sm-12" style = "margin-bottom: 10px">
+                                    <ins>Localidad:</ins> {{cliente.localidad}}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <hr>
+
                         <ul class="media-list">
                             <li class="media">
                                 <div class="media-left">
@@ -59,9 +107,14 @@
                                         <h4 class="media-heading">{{pedido.local.direccion}}</h4>
                                         <h5>{{pedido.local.localidad}}</h5>
                                         <h6><span class="glyphicon glyphicon-phone-alt"></span> Tel : {{pedido.local.telefono}}</h6>
-                                        <small><i>Enviar a: {{pedidoActual.direccion}}, {{pedidoActual.localidad}} </i></small>
-                                        <small><i>Distancia: {{pedidoActual.distancia}}</i></small>
-                                        <small><i>Tiempo aprox.: {{pedidoActual.tiempo}}</i></small>
+                                        <div *ngIf = "datosExitosos != null">
+                                            <small><i>Enviar a: {{pedidoActual.direccion}}, {{pedidoActual.localidad}} </i></small>
+                                            <small><i>Distancia: {{pedidoActual.distancia}}</i></small>
+                                            <small><i>Tiempo aprox.: {{pedidoActual.tiempo}}</i></small>
+                                        </div>
+                                        <div *ngIf = "datosExitosos == null">
+                                            <small>Para ver los datos respecto al envio, ingrese primero el email del cliente</small>
+                                        </div>
                                     </div>
                                     </blockquote>
                                     <div class="media" *ngFor = "let producto of pedido.productos">
@@ -116,19 +169,19 @@
                             <br>
                             <div class = "row">
                                 <div class = "col-sm-4">
-                                    <button class="btn btn-success btn-block" (click) = "ConfirmarPedido()" [disabled] = "cargando != null">
+                                    <button class="btn btn-success btn-block" (click) = "ConfirmarPedido()" [disabled] = "cargando != null || cargandoVerificacion != null">
                                         <i class="fa fa-credit-card-alt fa-lg"></i> 
                                         Pedir
                                     </button>
                                 </div>
                                 <div class = "col-sm-4">
-                                    <button class="btn btn-warning btn-block" (click) = "ModificarPedido()" [disabled] = "cargando != null">
+                                    <button class="btn btn-warning btn-block" (click) = "ModificarPedido()" [disabled] = "cargando != null || cargandoVerificacion != null">
                                         <i class="fa fa-pencil-square-o fa-lg"></i> 
                                         Modificar
                                     </button>
                                 </div>
                                 <div class = "col-sm-4">
-                                    <button class="btn btn-danger btn-block" (click) = "CancelarPedido()" [disabled] = "cargando != null">
+                                    <button class="btn btn-danger btn-block" (click) = "CancelarPedido()" [disabled] = "cargando != null || cargandoVerificacion != null">
                                         <i class="fa fa-times fa-lg"></i> 
                                         Cancelar
                                     </button>
@@ -142,12 +195,20 @@
 
         <div class= "col-sm-9" *ngIf = "seleccion == 'En Proceso'">
             <div class = "container-fluid contenedorPrincipal">
-                <div class = "contenedorObjetos" style = "height: 500px;" *ngIf = "cargandoPedidosEnProceso == null && pedidoEnProceso.length == 0 && errorPedidosEnProceso == null">
+                <div class = "contenedorObjetos" style = "height: 500px;" *ngIf = "cargandoPedidosEnProceso == null && pedidoEnProceso.length == 0 && errorPedidosEnProceso == null && errorUsuarioSinLocal == null">
                     <div class = "col-sm-12 cargando parent" style = "height: 500px;">
                         <div class = "child">
                             <i class="fa fa-cart-arrow-down fa-5x fa-fw" style = "color: white"></i><br>
                             <h2 style = "color: white">No hay ningun pedido en proceso.</h2>
                             <h3 style = "color: white">Haga un pedido en nuestro listado de <a>Productos</a> o en el listado de <a>Locales</a></h3>
+                        </div>
+                    </div>
+                </div>
+                <div class = "contenedorObjetos" style = "height: 500px;" *ngIf = "errorUsuarioSinLocal != null">
+                    <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <i class="fa fa-exclamation-triangle fa-5x fa-fw" style = "color: white"></i><br>
+                            <h2 style = "color: white">No hay local asignado...</h2>
                         </div>
                     </div>
                 </div>
@@ -170,6 +231,26 @@
                 </div>
                 <div class = "container-fluid contenedorObjetos" *ngIf = "cargandoPedidosEnProceso == null && pedidoEnProceso.length != 0 && errorPedidosEnProceso == null" style = "min-height: 500px">
                     <div *ngFor = "let pedido of pedidoEnProceso" style = "border: 2px; border-color : white; border-style: solid; margin: 5px; padding: 10px; border-radius: 5px">
+                    
+                    <div class = "row" style = "margin-bottom : 20px" *ngIf = "Comprobar() && (ObtenerUsuario().tipo != 'Empleado' || ObtenerUsuario().tipo != 'Encargado')">
+
+                            <div class="col-sm-2">
+                                <img class = "img-responsive img-thumbnail" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/usuarios/' + pedido.cliente.img">
+                            </div>
+                            <div class="col-sm-6"  style = "color: white;">
+                                <div class = "col-sm-12" style = "margin-bottom: 15px">
+                                    {{pedido.cliente.apellido}}, {{pedido.cliente.nombre}}
+                                </div>
+                                <div class="col-sm-6" style = "margin-bottom: 10px">
+                                    <ins>Email:</ins> {{pedido.cliente.email}}
+                                </div>
+                                <div class="col-sm-6" style = "margin-bottom: 10px">
+                                    <ins>Telefono:</ins> {{pedido.cliente.telefono}}
+                                </div>
+                            </div>
+
+                    </div>
+
                     <div class = "row" style = "color: white;">
                         <div class = "col-sm-4">
                             <h5><i><strong>Fecha del pedido:</strong> {{pedido.fechaPedido}}</i></h5>
@@ -224,7 +305,7 @@
                                 </div>
                             </li>
                     </ul>
-                    <button class="btn btn-danger btn-block" (click) = "TerminarPedido(pedido)" [disabled] = "cargandoEnvioRecibido != null">
+                    <button class="btn btn-danger btn-block" (click) = "TerminarPedido(pedido)" [disabled] = "cargandoEnvioRecibido != null" *ngIf = "Comprobar() && (ObtenerUsuario().tipo == 'Cliente')">
                         <i class="fa fa-thumbs-up fa-lg fa-fw" style = "color: white"></i>
                         Marcar como Recibido
                     </button>
@@ -235,7 +316,7 @@
 
         <div class= "col-sm-9" *ngIf = "seleccion == 'Recibidos'">
             <div class = "container-fluid contenedorPrincipal">
-                <div class = "contenedorObjetos" style = "height: 500px;" *ngIf = "cargandoPedidosRecibidos == null && pedidosRecibidos.length == 0 && errorPedidosRecibidos == null">
+                <div class = "contenedorObjetos" style = "height: 500px;" *ngIf = "cargandoPedidosRecibidos == null && pedidosRecibidos.length == 0 && errorPedidosRecibidos == null && errorUsuarioSinLocal == null">
                     <div class = "col-sm-12 cargando parent" style = "height: 500px;">
                         <div class = "child">
                             <i class="fa fa-cart-arrow-down fa-5x fa-fw" style = "color: white"></i><br>
@@ -252,6 +333,14 @@
                         </div>
                     </div>
                 </div>
+                <div class = "contenedorObjetos" style = "height: 500px;" *ngIf = "errorUsuarioSinLocal != null">
+                    <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <i class="fa fa-exclamation-triangle fa-5x fa-fw" style = "color: white"></i><br>
+                            <h2 style = "color: white">No hay local asignado...</h2>
+                        </div>
+                    </div>
+                </div>
                 <div class = "contenedorObjetos" style = "height: 500px;" *ngIf = "errorPedidosRecibidos != null">
                     <div class = "col-sm-12 cargando parent" style = "height: 500px;">
                         <div class = "child">
@@ -263,6 +352,26 @@
                 </div>
                 <div class = "container-fluid contenedorObjetos" *ngIf = "cargandoPedidosRecibidos == null && pedidosRecibidos.length != 0 && errorPedidosRecibidos == null" style = "min-height: 500px">
                     <div *ngFor = "let pedido of pedidosRecibidos" style = "border: 2px; border-color : white; border-style: solid; margin: 5px; padding: 10px; border-radius: 5px">
+
+                    <div class = "row" style = "margin-bottom : 20px" *ngIf = "Comprobar() && (ObtenerUsuario().tipo != 'Empleado' || ObtenerUsuario().tipo != 'Encargado')">
+
+                            <div class="col-sm-2">
+                                <img class = "img-responsive img-thumbnail" [src] = "'http://www.romerofederico.hol.es/pizza/ws/img/usuarios/' + pedido.cliente.img">
+                            </div>
+                            <div class="col-sm-6"  style = "color: white;">
+                                <div class = "col-sm-12" style = "margin-bottom: 15px">
+                                    {{pedido.cliente.apellido}}, {{pedido.cliente.nombre}}
+                                </div>
+                                <div class="col-sm-6" style = "margin-bottom: 10px">
+                                    <ins>Email:</ins> {{pedido.cliente.email}}
+                                </div>
+                                <div class="col-sm-6" style = "margin-bottom: 10px">
+                                    <ins>Telefono:</ins> {{pedido.cliente.telefono}}
+                                </div>
+                            </div>
+
+                    </div>
+                
                     <div class = "row" style = "color: white;">
                         <div class = "col-sm-4">
                             <h5><i><strong>Fecha del pedido:</strong> {{pedido.fechaPedido}}</i></h5>

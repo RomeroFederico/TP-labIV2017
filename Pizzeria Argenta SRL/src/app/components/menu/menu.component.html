@@ -29,12 +29,15 @@
             </div>
             <ul class="nav navbar-nav">
               <li><p class="navbar-text"><small>{{ObtenerUsuario().apellido}}, {{ObtenerUsuario().nombre}}</small></p></li>
+              <li *ngIf = "Comprobar() && ObtenerUsuario().tipo != 'Cliente'">
+                <p class="navbar-text" style = "font-size: x-small"><small>{{ObtenerUsuario().tipo}}</small></p>
+              </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
               <li class="nav-item" title = "Panel de Control">
                 <a routerLink="/panel" routerLinkActive="active" style = "padding-right: 10px;padding-left: 10px"><i class="fa fa-home fa-lg" aria-hidden="true"></i></a>
               </li>
-              <li class="nav-item" title = "Ver Carrito">
+              <li class="nav-item" title = "Ver Carrito" *ngIf = "Comprobar() && ObtenerUsuario().tipo == 'Cliente'">
                 <a (click) = "ToggleCarrito()" style = "padding-right: 10px;padding-left: 10px; cursor: pointer"><i class="fa fa-shopping-cart fa-lg" aria-hidden="true"></i></a>
               </li>
               <li class="nav-item" title = "Logout">

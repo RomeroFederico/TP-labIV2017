@@ -58,7 +58,8 @@ export class AppComponent {
     if (this.aut.isLogued())
     {
       this.usuario = this.ObtenerUsuario();
-      this.InicializarDirecciones();
+      if (this.usuario.tipo == "Cliente")
+        this.InicializarDirecciones();
     }
   }
 

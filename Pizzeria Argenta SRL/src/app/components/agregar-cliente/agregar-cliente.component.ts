@@ -25,11 +25,11 @@ export class User {
 }
 
 @Component({
-  selector: 'app-agregar-usuario',
-  templateUrl: './agregar-usuario.component.html',
-  styleUrls: ['./agregar-usuario.component.css']
+  selector: 'app-agregar-cliente',
+  templateUrl: './agregar-cliente.component.html',
+  styleUrls: ['./agregar-cliente.component.css']
 })
-export class AgregarUsuarioComponent implements OnInit, Input, Output {
+export class AgregarClienteComponent implements OnInit, Input, Output {
 
   direccion : string = "";
 
@@ -51,23 +51,16 @@ export class AgregarUsuarioComponent implements OnInit, Input, Output {
   verificadoF : boolean = null;
   errorVerificado : boolean = null;
 
-  cargandoVerificacionLegajo = null;
-  verificadoLegajo : boolean = null;
-  verificadoFLegajo : boolean = null;
-  errorVerificadoLegajo : boolean = null;
-
   vacioEmail : boolean = null;
   vacioPassword : boolean = null;
   vacioApellido : boolean = null;
   vacioNombre : boolean = null;
   vacioDireccion : boolean = null;
   vacioTelefono : boolean = null;
-  vacioLegajo : boolean = null;
 
   validarDireccion : boolean = null;
   validarEmail : boolean = null;
   validarPassword : boolean = null;
-  validarLegajo : boolean = null;
 
   constructor(private router: Router, private route: ActivatedRoute, 
               private ws: WsService, private aut : AutService)
@@ -160,12 +153,10 @@ export class AgregarUsuarioComponent implements OnInit, Input, Output {
     this.vacioNombre = null;
     this.vacioDireccion = null;
     this.vacioTelefono = null;
-    this.vacioLegajo = null;
 
     this.validarPassword = null;
     this.validarDireccion = null;
     this.validarEmail = null;
-    this.validarLegajo = null;
 
     if (this.user.email == "")
       this.vacioEmail = true;
@@ -185,17 +176,11 @@ export class AgregarUsuarioComponent implements OnInit, Input, Output {
     if (this.user.telefono == "")
       this.vacioTelefono = true;
 
-    if (this.user.tipo != "Cliente" && this.user.legajo == "")
-      this.vacioLegajo = true;
-
     if (!this.ValidarEmail(this.user.email))
       this.validarEmail = true;
 
     if (this.user.password.length < 6)
       this.validarPassword = true;
-
-    if (this.user.tipo != "Cliente" && this.user.legajo.length < 6)
-      this.validarLegajo = true;
 
     if (this.vacioEmail != null || this.vacioPassword != null || this.vacioApellido != null || this.vacioNombre != null || this.vacioDireccion != null || this.vacioTelefono != null)
     {
@@ -213,12 +198,6 @@ export class AgregarUsuarioComponent implements OnInit, Input, Output {
     {
       this.mostrarInfo = true;
       this.mensaje = "El password ingresado no es valido. ";
-      return;
-    }
-    else if (this.user.tipo != "Cliente" && this.user.legajo.length < 6)
-    {
-      this.mostrarInfo = true;
-      this.mensaje = "El legajo ingresado no es valido. ";
       return;
     }
 
@@ -300,41 +279,6 @@ export class AgregarUsuarioComponent implements OnInit, Input, Output {
     }
   }
 
-  VerificarLegajoUsuario(legajo : string)
-  {
-    this.verificadoLegajo = null;
-    this.verificadoFLegajo = null;
-    this.errorVerificadoLegajo = null;
-    this.validarLegajo = null;
-    this.vacioLegajo = null;
-
-    if (legajo.length == 0)
-    {
-      console.log("No se ha ingresado un legajo !!!");
-      this.errorVerificadoLegajo = true;
-    }
-    else if (legajo.length < 6)
-    {
-      this.validarLegajo = true;
-      return;
-    }
-    else
-    {
-      this.cargandoVerificacionLegajo = true;
-
-      this.ws.VerificarLegajo(legajo).then((data) => {
-
-        this.cargandoVerificacionLegajo = null;
-
-        if (data.exito)
-          this.verificadoLegajo = true;
-        else
-          this.verificadoFLegajo = true;
-      })
-      .catch((error) => { this.errorVerificadoLegajo = true; this.cargandoVerificacionLegajo = null; console.log(error); })
-    }
-  }
-
   /**
   * Obtengo la direccion del usuario.
   */
@@ -363,29 +307,22 @@ export class AgregarUsuarioComponent implements OnInit, Input, Output {
     this.user.provincia = direccion[2];
     this.user.pais = direccion[3];
 
-    if (this.user.tipo == "Cliente")
-      this.user.legajo = null;
-
     this.ws.RegistrarOficial(this.user).then( data => {
       console.log("Accediendo al servidor...");
       console.log(data);
       this.cargando = null;
       if (data.exito)
       {
-        alert("Usuario registrado con exito!!!");
+        alert("Cliente registrado con exito!!!");
         this.onRegistrado.emit(true);
       }
       else
       {
-        if (this.user.tipo == "Cliente")
-          this.user.legajo = "";
         this.mensajeMostrar = data.mensaje;
         this.mostrarMensaje = true;
       }
     })
     .catch( e => {
-      if (this.user.tipo == "Cliente")
-          this.user.legajo = "";
       this.cargando = null;
       this.mostrarError = true;
       console.log(e);
@@ -394,7 +331,7 @@ export class AgregarUsuarioComponent implements OnInit, Input, Output {
 
   CancelarRegistro()
   {
-    if (confirm("Desea cancelar el registro de usuario?"))
+    if (confirm("Desea cancelar el registro del cliente?"))
       this.onRegistrado.emit(false);
   }
 

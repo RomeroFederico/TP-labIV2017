@@ -102,6 +102,9 @@ export class LocalesComponent implements OnInit {
   seleccionProducto : Array<number> = new Array<number>();
   seleccionLocal : number = 0;
 
+  //localDelUsuario : any = null;
+  errorUsuarioSinLocal : boolean = null;
+
   @ViewChild('map') mapElement: ElementRef;
 
   map: any;
@@ -110,7 +113,15 @@ export class LocalesComponent implements OnInit {
               private router: Router, private actRoute: ActivatedRoute, 
               private comunicacionService: ComunicacionService)
   {
-    this.CargarLocales();
+    if (this.Comprobar() && (this.ObtenerUsuario().tipo == "Empleado" || this.ObtenerUsuario().tipo == "Encargado"))
+    {
+      this.mostrarCargando = null;
+      this.CargarLocalDelUsuario();
+    }
+    else
+    {
+      this.CargarLocales();
+    }
   }
 
   ngOnInit()
@@ -118,7 +129,9 @@ export class LocalesComponent implements OnInit {
     //this.ObtenerCordenadas();
     this.slider();
     this.CargarMapa();
-    this.MarcarUsuario();
+
+    if (!this.Comprobar() || (this.Comprobar() && this.ObtenerUsuario() == "Cliente"))
+      this.MarcarUsuario();
 
     this.actRoute.queryParams
       .subscribe(params => {
@@ -136,6 +149,119 @@ export class LocalesComponent implements OnInit {
           this.seleccionLocal = params["idLocal"];
         }
       });
+  }
+
+  CargarLocalDelUsuario()
+  {
+    this.ws.ObtenerLocalDelUsuario(this.ObtenerUsuario()).then((data) => {
+
+      console.log(data);
+
+      if (data.local == false)
+      {
+        console.log("No hay local para mostrar...");
+        this.errorUsuarioSinLocal = true;
+      }
+      else
+      {
+        console.log("Se encontro un local...");
+        this.local = data.local;
+        var gerente = new Gerente();
+
+        if (this.ObtenerUsuario().tipo == 'Empleado')
+        {
+          gerente.idUsuario = data.local.idUsuario;
+          gerente.nombre = data.local.nombre;
+          gerente.apellido = data.local.apellido;
+          gerente.sexo = data.local.sexo;
+          gerente.email = data.local.email;
+          gerente.telefonoUsuario = data.local.telefonoUsuario;
+          gerente.direccionUsuario = data.local.direccionUsuario;
+          gerente.localidadUsuario = data.local.localidadUsuario;
+          gerente.provinciaUsuario = data.local.provinciaUsuario;
+          gerente.paisUsuario = data.local.paisUsuario;
+          gerente.usuarioImg = data.local.usuarioImg;
+        }
+        else
+        {
+          var usuario = this.ObtenerUsuario();
+          gerente.idUsuario = usuario.idUsuario;
+          gerente.nombre = usuario.nombre;
+          gerente.apellido = usuario.apellido;
+          gerente.sexo = usuario.sexo;
+          gerente.email = usuario.email;
+          gerente.telefonoUsuario = usuario.telefono;
+          gerente.direccionUsuario = usuario.direccion;
+          gerente.localidadUsuario = usuario.localidad;
+          gerente.provinciaUsuario = usuario.provincia;
+          gerente.paisUsuario = usuario.pais;
+          gerente.usuarioImg = usuario.img;
+        }
+
+        this.local.gerente = gerente;
+        var direccionCompleta = this.local.direccion + ", " + this.local.localidad + ", " + this.local.provincia + ", " + this.local.pais;
+        this.local.direccionCompleta = direccionCompleta;
+        this.ObtenerCordenadaLocalDelUsuario(direccionCompleta);
+      }
+    })
+    .catch((error) => { this.CargarLocalDelUsuario();  console.log(error)} );
+  }
+
+  ObtenerCordenadaLocalDelUsuario(direccion)
+  {
+      this.ws.getlatlng(direccion).then( data => {
+        var cordenadas = data.results[0].geometry.location;
+        this.local.lat = cordenadas.lat;
+        this.local.lng = cordenadas.lng;
+        this.MarcarLocalDelUsuario(this.local);
+        this.CargarProductosDelLocalDelUsuario(this.local);
+      })
+      .catch( e => {
+        this.ObtenerCordenadaLocalDelUsuario(direccion);
+        console.log(e);
+      } );
+  }
+
+  MarcarLocalDelUsuario(local : Local)
+  {
+    let position = new google.maps.LatLng(local.lat, local.lng);
+    local.marcador = new google.maps.Marker({position: position, animation: google.maps.Animation.DROP, icon : "assets/ico/pinLocal.ico", title : "Local"});
+    local.marcador.setMap(this.map);
+    
+    local.marcador.setIcon("assets/ico/pinLocalSeleccionado.ico");
+
+    var infoWindow = new google.maps.InfoWindow({
+      content: `<div class="media"><div class="media-left media-top">
+                      <img class="media-object" src = "http://www.romerofederico.hol.es/pizza/ws/img/locales/` + local.img1 + `" style = "  display: block; max-width:150px; max-height:150px; width: auto; height: auto;">
+                  </div>
+                  <div class="media-body">
+                    <h4 class="media-heading">` + local.direccion + `</h4>
+                    <h5>` + local.localidad + `</h5>
+                    <p><span class="glyphicon glyphicon-phone-alt"></span> Tel : <small>` + local.telefono + `</small></p>
+                  </div>
+                </div>
+              `,
+    });
+
+    var marcador = local.marcador
+
+    // Funcion para, al clickear un punto, se muestre el local y su ruta.
+    google.maps.event.addListener(marcador, 'click', () => {
+
+      // Abro la ventana de informacion.
+      infoWindow.open(this.map, marcador);
+    });
+  }
+
+  CargarProductosDelLocalDelUsuario(local)
+  {
+    this.ws.ObtenerProductosDelLocal(local.idLocal).then((data) => 
+    {
+      console.log(data);
+      this.local.productos = data;
+    }
+    )
+    .catch((error) => { this.CargarProductosDelLocalDelUsuario(local);  console.log(error)} );
   }
 
   /**
