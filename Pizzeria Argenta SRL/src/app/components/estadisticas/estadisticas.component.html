@@ -401,8 +401,52 @@
             <!-- FIN SELECCION -->
             <div *ngIf = "seleccion == 5">
 
-              NO IMPLEMENTADO :(
+              <div class = "contenedorObjetos" style = "height: 500px; background-color: white;" *ngIf = "cargando != null">
+                    <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <i class="fa fa-cog fa-spin fa-5x fa-fw"></i><br>
+                            <h2>Cargando detalles</h2>
+                        </div>
+                    </div>
+              </div>
 
+              <div class = "contenedorObjetos" style = "height: 500px; background-color: white;" *ngIf = "errorIngresos != null">
+                    <div class = "col-sm-12 cargando parent" style = "height: 500px;">
+                        <div class = "child">
+                            <i class="fa fa-exclamation-triangle fa-5x fa-fw"></i><br>
+                            <h2>Ocurrio un problema al cargar los ingresos</h2>
+                            <h3 (click) = "ReintentarCargarIngresos()"><a>Reintentar</a></h3>
+                        </div>
+                    </div>
+              </div>
+
+                  <div class="table-responsive vertical-align table-hover" *ngIf = "cargando == null && errorIngresos == null">
+                    <table class="table table-hover">
+                      <thead>
+                        <th>Id Usuario</th>
+                        <th>Tipo</th>
+                        <th>Email</th>
+                        <th>Fecha</th>
+                      </thead>
+                      <tr *ngFor = "let ingreso of ingresos">
+                        <td class="col-sm-1">
+                          {{ingreso.idUsuario}}
+                        </td>
+                        <td class="col-sm-3">
+                          {{ingreso.tipo}}
+                        </td>
+                        <td class="col-sm-4">
+                          {{ingreso.email}}
+                        </td>
+                        <td class="col-sm-4">
+                          {{ingreso.fecha}}
+                        </td>
+                      </tr>
+                    </table>
+
+                    <button type="button" class="btn btn-info btn-sm miPuntero btn-block" (click) = "GenerarArchivoCsv(5)">
+                      <i class = "fa fa-floppy-o fa-2x"></i> Guardar archivo
+                    </button>
             </div>
 
             <div *ngIf = "seleccion == 6">

@@ -64,6 +64,26 @@ export class AppComponent {
   }
 
   ngOnInit() {
+    if (this.aut.isLogued())
+    {
+      this.ws.ValidarToken().then((data) => {
+        console.log(data);
+        if (!data.exito)
+        {
+          alert(data.mensaje);
+          this.Logout();
+        }
+      })
+      .catch((error) => { alert("Error en el servidor, vuelva a iniciar sesion mas tarde..."); this.Logout(); console.log(error); });
+    }
+  }
+
+  Logout()
+  {
+    localStorage.setItem('token', null);
+    this.mostrarCarrito = null;
+    this.principal = "";
+    this.router.navigate(['/login']);
   }
 
   ComprobarPromo(diaPromo)

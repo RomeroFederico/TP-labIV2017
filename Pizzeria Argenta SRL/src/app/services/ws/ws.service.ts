@@ -351,11 +351,29 @@ export class WsService {
     .catch( this.handleError );
   }
 
+  TraerTodosLosIngresos()
+  {
+    return this.http.get(this.url + 'estadisticas/ingresos')
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
   VerificarCaptcha(obj)
   {
     var body =  obj;
 
     return this.http.post(this.url + 'captcha', body)
+    .toPromise()
+    .then( this.extractData )
+    .catch( this.handleError );
+  }
+
+  ValidarToken()
+  {
+    var body =  {};
+
+    return this.authHttp.post(this.url + 'validar', body)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );

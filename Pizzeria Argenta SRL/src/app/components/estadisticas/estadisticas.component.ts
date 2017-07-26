@@ -145,6 +145,9 @@ export class EstadisticasComponent implements OnInit {
   encuestas : Array<any> = [];
   errorEncuestas : boolean = null;
 
+  errorIngresos : boolean = null;
+  ingresos : Array<any> = null;
+
   constructor(public ws : WsService, public csv : CsvService)
   {
     this.CargarTodosLosPedidos();
@@ -190,6 +193,12 @@ export class EstadisticasComponent implements OnInit {
         this.fechaFinal = this.fechaLimiteFinal;
         this.mostrarTablaProductos = null;
         this.CargarTodosLosPedidosPorProductos();
+      }
+      else if (seleccion == 5)
+      {
+        this.ingresos = null;
+        this.errorIngresos = null;
+        this.CargarIngresos();
       }
       else if (seleccion == 6)
       {
@@ -637,6 +646,27 @@ export class EstadisticasComponent implements OnInit {
     console.log(this.pedidosProductos);
   }
 
+  CargarIngresos()
+  {
+    this.cargando = true;
+
+    this.ws.TraerTodosLosIngresos().then((ingresos) => {
+
+      this.cargando = null;
+
+      console.log(ingresos);
+
+      this.ingresos = ingresos;
+    })
+    .catch((error) => { this.cargando = null; this.errorIngresos = true; console.log(error); })
+  }
+
+  ReintentarCargarIngresos()
+  {
+    this.errorIngresos = null;
+    this.CargarIngresos();
+  }
+
   CargarTodasLasEncuestas()
   {
     this.cargando = true;
@@ -694,6 +724,13 @@ export class EstadisticasComponent implements OnInit {
         imprimir.push({idProducto: pedido.idProducto, descripcion: pedido.descripcion, tipo: pedido.tipo, total: pedido.total, fechaInicial: this.fechaInicial, fechaFinal: this.fechaFinal});
       });
       this.csv.download(imprimir, "Pedidos por Productos");
+    }
+    else if (opcion == 5)
+    {
+      // this.pedidosUsuarios.forEach(pedido => {
+      //   imprimir.push({usuario: pedido.usuario.idLocal, direccion: pedido.local.direccion, localidad: pedido.local.localidad, cantidad: pedido.cantidad, productos: pedido.productos, monto: pedido.monto})
+      // });
+      this.csv.download(this.ingresos, "Ingresos al Sistema");
     }
     else if (opcion == 6)
       this.csv.download(this.encuestas, "Encuestas");
