@@ -56,6 +56,57 @@
             return $productos;
         }
 
+        public static function RegistrarProducto($obj)
+        {
+            try
+            {
+                $objetoAccesoDatos = AccesoDatos::dameUnObjetoAcceso();
+
+                $consulta = $objetoAccesoDatos->RetornarConsulta("INSERT INTO productos (descripcion, precio, promocion, tipo, img) 
+                                                 VALUES (:Descripcion, :Precio, :Promocion, :Tipo, :Img)");
+
+                $consulta->bindValue(':Descripcion', $obj->descripcion, PDO::PARAM_STR);
+                $consulta->bindValue(':Precio', $obj->precio, PDO::PARAM_STR);
+                $consulta->bindValue(':Promocion', $obj->promocion, PDO::PARAM_STR);
+                $consulta->bindValue(':Tipo', $obj->tipo, PDO::PARAM_STR);
+                $consulta->bindValue(':Img', $obj->img, PDO::PARAM_STR);          
+
+                $consulta->execute();
+            }
+            catch (Exception $e) 
+            {
+                return $e;
+            }
+
+            return $objetoAccesoDatos->RetornarUltimoIdInsertado();
+        }
+
+        public static function ModificarProducto($obj)
+        {
+            try
+            {
+                $objetoAccesoDatos = AccesoDatos::dameUnObjetoAcceso();
+
+                $consulta = $objetoAccesoDatos->RetornarConsulta("UPDATE productos SET descripcion = :Descripcion, precio = :Precio, promocion = :Promocion, tipo = :Tipo, img = :Img 
+                                                                  WHERE (idProducto = :IdProducto)");
+
+                $consulta->bindValue(':IdProducto', $obj->idProducto, PDO::PARAM_INT);                                                  
+                $consulta->bindValue(':Descripcion', $obj->descripcion, PDO::PARAM_STR);
+                $consulta->bindValue(':Precio', $obj->precio, PDO::PARAM_STR);
+                $consulta->bindValue(':Promocion', $obj->promocion, PDO::PARAM_STR);
+                $consulta->bindValue(':Tipo', $obj->tipo, PDO::PARAM_STR);
+                $consulta->bindValue(':Img', $obj->img, PDO::PARAM_STR);         
+
+                $consulta->execute();
+            }
+            catch (Exception $e) 
+            {
+                return $e;
+            }
+
+            return TRUE;
+        }
+
         public static function TraerTodosLosProductosLocal($idLocal)
         {
             $productos = array();

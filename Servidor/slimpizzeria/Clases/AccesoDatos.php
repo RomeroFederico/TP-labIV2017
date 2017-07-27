@@ -8,9 +8,9 @@
         {
             try 
             {
-                $this->_objetoPDO = new PDO('mysql:host=localhost;dbname=tp_pizzeria;charset=utf8', 'root', '', array(PDO::ATTR_EMULATE_PREPARES => false,PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+                //$this->_objetoPDO = new PDO('mysql:host=localhost;dbname=tp_pizzeria;charset=utf8', 'root', '', array(PDO::ATTR_EMULATE_PREPARES => false,PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
                 //$this->_objetoPDO = new PDO('mysql:host=sql105.eshost.com.ar;dbname=eshos_19178150_login_pdo;charset=utf8', 'eshos_19178150', 'bloodyte', array(PDO::ATTR_EMULATE_PREPARES => false,PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
-                //$this->_objetoPDO = new PDO('mysql:host=mysql.hostinger.com.ar;dbname=u875660301_login;charset=utf8', 'u875660301_fede', 'bloodyte', array(PDO::ATTR_EMULATE_PREPARES => false,PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
+                $this->_objetoPDO = new PDO('mysql:host=mysql.hostinger.com.ar;dbname=u875660301_pizza;charset=utf8', 'u875660301_crow', 'bloody', array(PDO::ATTR_EMULATE_PREPARES => false,PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 
                 $this->_objetoPDO->exec("SET CHARACTER SET utf8");
             } 

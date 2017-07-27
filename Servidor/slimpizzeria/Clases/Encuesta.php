@@ -81,7 +81,7 @@
 
             $objetoAccesoDatos = AccesoDatos::dameUnObjetoAcceso();
 
-            $consulta = $objetoAccesoDatos->RetornarConsulta("SELECT * FROM encuestas ORDER BY fecha");
+            $consulta = $objetoAccesoDatos->RetornarConsulta("SELECT * FROM encuestas ORDER BY fecha DESC");
 
             $consulta->execute();
 

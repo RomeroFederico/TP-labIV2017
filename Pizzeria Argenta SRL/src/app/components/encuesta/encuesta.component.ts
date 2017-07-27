@@ -321,7 +321,7 @@ export class EncuestaComponent implements OnInit {
       this.encuestaCompleta = true;
       console.log(data);
     })
-    .catch((error) => { this.cargandoEncuesta = null; this.mensajeEnviar = "Enviar"; console.log(error); });
+    .catch((error) => { this.cargandoEncuesta = null; this.mensajeEnviar = "Enviar"; alert("Error en el servidor."); console.log(error); });
   }
 
   ValidarEncuesta(preguntas : Array<string>)

@@ -57,7 +57,7 @@ export class WsService {
   {
     var body =  user;
 
-    return this.http.post(this.url + 'oficial/registrar', body)
+    return this.authHttp.post(this.url + 'oficial/registrar', body)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -67,7 +67,7 @@ export class WsService {
   {
     var body =  datos;
 
-    return this.http.post(this.url + 'registrar/empleado', body)
+    return this.authHttp.post(this.url + 'registrar/empleado', body)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -77,7 +77,7 @@ export class WsService {
   {
     var body =  user;
 
-    return this.http.post(this.url + 'usuarios/modificar', body)
+    return this.authHttp.post(this.url + 'usuarios/modificar', body)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -178,7 +178,7 @@ export class WsService {
   {
     var body =  producto;
 
-    return this.http.post(this.url + 'productos/registrar', body)
+    return this.authHttp.post(this.url + 'productos/registrar', body)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -188,7 +188,7 @@ export class WsService {
   {
     var body =  producto;
 
-    return this.http.post(this.url + 'productos/modificar', body)
+    return this.authHttp.post(this.url + 'productos/modificar', body)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -198,7 +198,7 @@ export class WsService {
   {
     var body =  obj;
 
-    return this.http.post(this.url + 'locales/nuevo', body)
+    return this.authHttp.post(this.url + 'locales/nuevo', body)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -208,7 +208,7 @@ export class WsService {
   {
     var body =  obj;
 
-    return this.http.post(this.url + 'locales/modificar', body)
+    return this.authHttp.post(this.url + 'locales/modificar', body)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -270,7 +270,7 @@ export class WsService {
   {
     var body =  obj;
 
-    return this.http.post(this.url + 'pedidos/nuevo', body)
+    return this.authHttp.post(this.url + 'pedidos/nuevo', body)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -280,7 +280,7 @@ export class WsService {
   {
     var body =  obj;
 
-    return this.http.post(this.url + 'pedidos/terminar', body)
+    return this.authHttp.post(this.url + 'pedidos/terminar', body)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -290,7 +290,7 @@ export class WsService {
   {
     var body =  obj;
 
-    return this.http.post(this.url + 'pedidos', body)
+    return this.authHttp.post(this.url + 'pedidos', body)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -300,7 +300,7 @@ export class WsService {
   {
     var body =  obj;
 
-    return this.http.post(this.url + 'pedidos/local', body)
+    return this.authHttp.post(this.url + 'pedidos/local', body)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -310,7 +310,7 @@ export class WsService {
   {
     var body =  obj;
 
-    return this.http.post(this.url + 'encuesta/registrar', body)
+    return this.authHttp.post(this.url + 'encuesta/registrar', body)
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -329,7 +329,7 @@ export class WsService {
 
   TraerTodosLosPedidosUsuarios()
   {
-    return this.http.get(this.url + 'estadisticas/pedidos/usuarios')
+    return this.authHttp.get(this.url + 'estadisticas/pedidos/usuarios')
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -337,7 +337,7 @@ export class WsService {
 
   TraerTodosLosPedidosProductos()
   {
-    return this.http.get(this.url + 'estadisticas/pedidos/productos')
+    return this.authHttp.get(this.url + 'estadisticas/pedidos/productos')
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -345,7 +345,7 @@ export class WsService {
 
   TraerTodasLasEncuestas()
   {
-    return this.http.get(this.url + 'estadisticas/encuestas')
+    return this.authHttp.get(this.url + 'estadisticas/encuestas')
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
@@ -353,7 +353,7 @@ export class WsService {
 
   TraerTodosLosIngresos()
   {
-    return this.http.get(this.url + 'estadisticas/ingresos')
+    return this.authHttp.get(this.url + 'estadisticas/ingresos')
     .toPromise()
     .then( this.extractData )
     .catch( this.handleError );
