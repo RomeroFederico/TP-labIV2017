@@ -31,3 +31,23 @@ Ademas, puede ver los clientes del sistema y puede agregar uno nuevo. Por ultimo
 <p>Ademas de lo que puede hacer el empleado, puede modificar los productos del local, el mismisimo local y el estado de los usuarios del sistama que puede manejar, siendo los empleados del local y los clientes. Este estado maneja si esta habilitado o no en ingresar al sistema. Por ultimo, puede agregar nuevos empleados al local. </p>
 <h2>Operatoria Administrador:</h2>
 <p>El administrador no puede ver los productos del sistema ni puede ver sus pedidos, ya que no puede realizarlos. Puede ver todos los usuarios del sistema y modificar su estado, con excepcion de otros adminsitradores, y puede agregar cualquier tipo de usuario, menos de su mismo tipo. Puede ver el listado de los locales, editarlos y agregar nuevos. Por ultimo puede ver los datos estadisticos del sistema, siendo las ventas por local, por productos, por dia, por clientes, ingresos al sistema, y resultados de encuestas. Estos datos pueden guardarse en un archivo pdf y/o csv. </p>
+
+<h2>Pasos para realizar un pedido como Cliente: </h2>
+
+<img src="Img/wizard1.png">
+
+<p><strong>1 A-</strong> Seleccionar productos desde el menu o desde el acceso directo. </p>
+
+<img src="Img/wizard2.png">
+
+<p><strong>1 B-</strong> Seleccionar locales desde el menu o desde el acceso directo. </p>
+
+<p><strong>2 -</strong> Seleccionar el producto que se quiera pedir. Agregue los que sea necesario. Alternativamente se puede seleccionar cambiar el local para mostrar mas productos de estos. </p>
+
+<img src="Img/wizard3.png">
+
+<p><strong>3 -</strong> Al seleccionar un producto, se desplegara el carrito. Modifique lo que sea necesario del pedido: cantidad, eliminar productos, cambiar local y/o direccion. Realice el pedido cuando ya no quiera modifcar mas datos. </p>
+
+<img src="Img/wizard4.png">
+
+<p><strong>4 -</strong> Al aparecer el mensaje de confirmacion, presione aceptar para confirmar el pedido. Una vez se realiza con exito, se enviara a la pagina pedidos para ver los del cliente. </p>
